@@ -46,8 +46,8 @@ It is possible to access a wider set of models (e.g., Llama, Phi, Mistral, Gemma
 
 \* To use them, it is necessary to create an account on the respective platforms and enable an API access key. <u>Usage fees apply</u>; for more details, please refer to the respective websites.
 
-**ATTENTION 1**: The services offered by Groq Cloud and Mistral AI, include the option to use a free plan, albeit with low rate limits on requests.  
-**ATTENTION 2**: Unlike other LLM models, LM Studio and Ollama, allow you to run open-source models directly on your own PC, with no additional costs and maximum privacy, as everything is executed locally.  
+**ATTENTION 1**: The services offered by Groq Cloud and Mistral AI include the option to use a free plan, albeit with low rate limits on requests.  
+**ATTENTION 2**: Unlike other LLM models, LM Studio and Ollama allow you to run open-source models directly on your own PC, with no additional costs and maximum privacy, as everything is executed locally.  
 The downside is that this requires *SIGNIFICANT* hardware resources.
 
 ### Settings and usage
