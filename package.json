@@ -35,6 +35,7 @@
     "typescript-eslint": "^8.32.1"
   },
   "dependencies": {
+    "remove-markdown": "^0.6.2",
     "sanitize-html": "^2.17.0"
   }
 }

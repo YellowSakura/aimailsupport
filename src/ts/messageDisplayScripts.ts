@@ -1,4 +1,5 @@
 import { ChartUtils } from './helpers/chartUtils'
+import removeMarkdown from 'remove-markdown';
 
 // Manage async messages -->
 (async () => {
@@ -66,7 +67,9 @@ function getInnerResponse() {
 function addText(newContent: string) {
     clearContainer()
 
-    getInnerResponse().querySelector('#amsContent').textContent = newContent
+    // Convert Markdown to plain text, if applicable
+    const rawText = removeMarkdown(newContent)
+    getInnerResponse().querySelector('#amsContent').textContent = rawText
 }
 
 function showError(newContent: string) {
