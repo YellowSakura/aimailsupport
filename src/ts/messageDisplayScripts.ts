@@ -67,7 +67,7 @@ function getInnerResponse() {
 function addText(newContent: string) {
     clearContainer()
 
-    // Convert Markdown to plain text, if applicable
+    // Any Markdown present is converted to plain text
     const rawText = removeMarkdown(newContent)
     getInnerResponse().querySelector('#amsContent').textContent = rawText
 }

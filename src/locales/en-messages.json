@@ -199,6 +199,10 @@
         "message": "Standard",
         "description": "This option suggests a reply to an email ensuring a standard tone of voice."
     },
+    "mailAnalyzeIntent": {
+        "message": "Analyze intent",
+        "description": "Menu option to analyze the intent of an email being composed."
+    },
     "mailExplain": {
         "message": "Explain",
         "description": "Menu option to explain the content of an email or a portion of it."

@@ -7,6 +7,14 @@ import { getConfig, getConfigs, getCurrentMessageContent, getLanguageNameFromCod
 let translationMenuItemIds: (number | string)[] = null
 
 // Create the menu entries -->
+const menuIdAnalyzeIntent = messenger.menus.create({
+    id: 'aiAnalyzeIntent',
+    title: browser.i18n.getMessage('mailAnalyzeIntent'),
+    contexts: [
+        'compose_action_menu'
+    ]
+})
+
 const menuIdExplain = messenger.menus.create({
     id: 'aiExplain',
     title: browser.i18n.getMessage('mailExplain'),
@@ -341,7 +349,24 @@ messenger.menus.onClicked.addListener(async (info: browser.menus.OnClickData) =>
     const configs = await getConfigs()
     const llmProvider = ProviderFactory.getInstance(configs)
 
-    if(info.menuItemId == menuIdExplain) {
+    if(info.menuItemId == menuIdAnalyzeIntent) {
+        sendMessageToActiveTab({ type: 'thinking', content: messenger.i18n.getMessage('thinking') })
+
+        const intentAnalysisInput = info.selectionText ?? await getCurrentMessageContent()
+
+        if (intentAnalysisInput == null) {
+            sendMessageToActiveTab({ type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound') })
+        } else {
+            llmProvider.analyzeTextIntent(intentAnalysisInput).then(intentAnalysisResult => {
+                    sendMessageToActiveTab({ type: 'addText', content: intentAnalysisResult })
+            })
+            .catch(error => {
+                sendMessageToActiveTab({ type: 'showError', content: error.message })
+                logMessage(`Error during intent analysis: ${error.message}`, 'error')
+            })
+        }
+    }
+    else if(info.menuItemId == menuIdExplain) {
         sendMessageToActiveTab({type: 'thinking', content: messenger.i18n.getMessage('thinking')})
 
         const textToExplain = (info.selectionText) ? info.selectionText : await getCurrentMessageContent()
@@ -473,11 +498,11 @@ messenger.menus.onClicked.addListener(async (info: browser.menus.OnClickData) =>
             sendMessageToActiveTab({type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound')})
         }
         else {
-            let languageCode = null;
+            let languageCode = null
 
             // The language code is retrieved when selected from a menu item that
             // propagates the specific code in its ID.
-            const prefix = 'aiTranslateTo_';
+            const prefix = 'aiTranslateTo_'
             if ((info.menuItemId as string).startsWith(prefix)) {
                 languageCode = (info.menuItemId as string).slice(prefix.length)
             }
@@ -609,6 +634,12 @@ browser.runtime.onMessage.addListener(async (message) => {
 async function updateMenuVisibility(): Promise<void> {
     const configs = await getConfigs()
     const llmProvider = ProviderFactory.getInstance(configs)
+
+    // canAnalyzeTextIntent -->
+    messenger.menus.update(menuIdAnalyzeIntent, {
+        enabled: llmProvider.getCanAnalyzeTextIntent()
+    })
+    // <-- canAnalyzeTextIntent
 
     // canExplainText -->
     messenger.menus.update(menuIdExplain, {

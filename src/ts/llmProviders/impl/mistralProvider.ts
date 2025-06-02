@@ -17,6 +17,12 @@ export class MistralProvider extends GenericProvider {
         this.apiKey = config.mistral.apiKey
     }
 
+    public async analyzeTextIntent(input: string): Promise<string> {
+        logMessage(`Request to analyze text intent of ${input} in ${getLanguageNameFromCode(this.mainUserLanguageCode)}`, 'debug')
+
+        return this.manageMessageContent(this.PROMPTS.ANALYZE_INTENT.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode)), input)
+    }
+
     public async explainText(input: string): Promise<string> {
         logMessage(`Request to explain in ${getLanguageNameFromCode(this.mainUserLanguageCode)} the text: ${input}`, 'debug')
 
@@ -118,7 +124,7 @@ export class MistralProvider extends GenericProvider {
 
         if (!response.ok) {
             const errorResponse = await response.json()
-            throw new Error(`Mistral AI error: ${errorResponse.error.message}`)
+            throw new Error(`Mistral AI error: ${errorResponse.error?.message}`)
         }
 
         const responseData = await response.json()

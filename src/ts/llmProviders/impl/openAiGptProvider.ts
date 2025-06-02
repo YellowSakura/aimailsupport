@@ -28,6 +28,12 @@ export class OpenAiGptProvider extends GenericProvider {
         this.text2speechSpeed = config.openai.text2speech.speed
     }
 
+    public async analyzeTextIntent(input: string): Promise<string> {
+        logMessage(`Request to analyze text intent of ${input} in ${getLanguageNameFromCode(this.mainUserLanguageCode)}`, 'debug')
+
+        return this.manageMessageContent(this.PROMPTS.ANALYZE_INTENT.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode)), input)
+    }
+
     public async explainText(input: string): Promise<string> {
         logMessage(`Request to explain in ${getLanguageNameFromCode(this.mainUserLanguageCode)} the text: ${input}`, 'debug')
 

@@ -152,6 +152,9 @@
     "mailSuggestReply.standard": {
         "message": "Standard"
     },
+    "mailAnalyzeIntent": {
+        "message": "Analizza intento"
+    },
     "mailExplain": {
         "message": "Spiega"
     },

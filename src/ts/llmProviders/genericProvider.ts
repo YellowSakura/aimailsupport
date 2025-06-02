@@ -9,12 +9,13 @@ export class GenericProvider {
     protected servicesTimeout: number
 
     protected readonly PROMPTS = {
-        EXPLAIN: 'You are an assistant that explains the content of emails in %language% in a clear and simple way, preserving the original meaning; avoid unnecessary complexity, and ignore formatting or unusual characters',
-        REPHRASE: 'You are an assistant that rephrases the content of emails in %language% using a %toneOfVoice% tone of voice; preserve the original meaning and ignore formatting, headers, signatures, and unusual characters',
-        SUGGEST_IMPROVEMENTS: 'You are an assistant that suggests improvements to the content of emails in %language%, focusing on clarity, tone, and effectiveness; ignore formatting, headers, signatures, and unusual characters',
-        SUGGEST_REPLY: 'You are an assistant that suggests a reply to the email in %language%, using a %toneOfVoice% tone of voice; ensure the reply is clear and relevant to the sender’s message, and ignore formatting, headers, signatures, and unusual characters',
-        SUMMARIZE: 'You are an assistant that summarizes emails in %language% in a short and clear way, focusing only on the sender’s core message or request; ignore formatting, headers, footers, signatures, quoted replies, and unusual characters',
-        TRANSLATE: 'You are an assistant that translates emails into %language% as naturally and accurately as possible; preserve meaning, tone, and style, and ignore formatting or unusual characters'
+        ANALYZE_INTENT: 'You are an assistant that analyzes the tone and perceived intent of an email and provides the analysis in %language%; describe how the email might come across to the recipient, considering tone, clarity, potential emotional impact, and coherence with the context of the email thread history; Ignore formatting, headers, footers, signatures, quoted replies and unusual characters',
+        EXPLAIN: 'You are an assistant that explains the content of emails in %language% in a clear and simple way, preserving the original meaning; avoid unnecessary complexity; Ignore formatting, headers, footers, signatures, quoted replies and unusual characters',
+        REPHRASE: 'You are an assistant that rephrases the content of emails in %language% using a %toneOfVoice% tone of voice; preserve the original meaning; Ignore formatting, headers, footers, signatures, quoted replies and unusual characters',
+        SUGGEST_IMPROVEMENTS: 'You are an assistant that suggests improvements to the content of emails in %language%, focusing on clarity, tone, and effectiveness; Ignore formatting, headers, footers, signatures, quoted replies and unusual characters',
+        SUGGEST_REPLY: 'You are an assistant that suggests a reply to the email in %language%, using a %toneOfVoice% tone of voice; ensure the reply is clear and relevant to the sender’s message; Ignore formatting, headers, footers, signatures, quoted replies and unusual characters',
+        SUMMARIZE: 'You are an assistant that summarizes emails in %language% in a short and clear way, focusing only on the sender’s core message or request; Ignore formatting, headers, footers, signatures, quoted replies and unusual characters',
+        TRANSLATE: 'You are an assistant that translates emails into %language% as naturally and accurately as possible; preserve meaning, tone, and style; Ignore formatting, headers, footers, signatures, quoted replies and unusual characters'
     }
 
     public constructor(config: ConfigType) {
@@ -23,8 +24,19 @@ export class GenericProvider {
     }
 
     /**
+     * Analyze intent of the input string.
+     *
+     * @param input - The string to be analyzed.
+     *
+     * @returns A promise that resolves to the analysis of the input text.
+     */
+    public async analyzeTextIntent(input: string): Promise<any> {
+        throw new Error(browser.i18n.getMessage('errorInvalidAddonOptions'))
+    }
+
+    /**
      * Explains the input string.
-     * 
+     *
      * @param input - The string to be explained.
      *
      * @returns A promise that resolves to the explained version of the input text.
@@ -46,7 +58,7 @@ export class GenericProvider {
 
     /**
      * Moderates the input string.
-     * 
+     *
      * @param input - The string to be moderated.
      *
      * @returns A promise that resolves to the moderated JSON object.
@@ -134,6 +146,10 @@ export class GenericProvider {
     // specific capabilities.
     // This is done by checking that the current class actually has a specific
     // implementation for the reference method. -->
+    public getCanAnalyzeTextIntent(): boolean {
+        return this.analyzeTextIntent !== GenericProvider.prototype.analyzeTextIntent
+    }
+
     public getCanExplainText(): boolean {
         return this.explainText !== GenericProvider.prototype.explainText
     }
