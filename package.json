@@ -24,7 +24,7 @@
     "@typescript-eslint/eslint-plugin": "^8.32.1",
     "@typescript-eslint/parser": "^8.32.1",
     "buffer": "^6.0.3",
-    "dotenv": "^16.4.5",
+    "dotenv": "^17.0",
     "eslint": "^9.27.0",
     "jest": "^30.0",
     "jest-webextension-mock": "^4.0",
