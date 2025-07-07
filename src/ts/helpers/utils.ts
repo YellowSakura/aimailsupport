@@ -1,5 +1,4 @@
 import { ConfigType } from './configType'
-import sanitizeHtml from 'sanitize-html'
 
 /**
  * Retrieve data from browser storage for a specific key.
@@ -71,30 +70,17 @@ export async function getCurrentMessageContent(): Promise<string> {
 
     // Case: Email viewing -->
     if(messageDisplayed) {
-        // Starting from Thunderbird 128, it is possible to use the function:
-        // await messenger.messages.listInlineTextParts(messageDisplayed.id)
-        // see https://webextension-api.thunderbird.net/en/128-esr-mv2/messages.html#listinlinetextparts-messageid
-        // in combination with the convertToPlainText function to "clean" the
-        // HTML code (https://webextension-api.thunderbird.net/en/128-esr-mv2/messengerUtilities.html#messengerutilities-converttoplaintext).
-        const full = await messenger.messages.getFull(messageDisplayed.id)
-        const stack = [full]
+        // @ts-expect-error - Thunderbird 128+ introduce listInlineTextParts
+        const textParts = await messenger.messages.listInlineTextParts(messageDisplayed.id)
 
-        do {
-            const currentPart = stack.pop()
-
-            if (currentPart.body) {
-                if(currentPart.contentType?.toLowerCase() == 'text/html') {
-                    fullHtml = currentPart.body
-                }
-                else if(currentPart.contentType?.toLowerCase() == 'text/plain') {
-                    fullPlain = currentPart.body
-                }
+        // Find the text/html and text/plain parts
+        for (const part of textParts) {
+            if (part.contentType?.toLowerCase() === 'text/html') {
+                fullHtml = part.content
+            } else if (part.contentType?.toLowerCase() === 'text/plain') {
+                fullPlain = part.content
             }
-
-            if (currentPart.parts && currentPart.parts.length > 0) {
-                stack.push(...currentPart.parts)
-            }
-        } while (stack.length > 0)
+        }
     }
     // <-- case: Email viewing
     // Case: Email creation or edit -->
@@ -105,16 +91,18 @@ export async function getCurrentMessageContent(): Promise<string> {
     // <-- case: Email creation or edit
 
     if(fullPlain == null && fullHtml) {
-        fullPlain = sanitizeHtml(fullHtml, {
-            allowedTags: [],
-            allowedAttributes: {}})
+        // @ts-expect-error - Thunderbird 128+ introduce messengerUtilities
+        fullPlain = await messenger.messengerUtilities.convertToPlainText(fullHtml);
     }
 
     // Remove link (https and https), newlines and extra spaces before returning
     // the plain text
     if(fullPlain) {
-        fullPlain = fullPlain.replace(/https?:\/\/[^\s]+/g, '')
-        fullPlain = fullPlain.replace(/[\r\n]+/g, ' ').replace(/\s{2,}/g, ' ').trim()
+        fullPlain = fullPlain
+            .replace(/https?:\/\/[^\s]+/g, '')  // Remove URL
+            .replace(/[\r\n]+/g, ' ')           // Replace newlines with space
+            .replace(/\s{2,}/g, ' ')            // Replace multiple spaces with a single space
+            .trim()                             // Remove leading/trailing spaces
     }
 
     return fullPlain || null
