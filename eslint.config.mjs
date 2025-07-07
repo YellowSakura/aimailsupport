@@ -1,50 +1,32 @@
+import globals from "globals";                          // Required for standard browser/DOM globals
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import globals from "globals";
 import tsParser from "@typescript-eslint/parser";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
-});
 
 export default [
-    ...compat.extends("eslint:recommended", "plugin:@typescript-eslint/recommended"),
     {
+        files: ["**/*.ts", "**/*.tsx"],                 // Applies only to TypeScript files
         plugins: {
-            "@typescript-eslint": typescriptEslint,
+            "@typescript-eslint": typescriptEslint      // TypeScript support
         },
-
         languageOptions: {
             globals: {
-                ...globals.browser,
+                /* Browser Environment */
+                ...globals.browser,                     // Adds standard browser APIs (Blob, FileReader, document, etc.)
+                ...globals.dom,                         // Adds DOM interfaces (HTMLDivElement, etc.)
+
+                /* Thunderbird-specific APIs */
+                messenger: "readonly",                  // Thunderbird's messaging API
+                browser: "readonly",                    // WebExtensions API
+                chrome: "readonly"                      // Chrome compatibility namespace
             },
-
-            parser: tsParser,
-            ecmaVersion: "latest",
-            sourceType: "module",
+            parser: tsParser,                           // Use TypeScript parser
+            parserOptions: {
+                ecmaVersion: "latest",                  // Modern ECMAScript features
+                sourceType: "module"                    // ES Modules syntax
+            }
         },
-
         rules: {
-            "@typescript-eslint/no-explicit-any": "off",
-        },
-    },
-    {
-        files: ["**/.eslintrc.{js,cjs}"],
-
-        languageOptions: {
-            globals: {
-                ...globals.node,
-            },
-
-            ecmaVersion: 5,
-            sourceType: "commonjs",
-        },
-    },
+            "@typescript-eslint/no-explicit-any": "off" // Custom rule override
+        }
+    }
 ];
