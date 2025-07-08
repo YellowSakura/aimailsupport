@@ -16,8 +16,7 @@ export default [
 
                 /* Thunderbird-specific APIs */
                 messenger: "readonly",                  // Thunderbird's messaging API
-                browser: "readonly",                    // WebExtensions API
-                chrome: "readonly"                      // Chrome compatibility namespace
+                browser: "readonly"                     // WebExtensions API
             },
             parser: tsParser,                           // Use TypeScript parser
             parserOptions: {

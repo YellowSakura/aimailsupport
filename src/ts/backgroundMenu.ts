@@ -327,15 +327,12 @@ browser.menus.create({
     ]
 })
 
-messenger.menus.create({
+const menuIdOptions = messenger.menus.create({
     id: 'aiOptions',
     title: browser.i18n.getMessage('options'),
     contexts: [
         'message_display_action_menu'
-    ],
-    onclick: () => {
-        browser.runtime.openOptionsPage()
-    }
+    ]
 })
 
 // Invocation of the method to handle the visibility of menu options based on the
@@ -588,6 +585,9 @@ messenger.menus.onClicked.addListener(async (info: browser.menus.OnClickData) =>
                 logMessage(`Error while improving the text: ${error.message}`, 'error')
             })
         }
+    }
+    else if(info.menuItemId == menuIdOptions) {
+        browser.runtime.openOptionsPage()
     }
     // Fallback message case, but only if the menu does not match any values to
     // ignore, e.g., options.
