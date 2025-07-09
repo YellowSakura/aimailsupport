@@ -370,5 +370,8 @@
     },
     "options.xai.model": {
         "message": "Modello*"
+    },
+    "promptDisplay.prompt.placeholder": {
+        "message": "Come posso aiutarti?"
     }
 }

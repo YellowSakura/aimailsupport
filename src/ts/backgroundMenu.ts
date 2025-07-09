@@ -604,8 +604,14 @@ messenger.menus.onClicked.addListener(async (info: browser.menus.OnClickData) =>
  * https://webextension-api.thunderbird.net/en/stable/messageDisplayScripts.html
  */
 messenger.messageDisplayScripts.register({
-    js: [{ file: '/messageDisplay/messageDisplayScripts.js' }],
-    css: [{ file: '/messageDisplay/messageDisplayScripts.css' }]
+    js: [
+        { file: '/outputDisplay/outputDisplay.js' },
+        { file: '/promptDisplay/promptDisplay.js' }
+    ],
+    css: [
+        { file: '/outputDisplay/outputDisplay.css' },
+        { file: '/promptDisplay/promptDisplay.css' }
+    ]
 })
 
 /**
@@ -616,8 +622,8 @@ messenger.messageDisplayScripts.register({
  * https://webextension-api.thunderbird.net/en/stable/composeScripts.html
  */
 messenger.composeScripts.register({
-    js: [{ file: '/messageDisplay/messageDisplayScripts.js' }],
-    css: [{ file: '/messageDisplay/messageDisplayScripts.css' }]
+    js: [{ file: '/outputDisplay/outputDisplay.js' }],
+    css: [{ file: '/outputDisplay/outputDisplay.css' }]
 })
 
 // Listens for the message signaling the change in configurations to update the

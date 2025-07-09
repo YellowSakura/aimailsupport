@@ -1,0 +1,5 @@
+!function(){if(document.querySelector("#amsOuterRequest"))return;let e=document.createElement("div");e.id="amsOuterRequest";let t=e.attachShadow({mode:"open"}),n=document.createElement("div");n.id="amsInnerRequest",t.appendChild(n);let a=document.createElement("link");a.rel="stylesheet",a.href=browser.runtime.getURL("/promptDisplay/promptDisplay.css"),n.appendChild(a);let r=document.createElement("textarea");r.className="auto-resizing-textarea",r.placeholder=messenger.i18n.getMessage("promptDisplay.prompt.placeholder"),r.rows=1;let l=document.createElement("button");l.innerHTML=`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+    `,n.appendChild(r),n.appendChild(l),document.body.appendChild(e)}();

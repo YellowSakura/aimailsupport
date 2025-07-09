@@ -5,7 +5,7 @@ import removeMarkdown from 'remove-markdown';
 (async () => {
     browser.runtime.onMessage.addListener(async (message: any) => {
         if (message?.type) {
-            createContainer()
+            createOutputDisplay()
 
             switch (message.type) {
                 case 'addAudio':
@@ -34,7 +34,7 @@ import removeMarkdown from 'remove-markdown';
 // <-- manage async messages
 
 function addAudio(blob: Blob) {
-    clearContainer()
+    clearOutputDisplay()
 
     const reader = new FileReader()
     reader.onload = () => {
@@ -52,7 +52,7 @@ function addAudio(blob: Blob) {
 }
 
 function addChart(chart: { [key: string]: number }) {
-    clearContainer()
+    clearOutputDisplay()
 
     const chartUtils = new ChartUtils()
     getInnerResponse().querySelector('#amsContent').append(chartUtils.createBarChart(chart, 50))
@@ -65,7 +65,7 @@ function getInnerResponse() {
 }
 
 function addText(newContent: string) {
-    clearContainer()
+    clearOutputDisplay()
 
     // Any Markdown present is converted to plain text
     const rawText = removeMarkdown(newContent)
@@ -73,14 +73,14 @@ function addText(newContent: string) {
 }
 
 function showError(newContent: string) {
-    clearContainer()
+    clearOutputDisplay()
 
     getInnerResponse().classList.add('error')
     getInnerResponse().querySelector('#amsContent').textContent = newContent
 }
 
 function thinking(thinkingText: string) {
-    clearContainer()
+    clearOutputDisplay()
 
     getInnerResponse().classList.add('thinking')
     getInnerResponse().querySelector('#amsContent').innerHTML = `${thinkingText}<span class="dots"></span>`
@@ -88,7 +88,7 @@ function thinking(thinkingText: string) {
 
 // Support function to create the container where various details
 // populated by AI systems will be inserted.
-function createContainer(): void {
+function createOutputDisplay(): void {
 
     // Avoid creating the element if it already exists
     if(document.querySelector('#amsOuterResponse')) {
@@ -111,7 +111,7 @@ function createContainer(): void {
     // Add the CSS file to the shadow root
     const cssLink = document.createElement('link')
     cssLink.rel = 'stylesheet'
-    cssLink.href = browser.runtime.getURL('/messageDisplay/messageDisplayScripts.css')
+    cssLink.href = browser.runtime.getURL('/outputDisplay/outputDisplay.css')
     amsInnerResponse.appendChild(cssLink)
 
     // Contents -->
@@ -127,7 +127,7 @@ function createContainer(): void {
     const closeIcon: HTMLSpanElement = document.createElement('span')
     closeIcon.className = 'close-icon'
     closeIcon.innerHTML = '&times;'
-    closeIcon.addEventListener('click', () => clearContainer(true))
+    closeIcon.addEventListener('click', () => clearOutputDisplay(true))
     amsInnerResponse.appendChild(closeIcon)
     // <-- contents
 
@@ -141,7 +141,7 @@ function createContainer(): void {
  * @param destroy - A boolean flag indicating whether to destroy the container.
  *        The default value is false.
  */
-function clearContainer(destroy: boolean = false): void {
+function clearOutputDisplay(destroy: boolean = false): void {
     if(destroy) {
         document.querySelector('#amsOuterResponse').remove()
         return
