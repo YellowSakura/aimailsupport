@@ -29,8 +29,9 @@ function createPromptDisplay(): void {
     // Contents -->
     const textarea = document.createElement('textarea')
     textarea.className = 'auto-resizing-textarea'
-    textarea.placeholder = messenger.i18n.getMessage('promptDisplay.prompt.placeholder')
+    textarea.placeholder = messenger.i18n.getMessage('promptDisplay.placeholder')
     textarea.rows = 1
+    amsInnerRequest.appendChild(textarea)
 
     const sendButton = document.createElement('button')
 
@@ -41,10 +42,21 @@ function createPromptDisplay(): void {
         </svg>
     `
     sendButton.innerHTML = svgIcon
-
-    amsInnerRequest.appendChild(textarea)
     amsInnerRequest.appendChild(sendButton)
+
+    const closeIcon: HTMLSpanElement = document.createElement('span')
+    closeIcon.className = 'close-icon'
+    closeIcon.innerHTML = '&times;'
+    closeIcon.addEventListener('click', () => {
+        amsOuterRequest.remove()
+    })
+    amsInnerRequest.appendChild(closeIcon)
     // <-- contents
+
+    // Input event handling
+    textarea.addEventListener('input', () => {
+        sendButton.classList.toggle('show', textarea.value.trim() !== '')
+    })
 
     document.body.appendChild(amsOuterRequest)
 }

@@ -489,7 +489,7 @@
         "message": "Model*",
         "description": "Model to be used for all text processing: https://docs.x.ai/docs/models"
     },
-    "promptDisplay.prompt.placeholder": {
+    "promptDisplay.placeholder": {
         "message": "How can I help you?",
         "description": "Placeholder text for the textbox where the user can directly interact with the LLM."
     }

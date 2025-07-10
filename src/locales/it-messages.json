@@ -371,7 +371,7 @@
     "options.xai.model": {
         "message": "Modello*"
     },
-    "promptDisplay.prompt.placeholder": {
+    "promptDisplay.placeholder": {
         "message": "Come posso aiutarti?"
     }
 }
