@@ -596,6 +596,16 @@ messenger.menus.onClicked.addListener(async (info: browser.menus.OnClickData) =>
     }
 })
 
+// Register a listener for the action sent from promptDisplay
+browser.runtime.onMessage.addListener(async (message) => {
+  if (message.action === 'sendPromptToBackground') {
+    const prompt = message.data.prompt;
+
+    sendMessageToActiveTab({ type: 'thinking', content: messenger.i18n.getMessage('thinking') })
+    // TODO
+  }
+})
+
 /**
  * Using the messageDisplayScripts API for customizing the content displayed when
  * viewing a message.

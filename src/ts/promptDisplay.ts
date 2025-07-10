@@ -1,62 +1,59 @@
-createPromptDisplay()
+// Main container for the request
+const amsOuterRequest: HTMLDivElement = document.createElement('div')
+amsOuterRequest.id = 'amsOuterRequest'
 
-function createPromptDisplay(): void {
+// Uses a shadow DOM to handle all Requests, isolating it from styles
+// and any form of interaction present in the email client.
+const shadowRoot = amsOuterRequest.attachShadow({ mode: 'open' })
 
-    // Avoid creating the element if it already exists
-    if(document.querySelector('#amsOuterRequest')) {
-        return
-    }
+// Inner container for the request
+const amsInnerRequest: HTMLDivElement = document.createElement('div')
+amsInnerRequest.id = 'amsInnerRequest'
+shadowRoot.appendChild(amsInnerRequest)
 
-    // Main container for the request
-    const amsOuterRequest: HTMLDivElement = document.createElement('div')
-    amsOuterRequest.id = 'amsOuterRequest'
+// Add the CSS file to the shadow root
+const cssLink = document.createElement('link')
+cssLink.rel = 'stylesheet'
+cssLink.href = browser.runtime.getURL('/promptDisplay/promptDisplay.css')
+amsInnerRequest.appendChild(cssLink)
 
-    // Uses a shadow DOM to handle all Requests, isolating it from styles
-    // and any form of interaction present in the email client.
-    const shadowRoot = amsOuterRequest.attachShadow({ mode: 'open' })
+// Contents -->
+const textarea = document.createElement('textarea')
+textarea.className = 'auto-resizing-textarea'
+textarea.placeholder = messenger.i18n.getMessage('promptDisplay.placeholder')
+textarea.rows = 1
+amsInnerRequest.appendChild(textarea)
 
-    // Inner container for the request
-    const amsInnerRequest: HTMLDivElement = document.createElement('div')
-    amsInnerRequest.id = 'amsInnerRequest'
-    shadowRoot.appendChild(amsInnerRequest)
+const sendButton = document.createElement('button')
 
-    // Add the CSS file to the shadow root
-    const cssLink = document.createElement('link')
-    cssLink.rel = 'stylesheet'
-    cssLink.href = browser.runtime.getURL('/promptDisplay/promptDisplay.css')
-    amsInnerRequest.appendChild(cssLink)
-
-    // Contents -->
-    const textarea = document.createElement('textarea')
-    textarea.className = 'auto-resizing-textarea'
-    textarea.placeholder = messenger.i18n.getMessage('promptDisplay.placeholder')
-    textarea.rows = 1
-    amsInnerRequest.appendChild(textarea)
-
-    const sendButton = document.createElement('button')
-
-    // Define the SVG send icon as a template literal string
-    const svgIcon: string = `
+// Define the SVG send icon as a template literal string
+const svgIcon: string = `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
         </svg>
     `
-    sendButton.innerHTML = svgIcon
-    amsInnerRequest.appendChild(sendButton)
-
-    const closeIcon: HTMLSpanElement = document.createElement('span')
-    closeIcon.className = 'close-icon'
-    closeIcon.innerHTML = '&times;'
-    closeIcon.addEventListener('click', () => {
-        amsOuterRequest.remove()
+sendButton.innerHTML = svgIcon
+sendButton.addEventListener('click', () => {
+    // Send prompt to background script which will handle it appropriately
+    browser.runtime.sendMessage({
+        action: 'sendPromptToBackground',
+        data: { prompt: textarea.value }
     })
-    amsInnerRequest.appendChild(closeIcon)
-    // <-- contents
+})
+amsInnerRequest.appendChild(sendButton)
 
-    // Input event handling
-    textarea.addEventListener('input', () => {
-        sendButton.classList.toggle('show', textarea.value.trim() !== '')
-    })
+const closeIcon: HTMLSpanElement = document.createElement('span')
+closeIcon.className = 'close-icon'
+closeIcon.innerHTML = '&times;'
+closeIcon.addEventListener('click', () => {
+    amsOuterRequest.remove()
+})
+amsInnerRequest.appendChild(closeIcon)
+// <-- contents
 
-    document.body.appendChild(amsOuterRequest)
-}
+// Input event handling
+textarea.addEventListener('input', () => {
+    sendButton.classList.toggle('show', textarea.value.trim() !== '')
+})
+
+document.body.appendChild(amsOuterRequest)
