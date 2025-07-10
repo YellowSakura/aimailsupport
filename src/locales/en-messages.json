@@ -203,6 +203,10 @@
         "message": "Analyze intent",
         "description": "Menu option to analyze the intent of an email being composed."
     },
+    "mailCustomPrompt": {
+        "message": "Custom Prompt",
+        "description": "Menu option to apply a user-defined prompt."
+    },
     "mailExplain": {
         "message": "Explain",
         "description": "Menu option to explain the content of an email or a portion of it."

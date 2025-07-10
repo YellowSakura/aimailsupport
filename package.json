@@ -6,7 +6,7 @@
     "build:locales": "npm run build:locales-en && npm run build:locales-it",
     "build:locales-en": "node_modules/.bin/json-minify src/locales/en-messages.json > ai-mail-support/_locales/en/messages.json",
     "build:locales-it": "node_modules/.bin/json-minify src/locales/it-messages.json > ai-mail-support/_locales/it/messages.json",
-    "build:background": "parcel build src/html/backgroundMenu.html --dist-dir ai-mail-support --no-source-maps --no-content-hash --no-cache",
+    "build:background": "parcel build src/ts/background.ts --dist-dir ai-mail-support --no-source-maps --no-content-hash --no-cache",
     "build:outputDisplay": "npm run build:outputDisplay:ts && npm run build:outputDisplay:sass",
     "build:outputDisplay:ts": "parcel build src/ts/outputDisplay.ts --dist-dir ai-mail-support/outputDisplay --no-source-maps --no-content-hash --no-cache",
     "build:outputDisplay:sass": "parcel build src/sass/outputDisplay.scss --dist-dir ai-mail-support/outputDisplay --no-source-maps --no-content-hash --no-cache",

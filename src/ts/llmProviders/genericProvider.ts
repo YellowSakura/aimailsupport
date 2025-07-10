@@ -35,6 +35,19 @@ export class GenericProvider {
     }
 
     /**
+     * Applies a custom user-defined prompt to the given input string.
+     *
+     * @param userPrompt - The custom prompt provided by the user.
+     * @param input - The input string to process.
+     *
+     * @returns A promise that resolves to the resulting output string.
+     * @throws If the prompt application is unsupported or fails.
+     */
+    public async applyCustomPrompt(userPrompt: string, input: string): Promise<string> {
+        throw new Error(browser.i18n.getMessage('errorInvalidAddonOptions'));
+    }
+
+    /**
      * Explains the input string.
      *
      * @param input - The string to be explained.
@@ -146,39 +159,43 @@ export class GenericProvider {
     // specific capabilities.
     // This is done by checking that the current class actually has a specific
     // implementation for the reference method. -->
-    public getCanAnalyzeTextIntent(): boolean {
+    public canAnalyzeTextIntent(): boolean {
         return this.analyzeTextIntent !== GenericProvider.prototype.analyzeTextIntent
     }
 
-    public getCanExplainText(): boolean {
+    public canApplyCustomPrompt(): boolean {
+        return this.applyCustomPrompt !== GenericProvider.prototype.applyCustomPrompt
+    }
+
+    public canExplainText(): boolean {
         return this.explainText !== GenericProvider.prototype.explainText
     }
 
-    public getCanModerateText(): boolean {
+    public canModerateText(): boolean {
         return this.moderateText !== GenericProvider.prototype.moderateText
     }
 
-    public getCanRephraseText(): boolean {
+    public canRephraseText(): boolean {
         return this.rephraseText !== GenericProvider.prototype.rephraseText
     }
 
-    public getCanSpeechFromText(): boolean {
+    public canSpeechFromText(): boolean {
         return this.getSpeechFromText !== GenericProvider.prototype.getSpeechFromText
     }
 
-    public getCanSuggestImprovementsForText(): boolean {
+    public canSuggestImprovementsForText(): boolean {
         return this.suggestImprovementsForText !== GenericProvider.prototype.suggestImprovementsForText
     }
 
-    public getCanSuggestReply(): boolean {
+    public canSuggestReply(): boolean {
         return this.suggestReplyFromText !== GenericProvider.prototype.suggestReplyFromText
     }
 
-    public getCanSummarizeText(): boolean {
+    public canSummarizeText(): boolean {
         return this.summarizeText !== GenericProvider.prototype.summarizeText
     }
 
-    public getCanTranslateText(): boolean {
+    public canTranslateText(): boolean {
         return this.translateText !== GenericProvider.prototype.translateText
     }
     // <-- check capabilities

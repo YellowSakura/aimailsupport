@@ -23,6 +23,12 @@ export class MistralProvider extends GenericProvider {
         return this.manageMessageContent(this.PROMPTS.ANALYZE_INTENT.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode)), input)
     }
 
+    public async applyCustomPrompt(userPrompt: string, input: string): Promise<string> {
+        logMessage(`Applying custom user prompt "${userPrompt}" to input text: "${input}"`, 'debug')
+
+        return this.manageMessageContent(userPrompt, input)
+    }
+
     public async explainText(input: string): Promise<string> {
         logMessage(`Request to explain in ${getLanguageNameFromCode(this.mainUserLanguageCode)} the text: ${input}`, 'debug')
 
@@ -154,7 +160,7 @@ export class MistralProvider extends GenericProvider {
 
         if (!response.ok) {
             const errorResponse = await response.json()
-            throw new Error(`OpenAI error: ${errorResponse.error.message}`)
+            throw new Error(`Mistral AI error: ${errorResponse.message ?? errorResponse.detail}`)
         }
 
         const jsonData = await response.json()

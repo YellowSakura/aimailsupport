@@ -26,6 +26,12 @@ export class LmsProvider extends GenericProvider {
         return this.manageMessageContent(this.PROMPTS.ANALYZE_INTENT.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode)), input)
     }
 
+    public async applyCustomPrompt(userPrompt: string, input: string): Promise<string> {
+        logMessage(`Applying custom user prompt "${userPrompt}" to input text: "${input}"`, 'debug')
+
+        return this.manageMessageContent(userPrompt, input)
+    }
+
     public async explainText(input: string): Promise<string> {
         logMessage(`Request to explain in ${getLanguageNameFromCode(this.mainUserLanguageCode)} the text: ${input}`, 'debug')
 

@@ -318,6 +318,15 @@ const menuIdSuggestImprovements = messenger.menus.create({
     ]
 })
 
+const menuIdCustomPrompt = messenger.menus.create({
+    id: 'aiCustomPrompt',
+    title: browser.i18n.getMessage('mailCustomPrompt'),
+    contexts: [
+        'compose_action_menu',
+        'message_display_action_menu'
+    ]
+})
+
 // Separator for the message display action menu
 browser.menus.create({
     id: 'aiMessageDisplayActionMenuSeparator1',
@@ -586,6 +595,9 @@ messenger.menus.onClicked.addListener(async (info: browser.menus.OnClickData) =>
             })
         }
     }
+    else if(info.menuItemId == menuIdCustomPrompt) {
+        console.info("TODO")
+    }
     else if(info.menuItemId == menuIdOptions) {
         browser.runtime.openOptionsPage()
     }
@@ -598,11 +610,25 @@ messenger.menus.onClicked.addListener(async (info: browser.menus.OnClickData) =>
 
 // Register a listener for the action sent from promptDisplay
 browser.runtime.onMessage.addListener(async (message) => {
-  if (message.action === 'sendPromptToBackground') {
-    const prompt = message.data.prompt;
+  if (message.action === 'sendUserPromptToBackground') {
+    const configs = await getConfigs()
+    const llmProvider = ProviderFactory.getInstance(configs)
 
     sendMessageToActiveTab({ type: 'thinking', content: messenger.i18n.getMessage('thinking') })
-    // TODO
+
+    const currentMessageContent = await getCurrentMessageContent()
+
+    if(currentMessageContent == null) {
+        sendMessageToActiveTab({type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound')})
+    }
+    else {
+        llmProvider.applyCustomPrompt(message.data.userPrompt, currentMessageContent).then(textProcessed => {
+            sendMessageToActiveTab({type: 'addText', content: textProcessed})
+        }).catch(error => {
+            sendMessageToActiveTab({type: 'showError', content: error.message})
+            logMessage(`Error during the custom prompt: ${error.message}`, 'error')
+        })
+    }
   }
 })
 
@@ -653,71 +679,77 @@ async function updateMenuVisibility(): Promise<void> {
 
     // canAnalyzeTextIntent -->
     messenger.menus.update(menuIdAnalyzeIntent, {
-        enabled: llmProvider.getCanAnalyzeTextIntent()
+        enabled: llmProvider.canAnalyzeTextIntent()
     })
     // <-- canAnalyzeTextIntent
 
+    // canApplyCustomPrompt -->
+    messenger.menus.update(menuIdCustomPrompt, {
+        enabled: llmProvider.canApplyCustomPrompt()
+    })
+    // <-- canApplyCustomPrompt
+
     // canExplainText -->
     messenger.menus.update(menuIdExplain, {
-        enabled: llmProvider.getCanExplainText()
+        enabled: llmProvider.canExplainText()
     })
     // <-- canExplainText
 
     // canModerateText -->
     messenger.menus.update(menuIdModerate, {
-        enabled: llmProvider.getCanModerateText()
+        enabled: llmProvider.canModerateText()
     })
     // <-- canModerateText
 
     // canRephraseText -->
     messenger.menus.update(subMenuIdRephrase, {
-        enabled: llmProvider.getCanRephraseText()
+        enabled: llmProvider.canRephraseText()
     })
     // <-- canRephraseText
 
     // canSpeechFromText -->
     messenger.menus.update(menuIdText2Speech, {
-        enabled: llmProvider.getCanSpeechFromText()
+        enabled: llmProvider.canSpeechFromText()
     })
 
     messenger.menus.update(menuIdSummarizeAndText2Speech, {
-        enabled: llmProvider.getCanSpeechFromText()
+        enabled: llmProvider.canSpeechFromText()
     })
 
     messenger.menus.update(menuIdTranslateAndText2Speech, {
-        enabled: llmProvider.getCanSpeechFromText()
+        enabled: llmProvider.canSpeechFromText()
     })
     // <-- canSpeechFromText
 
     // canSuggestImprovementsForText -->
     messenger.menus.update(menuIdSuggestImprovements, {
-        enabled: llmProvider.getCanSuggestImprovementsForText()
+        enabled: llmProvider.canSuggestImprovementsForText()
     })
     // <-- canSuggestImprovementsForText
 
     // canSuggestReply -->
     messenger.menus.update(subMenuIdSuggestReply, {
-        enabled: llmProvider.getCanSuggestReply()
+        enabled: llmProvider.canSuggestReply()
     })
     // <-- canSuggestReply
 
     // canSummarizeText -->
     messenger.menus.update(menuIdSummarize, {
-        enabled: llmProvider.getCanSummarizeText()
+        enabled: llmProvider.canSummarizeText()
     })
 
     messenger.menus.update(subMenuIdSummarize, {
-        enabled: llmProvider.getCanSummarizeText()
+        enabled: llmProvider.canSummarizeText()
     })
     // <-- canSummarizeText
 
     // canTranslateText -->
     messenger.menus.update(menuIdTranslate, {
-        enabled: llmProvider.getCanTranslateText()
+        enabled: llmProvider.canTranslateText()
     })
 
     messenger.menus.update(subMenuIdTranslateAnd, {
-        enabled: llmProvider.getCanTranslateText()
+        enabled: llmProvider.canTranslateText()
     })
     // <-- canTranslateText
 }

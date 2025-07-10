@@ -34,10 +34,10 @@ const svgIcon: string = `
     `
 sendButton.innerHTML = svgIcon
 sendButton.addEventListener('click', () => {
-    // Send prompt to background script which will handle it appropriately
+    // Send the user prompt to the background script, which will handle it appropriately
     browser.runtime.sendMessage({
-        action: 'sendPromptToBackground',
-        data: { prompt: textarea.value }
+        action: 'sendUserPromptToBackground',
+        data: { userPrompt: textarea.value }
     })
 })
 amsInnerRequest.appendChild(sendButton)

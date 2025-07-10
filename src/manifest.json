@@ -29,7 +29,8 @@
         "16": "images/bot-icon-color-16.webp"
     },
     "background": {
-        "page": "backgroundMenu.html"
+        "scripts": ["background.js"],
+        "type": "module"
     },
     "compose_action": {
         "default_title": "__MSG_menuAiSupport__",

@@ -155,6 +155,9 @@
     "mailAnalyzeIntent": {
         "message": "Analizza intento"
     },
+    "mailCustomPrompt": {
+        "message": "Prompt personalizzato"
+    },
     "mailExplain": {
         "message": "Spiega"
     },

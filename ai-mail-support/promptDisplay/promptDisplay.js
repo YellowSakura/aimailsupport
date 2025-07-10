@@ -2,4 +2,4 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
         </svg>
-    `,d.addEventListener("click",()=>{browser.runtime.sendMessage({action:"sendPromptToBackground",data:{prompt:s.value}})}),n.appendChild(d);let l=document.createElement("span");l.className="close-icon",l.innerHTML="&times;",l.addEventListener("click",()=>{e.remove()}),n.appendChild(l),s.addEventListener("input",()=>{d.classList.toggle("show",""!==s.value.trim())}),document.body.appendChild(e)})();
+    `,d.addEventListener("click",()=>{browser.runtime.sendMessage({action:"sendUserPromptToBackground",data:{userPrompt:s.value}})}),n.appendChild(d);let l=document.createElement("span");l.className="close-icon",l.innerHTML="&times;",l.addEventListener("click",()=>{e.remove()}),n.appendChild(l),s.addEventListener("input",()=>{d.classList.toggle("show",""!==s.value.trim())}),document.body.appendChild(e)})();

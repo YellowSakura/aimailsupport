@@ -101,6 +101,11 @@ describe('AnthropicClaudeProvider', () => {
         expect(typeof output).toBe('string')
     })
 
+    test('should be able to apply a custom promt to the text', async () => {
+        const output = await provider.applyCustomPrompt('Reverse the order of the words in the text', 'text of example')
+        expect(typeof output).toBe('string')
+    })
+
     test('should be able to explain a text', async () => {
         const output = await provider.explainText('Example of text to explain')
         expect(typeof output).toBe('string')
@@ -146,6 +151,11 @@ describe('DeepseekProvider', () => {
 
     test('should be able to analyze the intent of a text', async () => {
         const output = await provider.analyzeTextIntent('Example of text to analyze')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to apply a custom promt to the text', async () => {
+        const output = await provider.applyCustomPrompt('Reverse the order of the words in the text', 'text of example')
         expect(typeof output).toBe('string')
     })
 
@@ -197,6 +207,11 @@ describe('GoogleGeminiProvider', () => {
         expect(typeof output).toBe('string')
     })
 
+    test('should be able to apply a custom promt to the text', async () => {
+        const output = await provider.applyCustomPrompt('Reverse the order of the words in the text', 'text of example')
+        expect(typeof output).toBe('string')
+    })
+
     test('should be able to explain a text', async () => {
         const output = await provider.explainText('Example of text to explain')
         expect(typeof output).toBe('string')
@@ -242,6 +257,11 @@ describe('GroqProvider', () => {
 
     test('should be able to analyze the intent of a text', async () => {
         const output = await provider.analyzeTextIntent('Example of text to analyze')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to apply a custom promt to the text', async () => {
+        const output = await provider.applyCustomPrompt('Reverse the order of the words in the text', 'text of example')
         expect(typeof output).toBe('string')
     })
 
@@ -292,6 +312,11 @@ describe('LmStudioProvider', () => {
         expect(typeof output).toBe('string')
     })
 
+    test('should be able to apply a custom promt to the text', async () => {
+        const output = await provider.applyCustomPrompt('Reverse the order of the words in the text', 'text of example')
+        expect(typeof output).toBe('string')
+    })
+
     test('should be able to explain a text', async () => {
         const output = await provider.explainText('Example of text to explain')
         expect(typeof output).toBe('string')
@@ -337,6 +362,11 @@ describe('MistralProvider', () => {
 
     test('should be able to analyze the intent of a text', async () => {
         const output = await provider.analyzeTextIntent('Example of text to analyze')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to apply a custom promt to the text', async () => {
+        const output = await provider.applyCustomPrompt('Reverse the order of the words in the text', 'text of example')
         expect(typeof output).toBe('string')
     })
 
@@ -401,6 +431,11 @@ describe('OllamaProvider', () => {
         expect(typeof output).toBe('string')
     })
 
+    test('should be able to apply a custom promt to the text', async () => {
+        const output = await provider.applyCustomPrompt('Reverse the order of the words in the text', 'text of example')
+        expect(typeof output).toBe('string')
+    })
+
     test('should be able to explain a text', async () => {
         const output = await provider.explainText('Example of text to explain')
         expect(typeof output).toBe('string')
@@ -446,6 +481,11 @@ describe('OpenAiGptProvider', () => {
 
     test('should be able to analyze the intent of a text', async () => {
         const output = await provider.analyzeTextIntent('Example of text to analyze')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to apply a custom promt to the text', async () => {
+        const output = await provider.applyCustomPrompt('Reverse the order of the words in the text', 'text of example')
         expect(typeof output).toBe('string')
     })
 
@@ -514,6 +554,11 @@ describe('XaiGrokProvider', () => {
 
     test('should be able to analyze the intent of a text', async () => {
         const output = await provider.analyzeTextIntent('Example of text to analyze')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to apply a custom promt to the text', async () => {
+        const output = await provider.applyCustomPrompt('Reverse the order of the words in the text', 'text of example')
         expect(typeof output).toBe('string')
     })
 
