@@ -154,7 +154,7 @@ export class MistralProvider extends GenericProvider {
 
         if (!response.ok) {
             const errorResponse = await response.json()
-            throw new Error(`OpenAI error: ${errorResponse.error.message}`)
+            throw new Error(`Mistral AI error: ${errorResponse.message ?? errorResponse.detail}`)
         }
 
         const jsonData = await response.json()
