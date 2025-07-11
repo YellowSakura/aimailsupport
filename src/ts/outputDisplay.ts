@@ -1,5 +1,5 @@
 import { ChartUtils } from './helpers/chartUtils'
-import removeMarkdown from 'remove-markdown';
+import removeMarkdown from 'remove-markdown'
 
 // Manage async messages -->
 (async () => {

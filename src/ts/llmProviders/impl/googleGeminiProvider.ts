@@ -69,7 +69,7 @@ export class GoogleGeminiProvider extends GenericProvider {
     }
 
     public async translateText(input: string, languageCode: string | null = null): Promise<string> {
-        languageCode = languageCode ?? this.mainUserLanguageCode;
+        languageCode = languageCode ?? this.mainUserLanguageCode
         logMessage(`Request to translate in ${getLanguageNameFromCode(languageCode)} the text: ${input}`, 'debug')
 
         return this.manageMessageContent(this.PROMPTS.TRANSLATE.replace('%language%', getLanguageNameFromCode(languageCode)), input)

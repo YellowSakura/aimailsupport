@@ -44,7 +44,7 @@ export class GenericProvider {
      * @throws If the prompt application is unsupported or fails.
      */
     public async applyCustomPrompt(userPrompt: string, input: string): Promise<string> {
-        throw new Error(browser.i18n.getMessage('errorInvalidAddonOptions'));
+        throw new Error(browser.i18n.getMessage('errorInvalidAddonOptions'))
     }
 
     /**

@@ -92,7 +92,7 @@ export async function getCurrentMessageContent(): Promise<string> {
 
     if(fullPlain == null && fullHtml) {
         // @ts-expect-error - Thunderbird 128+ introduce messengerUtilities
-        fullPlain = await messenger.messengerUtilities.convertToPlainText(fullHtml);
+        fullPlain = await messenger.messengerUtilities.convertToPlainText(fullHtml)
     }
 
     // Remove link (https and https), newlines and extra spaces before returning
