@@ -4,18 +4,11 @@
 // ams => AI Mail Support
 #amsOuterRequest {
     top: 10px;
-    //display: none;
     left: 50%;
     position: fixed;
     transform: translateX(-50%);
     width: 80%;
     z-index: 9999;
-
-    &.show {
-        // The use of !important is necessary to override any generic .show
-        // styles that might interfere with the display.
-        display: block !important;
-    }
 }
 
 // Style for the shadow DOM

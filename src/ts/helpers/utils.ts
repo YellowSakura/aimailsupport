@@ -167,20 +167,28 @@ export async function logMessage(message: string, method: string = 'log'): Promi
 }
 
 /**
- * Sends a message to the currently active tab in the browser
- *
- * @param message - An object containing the message to be sent, with
- *        properties 'type' and 'content'.
- *        The 'content' property can be a Blob object, a string or an index
- *        signature type.
- *        The index signature type is { [key: string]: number }, meaning an
- *        object whose keys are strings and values are numbers.
- *        This type is used to manage graphs.
+ * Sends a message to the currently active tab in the browser.
+ * 
+ * The function accepts two possible message formats:
+ * 
+ * 1. A structured message with 'type' and 'content' properties:
+ *    - type: string identifying the message type
+ *    - content: can be a Blob, string, or an index signature type
+ *      { [key: string]: number } (used to manage graphs)
+ * 2. Prompt display toggle format with a boolean to control prompt visibility
+ * 
+ * @param message - The message payload, which must be either:
+ *        - { type: string; content: Blob | string | { [key: string]: number } }
+ *          for structured messages
+ *        - { showPromptDisplay: boolean } to toggle prompt display
  *
  * @returns A Promise that resolves when the message has been sent successfully
  */
-export async function sendMessageToActiveTab(message: {type: string,
-        content: Blob | string | { [key: string]: number } }): Promise<void> {
-    const tabs = await browser.tabs.query({active: true, currentWindow: true})
-    await browser.tabs.sendMessage(tabs[0].id, message)
+export async function sendMessageToActiveTab(
+    message: 
+        | { type: string; content: Blob | string | { [key: string]: number } }
+        | { showPromptDisplay: boolean } 
+): Promise<void> {
+    const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+    await browser.tabs.sendMessage(tabs[0].id, message);
 }

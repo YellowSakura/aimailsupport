@@ -596,7 +596,7 @@ messenger.menus.onClicked.addListener(async (info: browser.menus.OnClickData) =>
         }
     }
     else if(info.menuItemId == menuIdCustomPrompt) {
-        console.info("TODO")
+        sendMessageToActiveTab({showPromptDisplay: true})
     }
     else if(info.menuItemId == menuIdOptions) {
         browser.runtime.openOptionsPage()
@@ -658,8 +658,14 @@ messenger.messageDisplayScripts.register({
  * https://webextension-api.thunderbird.net/en/stable/composeScripts.html
  */
 messenger.composeScripts.register({
-    js: [{ file: '/outputDisplay/outputDisplay.js' }],
-    css: [{ file: '/outputDisplay/outputDisplay.css' }]
+    js: [
+        { file: '/outputDisplay/outputDisplay.js' },
+        { file: '/promptDisplay/promptDisplay.js' }
+    ],
+    css: [
+        { file: '/outputDisplay/outputDisplay.css' },
+        { file: '/promptDisplay/promptDisplay.css' }
+    ]
 })
 
 // Listens for the message signaling the change in configurations to update the
