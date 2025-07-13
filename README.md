@@ -81,7 +81,11 @@ Once the add-on is configured, it will be possible to interact with the AI manag
 
 Regardless of how a request for processing is made, the output (audio or text) will be displayed in a dedicated pop-up at the bottom of the mail client.
 
-<p align="center" width="100%"><img alt="AI support integration in selected text" src="docs/screen/screen-output.webp"></p>
+<p align="center" width="100%"><img alt="Output" src="docs/screen/screen-output.webp"></p>
+
+Whether in the email viewing or composition window, you can always enable the custom prompt feature to receive even more relevant responses tailored to your needs.
+
+<p align="center" width="100%"><img alt="Custom prompt" src="docs/screen/screen-custom-prompt.webp"></p>
 
 ### Owl for Exchange bug
 
