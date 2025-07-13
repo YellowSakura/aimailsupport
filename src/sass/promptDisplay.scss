@@ -1,5 +1,4 @@
 @use '_generics' as *;
-@use "sass:color";
 
 // ams => AI Mail Support
 #amsOuterRequest {
@@ -30,7 +29,7 @@
         color: #1f1f1f;
         line-height: 1.5;
         margin: 0;
-        max-height: 200px;
+        max-height: 80px;
         outline: none;
         overflow-y: auto;
         padding: 5px 0;
@@ -46,9 +45,9 @@
         background-color: #f0f4f9;
         border-radius: 50%;
         border: none;
-        cursor: pointer;
-        display: none;
         height: 40px;
+        opacity: .7;
+        pointer-events: none;
         position: absolute;
         right: 25px;
         top: 50%;
@@ -56,12 +55,11 @@
         transition: background-color .4s ease;
         width: 40px;
 
-        &:hover {
-            background-color: color.adjust(#f0f4f9, $lightness: -8%)
-        }
-
-        &.show {
+        &.active {
+            cursor: pointer;
             display: block;
+            opacity: 1;
+            pointer-events: auto;
         }
 
         svg {

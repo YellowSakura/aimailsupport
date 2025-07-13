@@ -189,6 +189,6 @@ export async function sendMessageToActiveTab(
         | { type: string; content: Blob | string | { [key: string]: number } }
         | { showPromptDisplay: boolean } 
 ): Promise<void> {
-    const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-    await browser.tabs.sendMessage(tabs[0].id, message);
+    const tabs = await browser.tabs.query({ active: true, currentWindow: true })
+    await browser.tabs.sendMessage(tabs[0].id, message)
 }

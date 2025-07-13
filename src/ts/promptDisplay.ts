@@ -44,15 +44,15 @@ function createRequestDisplay(): void {
     amsInnerRequest.appendChild(textarea)
 
     const sendButton = document.createElement('button')
-
     // Define the SVG send icon as a template literal string
-    const svgIcon: string = `
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-            </svg>
-        `
-    sendButton.innerHTML = svgIcon
+    sendButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>`
     sendButton.addEventListener('click', () => {
+        if(textarea.value.trim() === '') {
+            return
+        }
+
         // Send the user prompt to the background script, which will handle it appropriately
         browser.runtime.sendMessage({
             action: 'sendUserPromptToBackground',
@@ -70,9 +70,19 @@ function createRequestDisplay(): void {
     amsInnerRequest.appendChild(closeIcon)
     // <-- contents
 
-    // Input event handling
+    // Handle input event for both auto-resizing the textarea and enabling the button
     textarea.addEventListener('input', () => {
-        sendButton.classList.toggle('show', textarea.value.trim() !== '')
+        // Reset height to 'auto' to let the browser calculate the natural height
+        textarea.style.height = 'auto'
+
+        // Toggle button state based on content presence, and set the correct height
+        // for the main textarea.
+        if (textarea.value.trim() !== '') {
+            sendButton.classList.add('active')
+            textarea.style.height = `${textarea.scrollHeight}px`
+        } else {
+            sendButton.classList.remove('active')
+        }
     })
 
     document.body.appendChild(amsOuterRequest)
