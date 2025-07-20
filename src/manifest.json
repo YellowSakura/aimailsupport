@@ -1,5 +1,5 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "AI Mail Support",
     "description": "__MSG_addonDescription__",
     "version": "0.94",
@@ -18,8 +18,11 @@
         "menus",
         "messagesRead",
         "messagesModify",
+        "scripting",
         "sensitiveDataUpload",
-        "storage",
+        "storage"
+    ],
+    "host_permissions": [
         "https://api.anthropic.com/",
         "https://api.x.ai/"
     ],
@@ -80,6 +83,13 @@
         "browser_style": false
     },
     "web_accessible_resources": [
-        "images/bot-icon-color-64.webp"
+        {
+            "resources": [
+                "images/bot-icon-color-64.webp",
+                "outputDisplay/outputDisplay.css",
+                "promptDisplay/promptDisplay.css"
+            ],
+            "extension_ids": ["ai-mail-support@yellowsakura.com"]
+        }
     ]
 }

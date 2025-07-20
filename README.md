@@ -89,7 +89,7 @@ Whether in the email viewing or composition window, you can always enable the cu
 
 ### Owl for Exchange bug
 
-If you use the [Owl for Exchange](https://addons.thunderbird.net/en-us/thunderbird/addon/owl-for-exchange) add-on to manage Exchange or Office365 accounts, ⚠️ **there is a known bug** that interferes with the [messageDisplayScripts API](https://webextension-api.thunderbird.net/en/115/messageDisplayScripts.html) and will prevent AI Mail Support for Thunderbird from functioning correctly when previewing an email.
+If you use the [Owl for Exchange](https://addons.thunderbird.net/en-us/thunderbird/addon/owl-for-exchange) add-on to manage Exchange or Office365 accounts, ⚠️ **there is a known bug** that interferes with the [scripting.messageDisplay API](https://webextension-api.thunderbird.net/en/stable/scripting.messageDisplay.html) and will prevent AI Mail Support for Thunderbird from functioning correctly when previewing an email.
 
 ## Build
 

@@ -274,7 +274,7 @@
         "description": "Description of the API Key section with details on how to retrieve it from the official DeepSeek Platform website."
     },
     "options.errorOwlForExchangeBug": {
-        "message": "<b>WARNING</b>: It appears that at least one of your accounts is using the Owl for Exchange add-on, which has a bug with Thunderbird's official <a href=\"https://webextension-api.thunderbird.net/en/115/messageDisplayScripts.html\">messageDisplayScripts API</a>.<br>This will prevent the 'AI Mail Support' add-on from functioning when working with Exchange or Office365 accounts.",
+        "message": "<b>WARNING</b>: It appears that at least one of your accounts is using the Owl for Exchange add-on, which has a bug with Thunderbird's official <a href=\"https://webextension-api.thunderbird.net/en/stable/scripting.messageDisplay.html\">scripting.messageDisplay API</a>.<br>This will prevent the 'AI Mail Support' add-on from functioning when working with Exchange or Office365 accounts.",
         "description": "The text displayed on the options page when at least one account managed by the Owl for Exchange is founded."
     },
     "options.google.apiKey": {

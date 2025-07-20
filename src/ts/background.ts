@@ -286,7 +286,8 @@ const menuIdTranslateAndText2Speech = messenger.menus.create({
 })
 
 // Separator for the message display action menu
-const menuIdTranslateSeparator = browser.menus.create({
+const menuIdTranslateSeparator = messenger.menus.create({
+    id: "aiTranslateSeparator",
     type: 'separator',
     parentId: subMenuIdTranslateAnd,
     contexts: [
@@ -328,7 +329,7 @@ const menuIdCustomPrompt = messenger.menus.create({
 })
 
 // Separator for the message display action menu
-browser.menus.create({
+messenger.menus.create({
     id: 'aiMessageDisplayActionMenuSeparator1',
     type: 'separator',
     contexts: [
@@ -351,7 +352,7 @@ updateMenuVisibility()
 // <-- create the menu entries
 
 // Register a listener for the menus.onClicked events
-messenger.menus.onClicked.addListener(async (info: browser.menus.OnClickData) => {
+messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData) => {
     const configs = await getConfigs()
     const llmProvider = ProviderFactory.getInstance(configs)
 
@@ -633,40 +634,46 @@ browser.runtime.onMessage.addListener(async (message) => {
 })
 
 /**
- * Using the messageDisplayScripts API for customizing the content displayed when
- * viewing a message.
+ * Using the scripting.messageDisplay API for customizing the content displayed
+ * when viewing a message.
  *
  * For more information check the docs at:
- * https://webextension-api.thunderbird.net/en/stable/messageDisplayScripts.html
+ * https://webextension-api.thunderbird.net/en/stable/scripting.messageDisplay.html
  */
-messenger.messageDisplayScripts.register({
-    js: [
-        { file: '/outputDisplay/outputDisplay.js' },
-        { file: '/promptDisplay/promptDisplay.js' }
-    ],
-    css: [
-        { file: '/outputDisplay/outputDisplay.css' },
-        { file: '/promptDisplay/promptDisplay.css' }
-    ]
-})
+// @ts-expect-error - Thunderbird 128+ introduce messenger.scripting
+messenger.scripting.messageDisplay.registerScripts([
+    {
+        id: 'outputMessageDisplay',
+        js: [ '/outputDisplay/outputDisplay.js' ],
+        css: [ '/outputDisplay/outputDisplay.css' ]
+    },
+    {
+        id: 'promptMessageDisplay',
+        js: [ '/promptDisplay/promptDisplay.js' ],
+        css: ['/promptDisplay/promptDisplay.css' ]
+    }
+])
 
 /**
- * Using the composeScripts API for customizing the content displayed when create
- * or edit a message.
+ * Using the scripting.compose API for customizing the content displayed when
+ * create or edit a message.
  *
  * For more information check the docs at:
- * https://webextension-api.thunderbird.net/en/stable/composeScripts.html
+ * https://webextension-api.thunderbird.net/en/stable/scripting.compose.html
  */
-messenger.composeScripts.register({
-    js: [
-        { file: '/outputDisplay/outputDisplay.js' },
-        { file: '/promptDisplay/promptDisplay.js' }
-    ],
-    css: [
-        { file: '/outputDisplay/outputDisplay.css' },
-        { file: '/promptDisplay/promptDisplay.css' }
-    ]
-})
+// @ts-expect-error - Thunderbird 128+ introduce messenger.scripting
+messenger.scripting.compose.registerScripts([
+    {
+        id: 'outputComposeDisplay',
+        js: [ '/outputDisplay/outputDisplay.js' ],
+        css: [ '/outputDisplay/outputDisplay.css' ]
+    },
+    {
+        id: 'promptComposeDisplay',
+        js: [ '/promptDisplay/promptDisplay.js' ],
+        css: [ '/promptDisplay/promptDisplay.css' ]
+    }
+])
 
 // Listens for the message signaling the change in configurations to update the
 // interface.
