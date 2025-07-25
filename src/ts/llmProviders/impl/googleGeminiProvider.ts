@@ -8,14 +8,12 @@ import { getLanguageNameFromCode, logMessage } from '../../helpers/utils'
  * Official documentation: https://ai.google.dev/gemini-api/docs
  */
 export class GoogleGeminiProvider extends GenericProvider {
-    private readonly temperature: number
     private readonly apiKey: string
     private readonly model: string
 
     public constructor(config: ConfigType) {
         super(config)
 
-        this.temperature = config.temperature
         this.apiKey = config.google.apiKey
         this.model = config.google.model
     }

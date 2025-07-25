@@ -8,14 +8,12 @@ import { getLanguageNameFromCode, logMessage } from '../../helpers/utils'
  * Official documentation: https://lmstudio.ai/docs/api
  */
 export class LmsProvider extends GenericProvider {
-    private readonly temperature: number
     private readonly serviceUrl: string
     private readonly model: string
 
     public constructor(config: ConfigType) {
         super(config)
 
-        this.temperature = config.temperature
         this.serviceUrl = config.lms.serviceUrl
         this.model = config.lms.model
     }

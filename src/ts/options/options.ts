@@ -48,7 +48,7 @@ document.querySelector('#optionsForm button.test').addEventListener('click', asy
 
     llmProvider.testIntegration().then(() => {
         document.querySelector('#optionsForm #testResult').classList.add('ok')
-        document.querySelector('#optionsForm #testResult .message').innerHTML = messenger.i18n.getMessage('options.testSuccessful')
+        document.querySelector('#optionsForm #testResult .message').innerHTML = browser.i18n.getMessage('options.testSuccessful')
     }).catch(error => {
         document.querySelector('#optionsForm #testResult').classList.add('ko')
         document.querySelector('#optionsForm #testResult .message').innerHTML = error.message

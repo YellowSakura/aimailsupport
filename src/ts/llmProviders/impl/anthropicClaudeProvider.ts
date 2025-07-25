@@ -8,7 +8,6 @@ import { getLanguageNameFromCode, logMessage } from '../../helpers/utils'
  * Official documentation: https://docs.anthropic.com/en/api/getting-started
  */
 export class AnthropicClaudeProvider extends GenericProvider {
-    private readonly temperature: number
     private readonly apiKey: string
     private readonly model: string
 

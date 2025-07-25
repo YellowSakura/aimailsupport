@@ -8,7 +8,6 @@ import { getLanguageNameFromCode, logMessage } from '../../helpers/utils'
  * Official documentation: https://api-docs.deepseek.com
  */
 export class DeepseekProvider extends GenericProvider {
-    private readonly temperature: number
     private readonly apiKey: string
 
     public constructor(config: ConfigType) {

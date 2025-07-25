@@ -22,7 +22,6 @@
   "devDependencies": {
     "@parcel/transformer-sass": "2.14.4",
     "@types/jest": "^30.0",
-    "@types/sanitize-html": "^2.16.0",
     "@types/thunderbird-webext-browser": "^127.0.0",
     "@typescript-eslint/eslint-plugin": "^8.32.1",
     "@typescript-eslint/parser": "^8.32.1",

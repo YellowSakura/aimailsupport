@@ -9,14 +9,12 @@ import { getLanguageNameFromCode, logMessage } from '../../helpers/utils'
  * https://github.com/ollama/ollama/blob/main/docs/api.md
  */
 export class OllamaProvider extends GenericProvider {
-    private readonly temperature: number
     private readonly serviceUrl: string
     private readonly model: string
 
     public constructor(config: ConfigType) {
         super(config)
 
-        this.temperature = config.temperature
         this.serviceUrl = config.ollama.serviceUrl
         this.model = config.ollama.model
     }

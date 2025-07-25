@@ -8,14 +8,12 @@ import { getLanguageNameFromCode, logMessage } from '../../helpers/utils'
  * Official documentation: https://docs.x.ai/docs/api-reference
  */
 export class XaiGrokProvider extends GenericProvider {
-    private readonly temperature: number
     private readonly apiKey: string
     private readonly model: string
 
     public constructor(config: ConfigType) {
         super(config)
 
-        this.temperature = config.temperature
         this.apiKey = config.xai.apiKey
         this.model = config.xai.model
     }
