@@ -62,7 +62,8 @@ export async function getCurrentMessageContent(): Promise<string> {
     //
     // The second scenario is considered only if the messageDisplayed variable is
     // not valid.
-    const messageDisplayed = await messenger.messageDisplay.getDisplayedMessages(tabs[0].id)
+    const messageDisplayed = await messenger.messageDisplay.getDisplayedMessage(tabs[0].id)
+    // MANIFEST V3: const messageDisplayed = await messenger.messageDisplay.getDisplayedMessages(tabs[0].id)
     const composeDetails = !messageDisplayed ? await messenger.compose.getComposeDetails(tabs[0].id) : null
 
     let fullHtml = null
@@ -71,7 +72,9 @@ export async function getCurrentMessageContent(): Promise<string> {
     // Case: Email viewing -->
     if(messageDisplayed) {
         // @ts-expect-error - Thunderbird 128+ introduce listInlineTextParts
-        const textParts = await messenger.messages.listInlineTextParts(messageDisplayed['messages'][0].id)
+        const textParts = await messenger.messages.listInlineTextParts(messageDisplayed.id)
+        // MANIFEST V3: const textParts = await messenger.messages.listInlineTextParts(messageDisplayed['messages'][0].id)
+
 
         // Find the text/html and text/plain parts
         for (const part of textParts) {

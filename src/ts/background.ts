@@ -634,14 +634,50 @@ browser.runtime.onMessage.addListener(async (message) => {
 })
 
 /**
+ * Using the messageDisplayScripts API for customizing the content displayed when
+ * viewing a message.
+ *
+ * For more information check the docs at:
+ * https://webextension-api.thunderbird.net/en/stable/messageDisplayScripts.html
+ */
+messenger.messageDisplayScripts.register({
+    js: [
+        { file: '/outputDisplay/outputDisplay.js' },
+        { file: '/promptDisplay/promptDisplay.js' }
+    ],
+    css: [
+        { file: '/outputDisplay/outputDisplay.css' },
+        { file: '/promptDisplay/promptDisplay.css' }
+    ]
+})
+
+/**
+ * Using the composeScripts API for customizing the content displayed when create
+ * or edit a message.
+ *
+ * For more information check the docs at:
+ * https://webextension-api.thunderbird.net/en/stable/composeScripts.html
+ */
+messenger.composeScripts.register({
+    js: [
+        { file: '/outputDisplay/outputDisplay.js' },
+        { file: '/promptDisplay/promptDisplay.js' }
+    ],
+    css: [
+        { file: '/outputDisplay/outputDisplay.css' },
+        { file: '/promptDisplay/promptDisplay.css' }
+    ]
+})
+
+// MANIFEST V3 -->
+/**
  * Using the scripting.messageDisplay API for customizing the content displayed
  * when viewing a message.
  *
  * For more information check the docs at:
- * https://webextension-api.thunderbird.net/en/stable/scripting.messageDisplay.html
+ * https://webextension-api.thunderbird.net/en/mv3/scripting.messageDisplay.html
  */
-// @ts-expect-error - Thunderbird 128+ introduce messenger.scripting
-messenger.scripting.messageDisplay.registerScripts([
+/*messenger.scripting.messageDisplay.registerScripts([
     {
         id: 'outputMessageDisplay',
         js: [ '/outputDisplay/outputDisplay.js' ],
@@ -652,17 +688,16 @@ messenger.scripting.messageDisplay.registerScripts([
         js: [ '/promptDisplay/promptDisplay.js' ],
         css: ['/promptDisplay/promptDisplay.css' ]
     }
-])
+])*/
 
 /**
  * Using the scripting.compose API for customizing the content displayed when
  * create or edit a message.
  *
  * For more information check the docs at:
- * https://webextension-api.thunderbird.net/en/stable/scripting.compose.html
+ * https://webextension-api.thunderbird.net/en/mv3/scripting.compose.html
  */
-// @ts-expect-error - Thunderbird 128+ introduce messenger.scripting
-messenger.scripting.compose.registerScripts([
+/*messenger.scripting.compose.registerScripts([
     {
         id: 'outputComposeDisplay',
         js: [ '/outputDisplay/outputDisplay.js' ],
@@ -673,7 +708,8 @@ messenger.scripting.compose.registerScripts([
         js: [ '/promptDisplay/promptDisplay.js' ],
         css: [ '/promptDisplay/promptDisplay.css' ]
     }
-])
+])*/
+// <-- MANIFEST V3
 
 // Listens for the message signaling the change in configurations to update the
 // interface.
