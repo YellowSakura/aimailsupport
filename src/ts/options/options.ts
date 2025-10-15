@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', async _ => {
 
     // Anthropic Claude section -->
     document.querySelector<HTMLInputElement>('#anthropicApiKey').value = configs.anthropic?.apiKey || ''
-    document.querySelector<HTMLInputElement>('#anthropicModel').value = configs.anthropic?.model || 'claude-3-haiku-20240307'
+    document.querySelector<HTMLInputElement>('#anthropicModel').value = configs.anthropic?.model || 'claude-haiku-4-5'
     // <-- Anthropic Claude section
 
     // DeepSeek section -->
@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', async _ => {
 
     // Google Gemini section -->
     document.querySelector<HTMLInputElement>('#googleApiKey').value = configs.google?.apiKey || ''
-    document.querySelector<HTMLInputElement>('#googleModel').value = configs.google?.model || 'gemini-1.5-flash'
+    document.querySelector<HTMLInputElement>('#googleModel').value = configs.google?.model || 'gemini-2.5-flash'
     // <-- Google Gemini section
 
     // Groq section -->
@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', async _ => {
 
     // xAI Grok section -->
     document.querySelector<HTMLInputElement>('#xaiApiKey').value = configs.xai?.apiKey || ''
-    document.querySelector<HTMLInputElement>('#xaiModel').value = configs.xai?.model || 'grok-2-latest'
+    document.querySelector<HTMLInputElement>('#xaiModel').value = configs.xai?.model || 'grok-3-fast-latest'
     // <-- xAI Grok section
 
     updateDOMBasedOnSelectLlmProvider(selectedLlmProvider)
