@@ -477,10 +477,6 @@
         "message": "The selected languages are those that will be used to create content translations. It is possible to select the language(s) that will actually be used for translations.",
         "description": "The displayed text shown to the user to explain the rationale behind selecting a set of languages."
     },
-    "thinking": {
-        "message": "I'm thinking!",
-        "description": "Text displayed when waiting for a response from remote services."
-    },
     "options.xai.apiKey": {
         "message": "API Key*",
         "description": "API key field for xAI Grok."
@@ -496,5 +492,9 @@
     "promptDisplay.placeholder": {
         "message": "How can I help you?",
         "description": "Placeholder text for the textbox where the user can directly interact with the LLM."
+    },
+    "thinking": {
+        "message": "I'm thinking!",
+        "description": "Text displayed when waiting for a response from remote services."
     }
 }

@@ -78,7 +78,7 @@ export class XaiGrokProvider extends GenericProvider {
      *
      * @returns {Headers} The headers object with necessary headers appended.
      */
-    private getHeader(): Headers {
+    private getHeaders(): Headers {
         const headers: Headers = new Headers()
         headers.append('Authorization', `Bearer ${this.apiKey}`)
         headers.append('Content-Type', 'application/json')
@@ -119,7 +119,7 @@ export class XaiGrokProvider extends GenericProvider {
 
         const requestOptions: RequestInit = {
             method: 'POST',
-            headers: this.getHeader(),
+            headers: this.getHeaders(),
             body: requestData,
             redirect: 'follow',
             signal: signal

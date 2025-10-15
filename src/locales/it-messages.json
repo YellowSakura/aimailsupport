@@ -362,9 +362,6 @@
     "options.translationLanguageCodes.description": {
         "message": "Le lingue selezionate sono quelle che verranno usate per creare traduzioni di contenuti, è possibile selezionare la/le lingue che sono oggetto di traduzioni effettivamente usate."
     },
-    "thinking": {
-        "message": "Sto pensando!"
-    },
     "options.xai.apiKey": {
         "message": "Chiave API*"
     },
@@ -376,5 +373,8 @@
     },
     "promptDisplay.placeholder": {
         "message": "Come posso aiutarti?"
+    },
+    "thinking": {
+        "message": "Sto pensando!"
     }
 }

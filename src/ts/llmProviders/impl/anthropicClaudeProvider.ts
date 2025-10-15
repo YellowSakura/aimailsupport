@@ -83,7 +83,7 @@ export class AnthropicClaudeProvider extends GenericProvider {
      *
      * @returns {Headers} The headers object with necessary headers appended.
      */
-    private getHeader(): Headers {
+    private getHeaders(): Headers {
         const headers: Headers = new Headers()
         headers.append('x-api-key', this.apiKey)
         headers.append('anthropic-version', '2023-06-01')
@@ -127,7 +127,7 @@ export class AnthropicClaudeProvider extends GenericProvider {
 
         const requestOptions: RequestInit = {
             method: 'POST',
-            headers: this.getHeader(),
+            headers: this.getHeaders(),
             body: requestData,
             redirect: 'follow',
             signal: signal
