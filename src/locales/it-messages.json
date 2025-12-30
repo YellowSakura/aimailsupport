@@ -285,7 +285,7 @@
         "message": "Ollama è un progetto open source che permette di utilizzare diversi LLM avanzati in locale, senza bisogno di collegarsi ad un server esterno.<br />È possibile scaricare il tutto dal <a href=\"https://ollama.com/download\">sito ufficiale</a>."
     },
     "options.ollama.errorApi": {
-        "message": "<strong>Attenzione</strong>: Impossibile comunicare con Ollama, assicurarsi che sia in esecuzione e che sia stata <a href=\"https://github.com/ollama/ollama/blob/main/docs/faq.md#how-can-i-allow-additional-web-origins-to-access-ollama\">opportunamente configurata l'origine</a> per l'invocazione da Thunderbird, abilitando <code>moz-extension://*</code> come indicato in <a href=\"https://github.com/ollama/ollama/blob/main/docs/faq.md#how-do-i-configure-ollama-server\">questa sezione</a><br/>Ad esempio, in macOS con: <code>launchctl setenv OLLAMA_ORIGINS \"moz-extension://*\"</code>."
+        "message": "<strong>Attenzione</strong>: Impossibile comunicare con Ollama, assicurarsi che sia in esecuzione e che sia stata <a href=\"https://docs.ollama.com/faq#how-can-i-allow-additional-web-origins-to-access-ollama\">opportunamente configurata l'origine</a> per l'invocazione da Thunderbird, abilitando <code>moz-extension://*</code> come indicato in <a href=\"https://docs.ollama.com/faq#how-do-i-configure-ollama-server\">questa sezione</a><br/>Ad esempio, in macOS con: <code>launchctl setenv OLLAMA_ORIGINS \"moz-extension://*\"</code>."
     },
     "options.ollama.listModelsButton": {
         "message": "Elenca modelli"

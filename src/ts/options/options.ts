@@ -172,7 +172,10 @@ document.addEventListener('DOMContentLoaded', async _ => {
 
     // Anthropic Claude section -->
     document.querySelector<HTMLInputElement>('#anthropicApiKey').value = configs.anthropic?.apiKey || ''
-    document.querySelector<HTMLInputElement>('#anthropicModel').value = configs.anthropic?.model || 'claude-haiku-4-5'
+
+    if(configs.anthropic?.model) {
+        document.querySelector<HTMLInputElement>('#anthropicModel').value = configs.anthropic.model
+    }
     // <-- Anthropic Claude section
 
     // DeepSeek section -->
@@ -181,7 +184,10 @@ document.addEventListener('DOMContentLoaded', async _ => {
 
     // Google Gemini section -->
     document.querySelector<HTMLInputElement>('#googleApiKey').value = configs.google?.apiKey || ''
-    document.querySelector<HTMLInputElement>('#googleModel').value = configs.google?.model || 'gemini-2.5-flash'
+
+    if(configs.google?.model) {
+        document.querySelector<HTMLInputElement>('#googleModel').value = configs.google.model
+    }
     // <-- Google Gemini section
 
     // Groq section -->
@@ -206,7 +212,11 @@ document.addEventListener('DOMContentLoaded', async _ => {
     // OpenAI GPT section -->
     document.querySelector<HTMLInputElement>('#openaiApiKey').value = configs.openai?.apiKey || ''
     document.querySelector<HTMLInputElement>('#openaiOrganizationId').value = configs.openai?.organizationId || ''
-    document.querySelector<HTMLInputElement>('#openaiModel').value = configs.openai?.model || 'gpt-4o-mini'
+
+    if(configs.openai?.model) {
+        document.querySelector<HTMLInputElement>('#openaiModel').value = configs.openai.model
+    }
+
     document.querySelector<HTMLInputElement>('#openaiText2SpeechAudioQuality').value = configs.openai?.text2speech?.audioQuality || 'tts-1'
     document.querySelector<HTMLInputElement>('#openaiText2SpeechVoice').value = configs.openai?.text2speech?.voice || 'onyx'
     document.querySelector<HTMLAudioElement>('#openaiText2SpeechVoicePreview audio').setAttribute('src', `https://cdn.openai.com/API/docs/audio/${document.querySelector<HTMLInputElement>('#openaiText2SpeechVoice').value}.wav`)
@@ -216,7 +226,10 @@ document.addEventListener('DOMContentLoaded', async _ => {
 
     // xAI Grok section -->
     document.querySelector<HTMLInputElement>('#xaiApiKey').value = configs.xai?.apiKey || ''
-    document.querySelector<HTMLInputElement>('#xaiModel').value = configs.xai?.model || 'grok-3-fast-latest'
+
+    if(configs.xai?.model) {
+        document.querySelector<HTMLInputElement>('#xaiModel').value = configs.xai.model
+    }
     // <-- xAI Grok section
 
     updateDOMBasedOnSelectLlmProvider(selectedLlmProvider)

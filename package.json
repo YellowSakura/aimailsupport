@@ -20,7 +20,7 @@
     "test": "jest"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "2.14.4",
+    "@parcel/transformer-sass": "^2.16",
     "@types/jest": "^30.0",
     "@types/thunderbird-webext-browser": "^127.0.0",
     "@typescript-eslint/eslint-plugin": "^8.32.1",
@@ -31,7 +31,7 @@
     "jest": "^30.0",
     "jest-webextension-mock": "^4.0",
     "json-minify": "^1.0.0",
-    "parcel": "2.14.4",
+    "parcel": "^2.16",
     "posthtml-include": "^2.0.1",
     "ts-jest": "^29.3.4",
     "typescript-eslint": "^8.32.1"

@@ -374,7 +374,7 @@
         "description": "Message displayed when the LLM service provider Ollama is selected."
     },
     "options.ollama.errorApi": {
-        "message": "<strong>Attention</strong>: Unable to communicate with Ollama. Please ensure that it is running and that the origin for invocation from Thunderbird has been <a href=\"https://github.com/ollama/ollama/blob/main/docs/faq.md#how-can-i-allow-additional-web-origins-to-access-ollama\">properly configured</a> by enabling <code>moz-extension://*</code> as indicated in <a href=\"https://github.com/ollama/ollama/blob/main/docs/faq.md#how-do-i-configure-ollama-server\">this section</a>.<br />For example, in macOS use: <code>launchctl setenv OLLAMA_ORIGINS \"moz-extension://*\"</code>.",
+        "message": "<strong>Attention</strong>: Unable to communicate with Ollama. Please ensure that it is running and that the origin for invocation from Thunderbird has been <a href=\"https://docs.ollama.com/faq#how-can-i-allow-additional-web-origins-to-access-ollama\">properly configured</a> by enabling <code>moz-extension://*</code> as indicated in <a href=\"https://docs.ollama.com/faq#how-do-i-configure-ollama-server\">this section</a>.<br />For example, in macOS use: <code>launchctl setenv OLLAMA_ORIGINS \"moz-extension://*\"</code>.",
         "description": "Error message displayed in case of inability to call the local Ollama APIs or if CORS is not configured."
     },
     "options.ollama.listModelsButton": {

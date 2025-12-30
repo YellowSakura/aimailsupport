@@ -81,6 +81,7 @@ export class GoogleGeminiProvider extends GenericProvider {
     private getHeaders(): Headers {
         const headers: Headers = new Headers()
         headers.append('Content-Type', 'application/json')
+        headers.append('x-goog-api-key', this.apiKey)
 
         return headers
     }
@@ -148,7 +149,7 @@ export class GoogleGeminiProvider extends GenericProvider {
             signal: signal
         }
 
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent?key=${this.apiKey}`, requestOptions)
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent`, requestOptions)
         clearAbortSignalWithTimeout()
 
         if (!response.ok) {

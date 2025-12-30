@@ -5,7 +5,7 @@ import { getLanguageNameFromCode, logMessage } from '../../helpers/utils'
 /**
  * Class with the implementation of methods useful for interfacing with the
  * Anthropic APIs.
- * Official documentation: https://docs.anthropic.com/en/api/getting-started
+ * Official documentation: https://platform.claude.com/docs/en/api/overview
  */
 export class AnthropicClaudeProvider extends GenericProvider {
     private readonly apiKey: string

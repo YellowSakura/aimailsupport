@@ -24,7 +24,7 @@ const configs: ConfigType = {
 
     anthropic: {
         apiKey: null,
-        model: 'claude-3-haiku-20240307'
+        model: 'claude-haiku-4-5'
     },
 
     deepseek: {
@@ -33,7 +33,7 @@ const configs: ConfigType = {
 
     google: {
         apiKey: null,
-        model: 'gemini-1.5-flash-8b'
+        model: 'gemini-2.5-flash'
     },
 
     groq: {
@@ -58,7 +58,7 @@ const configs: ConfigType = {
     openai: {
         apiKey: null,
         organizationId: null,
-        model: 'gpt-4o-mini',
+        model: 'gpt-4.1-mini',
 
         text2speech: {
             audioQuality: 'tts-1',
@@ -69,7 +69,7 @@ const configs: ConfigType = {
 
     xai: {
         apiKey: null,
-        model: 'grok-2-latest'
+        model: 'grok-3-mini-latest'
     }
 }
 
@@ -80,7 +80,7 @@ jest.setTimeout(configs.servicesTimeout * 1000)
 browser.storage.sync.set(configs)
 
 // Load environment variables from the .env file, see README.md for more information
-dotenv.config()
+dotenv.config({ quiet: true })
 
 // Added a little delay between calls to avoid hitting the rate limit on some LLM models
 afterEach(() => new Promise(resolve => setTimeout(resolve, 3000)))
