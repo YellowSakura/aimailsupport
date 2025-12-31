@@ -189,7 +189,7 @@ export class OpenAiGptProvider extends GenericProvider {
 
         const requestData = JSON.stringify({
             'model': this.model,
-            'messages': [
+            'input': [
                 { 'role': 'system', 'content': systemInput },
                 { 'role': 'user', 'content': userInput }
             ],
@@ -204,7 +204,7 @@ export class OpenAiGptProvider extends GenericProvider {
             signal: signal
         }
 
-        const response = await fetch('https://api.openai.com/v1/chat/completions', requestOptions)
+        const response = await fetch('https://api.openai.com/v1/responses', requestOptions)
         clearAbortSignalWithTimeout()
 
         if (!response.ok) {
@@ -213,7 +213,7 @@ export class OpenAiGptProvider extends GenericProvider {
         }
 
         const responseData = await response.json()
-        return responseData.choices[0].message.content
+        return responseData.output[0].content[0].text
     }
 
     /**

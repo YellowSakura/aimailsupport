@@ -125,7 +125,13 @@ It is possible to run unit tests using the command:
 $ npm run test
 ```
 
-However, it is necessary to prepare an ```.env``` file in the project root directory beforehand, with the keys for the various LLM services in the following format:
+You can run a specific group of tests for a single provider using the command:
+
+```console
+$ npm run test:single "AnthropicClaudeProvider"
+```
+
+Before running any tests, you need to create an ```.env``` file in the project root directory beforehand, with the keys for the various LLM services in the following format:
 
 ```
 anthropic_api_key = KEY_VALUE
