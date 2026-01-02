@@ -9,7 +9,7 @@
 Thunderbird add-on designed to enhance both professional and personal email management.  
 This add-on integrates a range of AI (LLM) features to streamline your inbox experience.
 
-Our aim is to assist users dealing with high volumes of daily emails, providing tools for tasks like summarizing messages, translating content, offering structured support for composing responses and much more.
+Our aim is to assist users dealing with high volumes of daily emails, providing tools for tasks like summarizing messages, translating content, offering structured support for composing responses, and much more.
 
 ## Contents
 
@@ -23,7 +23,7 @@ Our aim is to assist users dealing with high volumes of daily emails, providing 
 
 ## Getting started
 
-Have you ever had an inbox full of hundreds of unread emails that you need to respond?  
+Have you ever had an inbox full of hundreds of unread emails that you need to respond to?  
 We have, and more than once.
 
 That's why we decided to create this add-on for Thunderbird to help manage the multitude of emails we read daily as part of our work activities.
@@ -52,22 +52,22 @@ The downside is that this requires *SIGNIFICANT* hardware resources.
 
 ### Settings and usage
 
-After installing the add-on, it will be possible to configure the desired LLM service provider from the related settings.  
+After installing the add-on, you can configure the desired LLM service provider from the add-on's settings.
 
-You can access the add-on settings by going to `Tools → Add-ons and Themes`, and then selecting the wrench icon next to AI Mail Support.
+You can access the settings by going to `Tools → Add-ons and Themes`, and then selecting the wrench icon next to AI Mail Support.
 
 <p align="center" width="100%"><img alt="Add-on preferences" src="docs/screen/screen-preferences.webp"></p>
 
-Based on the LLM choice, additional specific options will then be available, for example, below is the screenshot of all possible configurations when OpenAI is specifically selected as the provider.
+Based on the LLM choice, additional specific options will become available. For example, below is the screenshot of all possible configurations when OpenAI is selected as the provider.
 
 <p align="center" width="100%"><img alt="Add-on preferences for OpenAI" src="docs/screen/screen-preferences-openai.webp"></p>
 
-Typically, an authentication key needs to be configured, the specific method depends on the LLM provider.  
+Typically, an authentication key needs to be configured; the specific method depends on the LLM provider.  
 In the options, there will be a quick link to the official website with useful details.
 
-Once the add-on is configured, it will be possible to interact with the AI management features within Thunderbird in three different locations:
+Once the add-on is configured, you can interact with the AI management features within Thunderbird in three different locations:
 
-1. In the email view, "AI support" menu:
+1. In the email view, via the "AI support" menu:
 
 <p align="center" width="100%"><img alt="AI support integration in email view" src="docs/screen/screen-view-email.webp"></p>
 
@@ -75,7 +75,7 @@ Once the add-on is configured, it will be possible to interact with the AI manag
 
 <p align="center" width="100%"><img alt="AI support integration in email composition or editing window" src="docs/screen/screen-compose-email.webp"></p>
 
-3. By selecting any text in either the email viewing or composition window, in the "AI Mail Support" section:
+3. By selecting any text in either the email viewing or composition window, in the "AI Mail Support" section of the context menu:
 
 <p align="center" width="100%"><img alt="AI support integration in selected text" src="docs/screen/screen-selected-text.webp"></p>
 
@@ -101,7 +101,7 @@ $ cd aimailsupport
 $ npm install
 ```
 
-To compile a development version of the add-on and install it in Thunderbird via `Tools → Developer Tools → Debug Add-ons → Load Temporary Add-on…` use the following command:
+To compile a development version of the add-on and install it in Thunderbird via `Tools → Developer Tools → Debug Add-ons → Load Temporary Add-on…`, use the following command:
 
 ```console
 $ npm run build
@@ -113,7 +113,7 @@ To generate a file named ai-mail-support.xpi in the project's root folder, as a 
 $ npm run build:package
 ```
 
-To assess the overall quality of code, you can use the following command:
+To assess the overall quality of the code, you can use the following command:
 
 ```console
 $ npm run quality
@@ -131,7 +131,7 @@ You can run a specific group of tests for a single provider using the command:
 $ npm run test:single "AnthropicClaudeProvider"
 ```
 
-Before running any tests, you need to create an ```.env``` file in the project root directory beforehand, with the keys for the various LLM services in the following format:
+Before running any tests, you need to create an `.env` file in the project root directory with the keys for the various LLM services in the following format:
 
 ```
 anthropic_api_key = KEY_VALUE
@@ -143,7 +143,7 @@ openai_api_key = KEY_VALUE
 xai_api_key = KEY_VALUE
 ```
 
-To test LM studio, it is necessary to install the model ```llama-3.2-1b``` from the GUI or using the command:
+To test LM Studio, it is necessary to install the model ```llama-3.2-1b``` from the GUI or using the command:
 
 ```console
 $ lms get llama-3.2-1b
@@ -159,8 +159,8 @@ $ ollama pull llama3.2:1b
 
 AI Mail Support for Thunderbird aims to make use of a minimal set of permissions for its operation, specifically:
 
-- accountsRead: See your mail accounts, their identities and their folders.  
-  Used to identify the presence of any accounts managed by the add-on [Owl for Exchange](https://addons.thunderbird.net/en-us/thunderbird/addon/owl-for-exchange) and display a malfunction warning as indicated in the [Owl for Exchange bug section](#owl-for-exchange-bug), see https://webextension-api.thunderbird.net/en/latest/accounts.html#permissions.
+- accountsRead: See your mail accounts, their identities, and their folders.  
+  Used to identify the presence of any accounts managed by the [Owl for Exchange](https://addons.thunderbird.net/en-us/thunderbird/addon/owl-for-exchange) add-on and display a malfunction warning as indicated in the [Owl for Exchange bug section](#owl-for-exchange-bug), see https://webextension-api.thunderbird.net/en/latest/accounts.html#permissions.
 - compose: Read and modify your email messages as you compose and send them.  
   Used to interact with the email composition window (replying or creating a new email), see https://webextension-api.thunderbird.net/en/latest/compose.html#permissions.
 - menus: Required to use `messenger.menus.*` functions.  
@@ -169,28 +169,28 @@ AI Mail Support for Thunderbird aims to make use of a minimal set of permissions
   Used to read the content of an existing email in the viewing window, see https://webextension-api.thunderbird.net/en/latest/messages.html#permissions.
 - messagesModify: Read and modify your email messages as they are displayed to you.  
   Used to modify the content of an existing email in the viewing window, see https://webextension-api.thunderbird.net/en/latest/messageDisplayScripts.html#permissions.
-- sensitiveDataUpload: The contents of the emails are sent (based on the choices made in the options) to the different LLM service providers, who will then be able to process them.  
-- storage: Enables add-on to store and retrieve data, and listen for changes to stored items.  
+- sensitiveDataUpload: Email content is sent to the selected LLM service provider for processing, based on your choices in the add-on's settings.
+- storage: Enables the add-on to store and retrieve data, and listen for changes to stored items.  
   Used to store user settings, see https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage.
 
 ## Localization
 
-The add-on uses a very small set of messages that require localization, so if you want to extend the translation, it's really simple, here's what you need to do:
+The add-on has a small set of messages that require localization. If you want to extend the translation, the process is straightforward:
 
-1. Copy the file `src/locales/en-messages.json` to `src/locales/%ISO CODE%-messages.json` where `%ISO CODE%` is your [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) language code;
-2. Translate your `src/locales/%ISO CODE%-messages.json`, specifically the message `fields`, and remove the `descriptions` used to provide additional context;
-3. Add a new line in the `package.json` file, in line with the other `build:locales-*` entries, in alphabetical order compared to the current ones, in the form:
+1. Copy the file `src/locales/en-messages.json` to `src/locales/%ISO_CODE%-messages.json`, where `%ISO_CODE%` is your [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) language code.
+2. Translate your `src/locales/%ISO_CODE%-messages.json`, specifically the `message` properties, and remove the `description` properties, which are only used for context.
+3. Add a new line in the `package.json` file, matching the other `build:locales-*` entries and keeping them in alphabetical order:
 
    ```json
-   "build:locales-%ISO CODE%": "node_modules/.bin/json-minify src/locales/%ISO CODE%-messages.json > ai-mail-support/_locales/%ISO CODE%/messages.json",
+   "build:locales-%ISO_CODE%": "node_modules/.bin/json-minify src/locales/%ISO_CODE%-messages.json > ai-mail-support/_locales/%ISO_CODE%/messages.json",
    ```
-4. Add a new configuration again in the `package.json`, in the `build:locales` section, maintaining alphabetical order once again;
-5. Add the folder `%ISO CODE%` to `_locales`;
-6. Test using the build process as described in the [Getting started section](#getting-started) and release the modification as a pull request.
+4. Add a corresponding entry to the `build:locales` script in `package.json`, again maintaining alphabetical order.
+5. Add the folder `%ISO_CODE%` to the `_locales` key in your `src/manifest.json`.
+6. Test your changes using the build process described in the [Build section](#build) and submit the changes in a pull request.
 
 ## License and references
 
-The code is licensed under the [MIT](https://opensource.org/licenses/MIT) by [Yellow Sakura](https://www.yellowsakura.com), [support@yellowsakura.com](mailto:support@yellowsakura.com), see LICENSE file.  
+The code is licensed under the [MIT](https://opensource.org/licenses/MIT) by [Yellow Sakura](https://www.yellowsakura.com), [support@yellowsakura.com](mailto:support@yellowsakura.com), see the LICENSE file.  
 For more details, please refer to the [project page](https://www.yellowsakura.com/en/projects/ai-mail-support-for-thunderbird) and the link to the [official AMO (addons.mozilla.org) page](https://addons.thunderbird.net/en-GB/thunderbird/addon/ai-mail-support).
 
 Dependencies:
