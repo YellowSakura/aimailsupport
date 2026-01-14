@@ -333,6 +333,14 @@
         "message": "Primary output language that will be used in all integrations.",
         "description": "Choosing a primary language ensures consistent communication across all platforms and integrations."
     },
+    "options.maskPii": {
+        "message": "Enable PII masking",
+        "description": "An option that the user can enable to increase privacy, with personal data masking based on heuristic rules."
+    },
+    "options.maskPii.description": {
+        "message": "When the option is enabled, some strategies are applied to mask PII (Personally Identifiable Information) before sending data to LLM models, even though exhaustive masking CANNOT be guaranteed.<br>The option increases privacy, but may cause a degradation in response quality due to false positives.",
+        "description": "The description is intended to state that exhaustive masking of personal data cannot be guaranteed and that enabling this option may degrade the quality of the responses."
+    },
     "options.lms.description": {
         "message": "LM Studio is an open-source project that allows you to use various advanced LLMs locally, without needing to connect to an external server.<br />You can download everything from the <a href=\"https://lmstudio.ai\">official website</a>.",
         "description": "Message displayed when the LLM service provider LM Studio is selected."

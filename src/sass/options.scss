@@ -145,6 +145,7 @@ $options-labels-width: 150px;
             font-size: 11px;
             margin-top: 5px;
             padding-left: calc($options-labels-width + 10px);
+            text-align: justify;
 
             // Styles for messages that for Groq notify errors
             &.groq-error-api {

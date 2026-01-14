@@ -39,7 +39,7 @@
         "message": "Legale"
     },
     "mailModerate.mistralClassification.pii": {
-        "message": "PII (Informazioni Personali Identificabili)"
+        "message": "PII (Dati personali)"
     },
     "mailModerate.mistralClassification.selfharm": {
         "message": "Autolesionismo"
@@ -253,6 +253,12 @@
     },
     "options.mainUserLanguage.description": {
         "message": "Lingua principale che si usarerà in tutte le integrazioni."
+    },
+    "options.maskPii": {
+        "message": "Maschera dati personali"
+    },
+    "options.maskPii.description": {
+        "message": "Quando l'opzione è attiva, si applicano alcune strategia per mascherare i dati personali pre-invio ai modelli LLM, anche se NON è possibile garantire un mascheramento esaustivo.<br>L'opzione aumenta la privacy, ma potrebbe causare un degrado nella qualità delle risposte con falsi positivi."
     },
     "options.lms.description": {
         "message": "LM Studio è un progetto open source che permette di utilizzare diversi LLM avanzati in locale, senza bisogno di collegarsi ad un server esterno.<br />È possibile scaricare il tutto dal <a href=\"https://lmstudio.ai\">sito ufficiale</a>."

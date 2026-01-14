@@ -7,6 +7,7 @@ export interface ConfigType {
     llmProvider: string
     temperature: number
     servicesTimeout: number
+    maskPii: boolean
     debugMode: boolean
 
     anthropic: {

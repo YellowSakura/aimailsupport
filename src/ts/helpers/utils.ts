@@ -1,4 +1,5 @@
 import { ConfigType } from './configType'
+import { mask } from '@yellowsakura/js-pii-mask'
 
 /**
  * Retrieve data from browser storage for a specific key.
@@ -75,7 +76,6 @@ export async function getCurrentMessageContent(): Promise<string> {
         const textParts = await messenger.messages.listInlineTextParts(messageDisplayed.id)
         // MANIFEST V3: const textParts = await messenger.messages.listInlineTextParts(messageDisplayed['messages'][0].id)
 
-
         // Find the text/html and text/plain parts
         for (const part of textParts) {
             if (part.contentType?.toLowerCase() === 'text/html') {
@@ -106,6 +106,13 @@ export async function getCurrentMessageContent(): Promise<string> {
             .replace(/[\r\n]+/g, ' ')           // Replace newlines with space
             .replace(/\s{2,}/g, ' ')            // Replace multiple spaces with a single space
             .trim()                             // Remove leading/trailing spaces
+
+        // PII Mask
+        const isMaskPiiEnabled: boolean = await getConfig('maskPii')
+        if(isMaskPiiEnabled === true) {
+            logMessage('Masking PII...', 'debug')
+            fullPlain = mask(fullPlain)
+        }
     }
 
     return fullPlain || null
@@ -162,7 +169,7 @@ export function localizeNodes(): void {
  * @returns A promise that resolves to void.
  */
 export async function logMessage(message: string, method: string = 'log'): Promise<void> {
-    const isDebugModeEnabled = await getConfig('debugMode')
+    const isDebugModeEnabled: boolean = await getConfig('debugMode')
 
     if (isDebugModeEnabled === true) {
         console[method](`AI Mail Support: ${message}`)
