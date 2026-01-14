@@ -21,6 +21,7 @@
         "sensitiveDataUpload",
         "storage",
         "https://api.anthropic.com/",
+        "https://api.openai.com/",
         "https://api.x.ai/"
     ],
     "icons": {
