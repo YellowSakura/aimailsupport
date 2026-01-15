@@ -16,7 +16,7 @@
     "build:options": "parcel build src/html/options.html --dist-dir ai-mail-support/options --public-url /options/ --no-source-maps --no-content-hash --no-cache",
     "build": "npm run build:manifest && npm run build:locales && npm run build:addon",
     "build:package": "npm run build && cd ai-mail-support && zip -r -FS ../ai-mail-support.xpi * --exclude '*.DS_Store*'",
-    "quality": "node_modules/.bin/eslint src/ts/*.ts",
+    "lint": "node_modules/.bin/eslint src/ts/*.ts",
     "test": "jest",
     "test:single": "jest -t"
   },

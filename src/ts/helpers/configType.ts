@@ -36,6 +36,7 @@ export interface ConfigType {
 
     mistral: {
         apiKey: string
+        model: string
     }
 
     ollama: {

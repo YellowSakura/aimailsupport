@@ -9,11 +9,13 @@ import { getLanguageNameFromCode, logMessage } from '../../helpers/utils'
  */
 export class MistralProvider extends GenericProvider {
     private readonly apiKey: string
+    private readonly model: string
 
     public constructor(config: ConfigType) {
         super(config)
 
         this.apiKey = config.mistral.apiKey
+        this.model = config.mistral.model
     }
 
     public async analyzeTextIntent(input: string): Promise<string> {
@@ -108,7 +110,7 @@ export class MistralProvider extends GenericProvider {
         const { signal, clearAbortSignalWithTimeout } = this.createAbortSignalWithTimeout(this.servicesTimeout)
 
         const requestData = JSON.stringify({
-            'model': 'mistral-large-latest',
+            'model': this.model,
             'messages': [
                 { 'role': 'system', 'content': systemInput },
                 { 'role': 'user', 'content': userInput }

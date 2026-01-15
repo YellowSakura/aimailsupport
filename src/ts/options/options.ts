@@ -18,7 +18,7 @@ document.querySelector('#llmProvider').addEventListener('change', (event) => {
 document.querySelector('#llmTemperature').addEventListener('input', (event) => {
     const destination = document.querySelector<HTMLInputElement>('label[for=llmTemperature] span')
     const currentTemperatureValue = (event.currentTarget as HTMLInputElement).value
-    destination.innerText = parseFloat(currentTemperatureValue).toFixed(2)
+    destination.innerText = Number.parseFloat(currentTemperatureValue).toFixed(2)
 })
 
 // Capture all changes in the form fields, disabling the test button.
@@ -80,8 +80,8 @@ document.querySelector('#optionsForm').addEventListener('submit', async (event) 
         mainUserLanguageCode: document.querySelector<HTMLInputElement>('#mainUserLanguageCode').value,
         translationLanguageCodes: document.querySelector<MultipleLanguageSelector>('#translationLanguageCodes').getValues(),
         llmProvider: document.querySelector<HTMLInputElement>('#llmProvider').value,
-        temperature: parseFloat(document.querySelector<HTMLInputElement>('#llmTemperature').value),
-        servicesTimeout: parseInt(document.querySelector<HTMLInputElement>('#servicesTimeout').value),
+        temperature: Number.parseFloat(document.querySelector<HTMLInputElement>('#llmTemperature').value),
+        servicesTimeout: Number.parseInt(document.querySelector<HTMLInputElement>('#servicesTimeout').value),
         maskPii: document.querySelector<HTMLInputElement>('#maskPii').checked,
         debugMode: document.querySelector<HTMLInputElement>('#debugMode').checked,
         anthropic: {
@@ -104,7 +104,8 @@ document.querySelector('#optionsForm').addEventListener('submit', async (event) 
             model: document.querySelector<HTMLInputElement>('#lmsModel').value
         },
         mistral: {
-            apiKey: document.querySelector<HTMLInputElement>('#mistralApiKey').value
+            apiKey: document.querySelector<HTMLInputElement>('#mistralApiKey').value,
+            model: document.querySelector<HTMLInputElement>('#mistralModel').value
         },
         ollama: {
             serviceUrl: document.querySelector<HTMLInputElement>('#ollamaServiceUrl').value,
@@ -117,7 +118,7 @@ document.querySelector('#optionsForm').addEventListener('submit', async (event) 
             text2speech: {
                 audioQuality: document.querySelector<HTMLInputElement>('#openaiText2SpeechAudioQuality').value,
                 voice: document.querySelector<HTMLInputElement>('#openaiText2SpeechVoice').value,
-                speed: parseFloat(document.querySelector<HTMLInputElement>('#openaiText2SpeechSpeed').value)
+                speed: Number.parseFloat(document.querySelector<HTMLInputElement>('#openaiText2SpeechSpeed').value)
             }
         },
         xai: {
@@ -156,8 +157,8 @@ document.addEventListener('DOMContentLoaded', async _ => {
     const selectedLlmProvider = configs.llmProvider
 
     // Temperature -->
-    document.querySelector<HTMLInputElement>('#llmTemperature').value = (configs.temperature || 1).toString()
-    document.querySelector<HTMLInputElement>('label[for=llmTemperature] span').innerText = parseFloat(document.querySelector<HTMLInputElement>('#llmTemperature').value).toFixed(2)
+    document.querySelector<HTMLInputElement>('#llmTemperature').value = (configs.temperature || 0.25).toString()
+    document.querySelector<HTMLInputElement>('label[for=llmTemperature] span').innerText = Number.parseFloat(document.querySelector<HTMLInputElement>('#llmTemperature').value).toFixed(2)
     // <-- temperature
 
     // The language code is retrieved without the regional details (e.g.,
@@ -204,6 +205,10 @@ document.addEventListener('DOMContentLoaded', async _ => {
 
     // Mistral AI section -->
     document.querySelector<HTMLInputElement>('#mistralApiKey').value = configs.mistral?.apiKey || ''
+
+    if(configs.mistral?.model) {
+        document.querySelector<HTMLInputElement>('#mistralModel').value = configs.mistral.model
+    }
     // <-- Mistral AI section
 
     // Ollama section -->
@@ -223,7 +228,7 @@ document.addEventListener('DOMContentLoaded', async _ => {
     document.querySelector<HTMLInputElement>('#openaiText2SpeechVoice').value = configs.openai?.text2speech?.voice || 'onyx'
     document.querySelector<HTMLAudioElement>('#openaiText2SpeechVoicePreview audio').setAttribute('src', `https://cdn.openai.com/API/docs/audio/${document.querySelector<HTMLInputElement>('#openaiText2SpeechVoice').value}.wav`)
     document.querySelector<HTMLInputElement>('#openaiText2SpeechSpeed').value = (configs.openai?.text2speech?.speed || 1).toString()
-    document.querySelector<HTMLInputElement>('label[for=openaiText2SpeechSpeed] span').innerText = parseFloat(document.querySelector<HTMLInputElement>('#openaiText2SpeechSpeed').value).toFixed(2)
+    document.querySelector<HTMLInputElement>('label[for=openaiText2SpeechSpeed] span').innerText = Number.parseFloat(document.querySelector<HTMLInputElement>('#openaiText2SpeechSpeed').value).toFixed(2)
     // <-- OpenAI GPT section
 
     // xAI Grok section -->

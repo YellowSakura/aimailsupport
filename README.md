@@ -116,7 +116,7 @@ $ npm run build:package
 To assess the overall quality of the code, you can use the following command:
 
 ```console
-$ npm run quality
+$ npm run lint
 ```
 
 It is possible to run unit tests using the command:

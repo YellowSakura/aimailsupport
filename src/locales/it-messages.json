@@ -246,7 +246,7 @@
         "message": "Temperatura (<span class=\"monospace\"></span>x)"
     },
     "options.llmTemperature.description": {
-        "message": "Valori più alti come 0.8 renderanno l'output più casuale, mentre valori più bassi come 0.2 lo renderanno più focalizzato e deterministico.<p><b>Attenzione:</b> modelli LLM con range di temperatura diversi da 0 a 2, vengono normalizzati rispetto al loro intervallo di riferimento.</p>"
+        "message": "Valori più alti come 0.8 renderanno l'output più casuale, mentre valori più bassi come 0.25 lo renderanno più focalizzato e deterministico.<p><b>Attenzione:</b> modelli LLM con range di temperatura diversi da 0 a 2, vengono normalizzati rispetto al loro intervallo di riferimento.</p>"
     },
     "options.mainUserLanguage": {
         "message": "Lingua principale"
@@ -286,6 +286,9 @@
     },
     "options.mistral.apiKey.description": {
         "message": "Vai nella sezione <a href=\"https://console.mistral.ai/api-keys\">API keys</a> per recuperare o creare una chiave."
+    },
+    "options.mistral.model": {
+        "message": "Modello*"
     },
     "options.ollama.description": {
         "message": "Ollama è un progetto open source che permette di utilizzare diversi LLM avanzati in locale, senza bisogno di collegarsi ad un server esterno.<br />È possibile scaricare il tutto dal <a href=\"https://ollama.com/download\">sito ufficiale</a>."

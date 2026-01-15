@@ -96,6 +96,27 @@
         top: 0;
     }
 
+    &.text-content #actionsContainer {
+        display: block;
+    }
+
+    #actionsContainer {
+        bottom: 5px;
+        display: none;
+        position: absolute;
+        right: 80px;
+
+        span {
+            cursor: pointer;
+            font-size: 13px;
+            display: inline-block;
+
+            & + span {
+                margin-left: 5px;
+            }
+        }
+    }
+
     #amsImage {
         bottom: 0;
         max-height: 48px;

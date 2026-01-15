@@ -322,7 +322,7 @@
         "description": "Option to control the balance between predictability and creativity in the model's output."
     },
     "options.llmTemperature.description": {
-        "message": "Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.<p><b>Attention:</b> LLM models with a temperature range different from 0 to 2 are normalized according to their reference range.</p>",
+        "message": "Higher values like 0.8 will make the output more random, while lower values like 0.25 will make it more focused and deterministic.<p><b>Attention:</b> LLM models with a temperature range different from 0 to 2 are normalized according to their reference range.</p>",
         "description": "Explain the effect of the temperature setting on the model's responses, highlighting the trade-off between predictability and creativity."
     },
     "options.mainUserLanguage": {
@@ -376,6 +376,10 @@
     "options.mistral.apiKey.description": {
         "message": "Go to the <a href=\"https://console.mistral.ai/api-keys\">API keys</a> section to retrieve or create a key.",
         "description": "Description of the API Key section with details on how to retrieve it from the official Mistral AI website."
+    },
+    "options.mistral.model": {
+        "message": "Model*",
+        "description": "Model to be used for all text processing: https://docs.mistral.ai/models."
     },
     "options.ollama.description": {
         "message": "Ollama is an open-source project that allows you to use various advanced LLMs locally, without needing to connect to an external server.<br />You can download everything from the <a href=\"https://ollama.com/download\">official website</a>.",

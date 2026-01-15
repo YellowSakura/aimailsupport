@@ -1,4 +1,5 @@
 import { ChartUtils } from './helpers/chartUtils'
+import { logMessage } from './helpers/utils'
 import removeMarkdown from 'remove-markdown'
 
 // Manage async messages -->
@@ -67,6 +68,8 @@ function getInnerResponse() {
 function addText(newContent: string) {
     clearOutputDisplay()
 
+    getInnerResponse().classList.add('text-content')
+
     // Any Markdown present is converted to plain text
     const rawText = removeMarkdown(newContent)
     getInnerResponse().querySelector('#amsContent').textContent = rawText
@@ -120,16 +123,42 @@ function createOutputDisplay(): void {
     image.src = browser.runtime.getURL('/images/bot-icon-color-64.webp')
     amsInnerResponse.appendChild(image)
 
-    const content: HTMLSpanElement = document.createElement('div')
+    const content: HTMLDivElement = document.createElement('div')
     content.id = 'amsContent'
     amsInnerResponse.appendChild(content)
 
+    // Close icon
     const closeIcon: HTMLSpanElement = document.createElement('span')
     closeIcon.className = 'close-icon'
     closeIcon.innerHTML = '&times;'
     closeIcon.addEventListener('click', () => clearOutputDisplay(true))
     amsInnerResponse.appendChild(closeIcon)
-    // <-- contents
+
+    // Actions container -->
+    const actionsContainer: HTMLDivElement = document.createElement('div')
+    actionsContainer.id = 'actionsContainer'
+
+    // Copy in clipboard icon
+    const copyClipboardIcon: HTMLSpanElement = document.createElement('span')
+    copyClipboardIcon.className = 'copy-clipboard-icon'
+    copyClipboardIcon.innerHTML = '&#128203;'
+    copyClipboardIcon.addEventListener('click', () => copyClipboard())
+    actionsContainer.appendChild(copyClipboardIcon)
+
+    // Copy top icon
+    /*const copyTopIcon: HTMLSpanElement = document.createElement('span')
+    copyTopIcon.className = 'copy-top-icon'
+    copyTopIcon.innerHTML = '&#9195;'
+    actionsContainer.appendChild(copyTopIcon)
+
+    // Reload icon
+    const reloadIcon: HTMLSpanElement = document.createElement('span')
+    reloadIcon.className = 'reload-icon'
+    reloadIcon.innerHTML = '&#128260;'
+    actionsContainer.appendChild(reloadIcon)*/
+
+    amsInnerResponse.appendChild(actionsContainer)
+    // <-- actions container
 
     document.body.appendChild(amsOuterResponse)
 }
@@ -152,7 +181,30 @@ function clearOutputDisplay(destroy: boolean = false): void {
         document.querySelector('#amsOuterResponse').classList.add('show')
     }
 
-    getInnerResponse().classList.remove('error')
-    getInnerResponse().classList.remove('thinking')
+    getInnerResponse().classList.remove('error', 'text-content', 'thinking')
     getInnerResponse().querySelector('#amsContent').innerHTML = ''
+}
+
+/**
+ * Copies the textual content to the system clipboard.
+ */
+function copyClipboard(): void {
+    const contentElement = getInnerResponse().querySelector('#amsContent')
+
+    // Create a temporary selection range
+    const selection = globalThis.getSelection()
+    const range = document.createRange()
+    range.selectNodeContents(contentElement)
+
+    // Replace any existing selection
+    selection.removeAllRanges()
+    selection.addRange(range)
+
+    try {
+        document.execCommand('copy')
+    } catch {
+        logMessage('Copy to clipboard failed or was blocked', 'error')
+    } finally {
+        selection.removeAllRanges()
+    }
 }
