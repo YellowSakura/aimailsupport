@@ -119,6 +119,37 @@ export async function getCurrentMessageContent(): Promise<string> {
 }
 
 /**
+ * Checks if a message is currently displayed in the active tab.
+ * @returns True if a message is displayed, false otherwise.
+ */
+export async function isMessageDisplayed(): Promise<boolean> {
+    const tabs = await messenger.tabs.query({ active: true, currentWindow: true })
+    const messageDisplayed = await messenger.messageDisplay.getDisplayedMessage(tabs[0].id)
+
+    return !!messageDisplayed;
+}
+
+/**
+ * Checks if the active tab is a compose window.
+ * @returns True if the active tab is a compose window, false otherwise.
+ */
+export async function isComposeDisplayed(): Promise<boolean> {
+    const tabs = await messenger.tabs.query({ active: true, currentWindow: true })
+
+    try {
+        const composeDetails = await messenger.compose.getComposeDetails(tabs[0].id)
+        return !!composeDetails;
+    }
+    catch (error) {
+        // If the active tab is not a compose window (e.g., it's a message
+        // display window), the messenger.compose.getComposeDetails() call
+        // will throw an exception "Invalid compose tab: 1", which is caught
+        // and handled by returning false.
+        return false
+    }
+}
+
+/**
  * Retrieves the extended name of a language based on its code.
  *
  * @param {string} languageCode - The language code (e.g., 'en' for English).

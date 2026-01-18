@@ -3,35 +3,33 @@ import { logMessage } from './helpers/utils'
 import removeMarkdown from 'remove-markdown'
 
 // Manage async messages -->
-(async () => {
-    browser.runtime.onMessage.addListener(async (message: any) => {
-        if (message?.type) {
-            createOutputDisplay()
+browser.runtime.onMessage.addListener(async (message: any) => {
+    if (message?.type) {
+        createOutputDisplay()
 
-            switch (message.type) {
-                case 'addAudio':
-                    addAudio(message.content)
-                    break
+        switch (message.type) {
+            case 'addAudio':
+                addAudio(message.content)
+                break
 
-                case 'addChart':
-                    addChart(message.content)
-                    break
+            case 'addChart':
+                addChart(message.content)
+                break
 
-                case 'addText':
-                    addText(message.content)
-                    break
+            case 'addText':
+                addText(message.content)
+                break
 
-                case 'showError':
-                    showError(message.content)
-                    break
+            case 'showError':
+                showError(message.content)
+                break
 
-                case 'thinking':
-                    thinking(message.content)
-                    break
-            }
+            case 'thinking':
+                thinking(message.content)
+                break
         }
-    })
-})()
+    }
+})
 // <-- manage async messages
 
 function addAudio(blob: Blob) {

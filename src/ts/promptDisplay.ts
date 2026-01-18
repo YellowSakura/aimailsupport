@@ -1,11 +1,9 @@
 // Manage async messages -->
-(async () => {
-    browser.runtime.onMessage.addListener(async (message: any) => {
-        if (message?.showPromptDisplay === true) {
-            createRequestDisplay()
-        }
-    })
-})()
+browser.runtime.onMessage.addListener(async (message: any) => {
+    if (message?.showPromptDisplay === true) {
+        createRequestDisplay()
+    }
+})
 // <-- manage async messages
 
 // Support function to create the container where the user will be able to enter
