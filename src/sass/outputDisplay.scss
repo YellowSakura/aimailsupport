@@ -115,6 +115,16 @@
                 margin-left: 5px;
             }
         }
+
+        // Copy-top icon -->
+        .copy-top-icon {
+            display: none; // Default: hidden
+        }
+
+        &.compose-mode .copy-top-icon {
+            display: inline-block; // Show in compose mode
+        }
+        // <-- copy-top icon
     }
 
     #amsImage {

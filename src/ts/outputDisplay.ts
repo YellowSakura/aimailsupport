@@ -20,6 +20,15 @@ browser.runtime.onMessage.addListener(async (message: any) => {
                 addText(message.content)
                 break
 
+            case 'setComposeMode':
+                const actionsContainer = getInnerResponse().querySelector('#actionsContainer')
+                if (message.isCompose) {
+                    actionsContainer.classList.add('compose-mode')
+                } else {
+                    actionsContainer.classList.remove('compose-mode')
+                }
+                break
+
             case 'showError':
                 showError(message.content)
                 break
@@ -144,13 +153,14 @@ function createOutputDisplay(): void {
     actionsContainer.appendChild(copyClipboardIcon)
 
     // Copy top icon
-    /*const copyTopIcon: HTMLSpanElement = document.createElement('span')
+    const copyTopIcon: HTMLSpanElement = document.createElement('span')
     copyTopIcon.className = 'copy-top-icon'
     copyTopIcon.innerHTML = '&#9195;'
+    copyTopIcon.addEventListener('click', () => copyToEmailTop())
     actionsContainer.appendChild(copyTopIcon)
 
     // Reload icon
-    const reloadIcon: HTMLSpanElement = document.createElement('span')
+    /*const reloadIcon: HTMLSpanElement = document.createElement('span')
     reloadIcon.className = 'reload-icon'
     reloadIcon.innerHTML = '&#128260;'
     actionsContainer.appendChild(reloadIcon)*/
@@ -204,5 +214,18 @@ function copyClipboard(): void {
         logMessage('Copy to clipboard failed or was blocked', 'error')
     } finally {
         selection.removeAllRanges()
+    }
+}
+
+/**
+ * Copies the LLM response content to the top of the email.
+ * This function is only available when in compose mode.
+ */
+async function copyToEmailTop(): Promise<void> {
+    const contentElement = getInnerResponse().querySelector('#amsContent')
+    const textToCopy = contentElement.textContent || ''
+
+    if (textToCopy) {
+        console.info("TODO copyToEmailTop")
     }
 }

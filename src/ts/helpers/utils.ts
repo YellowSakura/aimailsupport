@@ -218,17 +218,21 @@ export async function logMessage(message: string, method: string = 'log'): Promi
  *      { [key: string]: number } (used to manage graphs)
  * 2. Prompt display toggle format with a boolean to control prompt visibility
  * 
- * @param message - The message payload, which must be either:
+ * @param message - The message payload, which must be one of:
  *        - { type: string; content: Blob | string | { [key: string]: number } }
- *          for structured messages
- *        - { showPromptDisplay: boolean } to toggle prompt display
+ *          for structured messages with content
+ *        - { type: 'setComposeMode'; isCompose: boolean }
+ *          to notify about compose mode state changes
+ *        - { showPromptDisplay: boolean }
+ *          to toggle prompt display visibility
  *
  * @returns A Promise that resolves when the message has been sent successfully
  */
 export async function sendMessageToActiveTab(
     message: 
         | { type: string; content: Blob | string | { [key: string]: number } }
-        | { showPromptDisplay: boolean } 
+        | { type: 'setComposeMode'; isCompose: boolean }
+        | { showPromptDisplay: boolean }
 ): Promise<void> {
     const tabs = await browser.tabs.query({ active: true, currentWindow: true })
     await browser.tabs.sendMessage(tabs[0].id, message)

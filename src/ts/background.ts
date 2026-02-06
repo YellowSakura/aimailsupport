@@ -1,5 +1,5 @@
 import { ProviderFactory } from './llmProviders/providerFactory'
-import { getConfig, getConfigs, getCurrentMessageContent, getLanguageNameFromCode, logMessage, sendMessageToActiveTab } from './helpers/utils'
+import { getConfig, getConfigs, getCurrentMessageContent, getLanguageNameFromCode, isComposeDisplayed, logMessage, sendMessageToActiveTab } from './helpers/utils'
 
 
 // The array contains references to the menus of any custom languages selected
@@ -355,6 +355,10 @@ updateMenuVisibility()
 messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData) => {
     const configs = await getConfigs()
     const llmProvider = ProviderFactory.getInstance(configs)
+    
+    // Determine if we're in compose mode and notify the content script first
+    const isCompose = await isComposeDisplayed()
+    sendMessageToActiveTab({ type: 'setComposeMode', isCompose: isCompose })
 
     if(info.menuItemId == menuIdAnalyzeIntent) {
         sendMessageToActiveTab({ type: 'thinking', content: messenger.i18n.getMessage('thinking') })
@@ -365,7 +369,7 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData) 
             sendMessageToActiveTab({ type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound') })
         } else {
             llmProvider.analyzeTextIntent(intentAnalysisInput).then(intentAnalysisResult => {
-                    sendMessageToActiveTab({ type: 'addText', content: intentAnalysisResult })
+                sendMessageToActiveTab({ type: 'addText', content: intentAnalysisResult })
             })
             .catch(error => {
                 sendMessageToActiveTab({ type: 'showError', content: error.message })
