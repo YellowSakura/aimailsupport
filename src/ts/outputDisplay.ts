@@ -148,15 +148,26 @@ function createOutputDisplay(): void {
     // Copy in clipboard icon
     const copyClipboardIcon: HTMLSpanElement = document.createElement('span')
     copyClipboardIcon.className = 'copy-clipboard-icon'
-    copyClipboardIcon.innerHTML = '&#128203;'
-    copyClipboardIcon.addEventListener('click', () => copyClipboard())
+    copyClipboardIcon.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2m0 4h8m-8 4h6m-6 4h6"/>
+            <path d="M12 2v4"/>
+            <path d="M8 6h8"/>
+        </svg>
+    `
+    copyClipboardIcon.addEventListener('click', copyClipboard)
     actionsContainer.appendChild(copyClipboardIcon)
 
     // Copy top icon
     const copyTopIcon: HTMLSpanElement = document.createElement('span')
     copyTopIcon.className = 'copy-top-icon'
-    copyTopIcon.innerHTML = '&#9195;'
-    copyTopIcon.addEventListener('click', () => copyToEmailTop())
+    copyTopIcon.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 19V6"/>
+            <path d="M5 12l7-7 7 7"/>
+        </svg>
+    `
+    copyTopIcon.addEventListener('click', copyToEmailTop)
     actionsContainer.appendChild(copyTopIcon)
 
     // Reload icon
@@ -221,11 +232,28 @@ function copyClipboard(): void {
  * Copies the LLM response content to the top of the email.
  * This function is only available when in compose mode.
  */
-async function copyToEmailTop(): Promise<void> {
-    const contentElement = getInnerResponse().querySelector('#amsContent')
-    const textToCopy = contentElement.textContent || ''
+function copyToEmailTop(): void {
+    const contentElement = getInnerResponse().querySelector('#amsContent') as HTMLElement | null
+    const textToCopy: string = contentElement?.textContent?.trim() || ''
 
     if (textToCopy) {
-        console.info("TODO copyToEmailTop")
+        try {
+            // Get the current content of the email body
+            const emailBody: HTMLElement | null = document.querySelector('body')
+            if (emailBody) {
+                // Create a new paragraph with the AI-generated content
+                const aiContent: HTMLDivElement = document.createElement('div')
+                aiContent.textContent = textToCopy
+
+                // Insert at the beginning of the email body
+                emailBody.insertBefore(aiContent, emailBody.firstChild)
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                logMessage(`Error copying to email top: ${error.message}`, 'error')
+            } else {
+                logMessage('Unknown error copying to email top', 'error')
+            }
+        }
     }
 }
