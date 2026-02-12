@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "AI Mail Support",
     "description": "__MSG_addonDescription__",
-    "version": "1.0",
+    "version": "1.0.1",
     "author": "Yellow Sakura",
     "homepage_url": "https://www.yellowsakura.com",
     "default_locale": "en",
