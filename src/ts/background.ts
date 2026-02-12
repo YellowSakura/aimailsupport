@@ -353,262 +353,174 @@ updateMenuVisibility()
 
 // Register a listener for the menus.onClicked events
 messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData) => {
+
+    // Handling scenarios that do not require LLM processing -->
+    if([menuIdOptions, menuIdCustomPrompt].includes(info.menuItemId)) {
+        if(info.menuItemId == menuIdOptions) {
+            browser.runtime.openOptionsPage()
+        }
+        else if(info.menuItemId == menuIdCustomPrompt) {
+            sendMessageToActiveTab({showPromptDisplay: true})
+        }
+
+        return
+    }
+    // <-- handling scenarios that do not require LLM processing
+
     const configs = await getConfigs()
     const llmProvider = ProviderFactory.getInstance(configs)
-    
+
+    // Retrieving text for LLM processing regardless of the user-requested option,
+    // with the application of the general "thinking" output.
+    sendMessageToActiveTab({ type: 'thinking', content: messenger.i18n.getMessage('thinking') })
+    const textToBeProcessed = info.selectionText ?? await getCurrentMessageContent()
+
+    if (textToBeProcessed == null) {
+        sendMessageToActiveTab({ type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound') })
+        return
+    }
+
     // Determine if we're in compose mode and notify the content script first
     const isCompose = await isComposeDisplayed()
     sendMessageToActiveTab({ type: 'setComposeMode', isCompose: isCompose })
 
     if(info.menuItemId == menuIdAnalyzeIntent) {
-        sendMessageToActiveTab({ type: 'thinking', content: messenger.i18n.getMessage('thinking') })
-
-        const intentAnalysisInput = info.selectionText ?? await getCurrentMessageContent()
-
-        if (intentAnalysisInput == null) {
-            sendMessageToActiveTab({ type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound') })
-        } else {
-            llmProvider.analyzeTextIntent(intentAnalysisInput).then(intentAnalysisResult => {
-                sendMessageToActiveTab({ type: 'addText', content: intentAnalysisResult })
-            })
-            .catch(error => {
-                sendMessageToActiveTab({ type: 'showError', content: error.message })
-                logMessage(`Error during intent analysis: ${error.message}`, 'error')
-            })
-        }
+        llmProvider.analyzeTextIntent(textToBeProcessed).then(intentAnalysisResult => {
+            sendMessageToActiveTab({ type: 'addText', content: intentAnalysisResult })
+        })
+        .catch(error => {
+            sendMessageToActiveTab({ type: 'showError', content: error.message })
+            logMessage(`Error during intent analysis: ${error.message}`, 'error')
+        })
     }
     else if(info.menuItemId == menuIdExplain) {
-        sendMessageToActiveTab({type: 'thinking', content: messenger.i18n.getMessage('thinking')})
-
-        const textToExplain = (info.selectionText) ? info.selectionText : await getCurrentMessageContent()
-
-        if(textToExplain == null) {
-            sendMessageToActiveTab({type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound')})
-        }
-        else {
-            llmProvider.explainText(textToExplain).then(textExplained => {
-                sendMessageToActiveTab({type: 'addText', content: textExplained})
-            }).catch(error => {
-                sendMessageToActiveTab({type: 'showError', content: error.message})
-                logMessage(`Error during explanation: ${error.message}`, 'error')
-            })
-        }
+        llmProvider.explainText(textToBeProcessed).then(textExplained => {
+            sendMessageToActiveTab({type: 'addText', content: textExplained})
+        }).catch(error => {
+            sendMessageToActiveTab({type: 'showError', content: error.message})
+            logMessage(`Error during explanation: ${error.message}`, 'error')
+        })
     }
     else if(info.menuItemId == menuIdSummarize) {
-        sendMessageToActiveTab({type: 'thinking', content: messenger.i18n.getMessage('thinking')})
-
-        const textToSummarize = (info.selectionText) ? info.selectionText : await getCurrentMessageContent()
-
-        if(textToSummarize == null) {
-            sendMessageToActiveTab({type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound')})
-        }
-        else {
-            llmProvider.summarizeText(textToSummarize).then(textSummarized => {
-                sendMessageToActiveTab({type: 'addText', content: textSummarized})
-            }).catch(error => {
-                sendMessageToActiveTab({type: 'showError', content: error.message})
-                logMessage(`Error during summarization: ${error.message}`, 'error')
-            })
-        }
+        llmProvider.summarizeText(textToBeProcessed).then(textSummarized => {
+            sendMessageToActiveTab({type: 'addText', content: textSummarized})
+        }).catch(error => {
+            sendMessageToActiveTab({type: 'showError', content: error.message})
+            logMessage(`Error during summarization: ${error.message}`, 'error')
+        })
     }
     else if([menuIdRephraseStandard, menuIdRephraseFluid, menuIdRephraseCreative, menuIdRephraseSimple,
             menuIdRephraseFormal, menuIdRephraseAcademic, menuIdRephraseExpanded, menuIdRephraseShortened,
             menuIdRephrasePolite].includes(info.menuItemId)) {
-        sendMessageToActiveTab({type: 'thinking', content: messenger.i18n.getMessage('thinking')})
+        // Extracts the tone of voice from the menuItemId by taking a substring
+        // starting from the 10th character.
+        // The value 10 corresponds to the length of the string 'aiRephrase',
+        // allowing the code to retrieve the portion of the menuItemId that
+        // follows 'aiRephrase'.
+        const toneOfVoice = (info.menuItemId as string).substring(10).toLowerCase()
 
-        const textToRephrase = (info.selectionText) ? info.selectionText : await getCurrentMessageContent()
-
-        if(textToRephrase == null) {
-            sendMessageToActiveTab({type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound')})
-        }
-        else {
-            // Extracts the tone of voice from the menuItemId by taking a substring
-            // starting from the 10th character.
-            // The value 10 corresponds to the length of the string 'aiRephrase',
-            // allowing the code to retrieve the portion of the menuItemId that
-            // follows 'aiRephrase'.
-            const toneOfVoice = (info.menuItemId as string).substring(10).toLowerCase()
-
-            llmProvider.rephraseText(textToRephrase, toneOfVoice).then(textRephrased => {
-                sendMessageToActiveTab({type: 'addText', content: textRephrased})
-            }).catch(error => {
-                sendMessageToActiveTab({type: 'showError', content: error.message})
-                logMessage(`Error during rephrasing: ${error.message}`, 'error')
-            })
-        }
+        llmProvider.rephraseText(textToBeProcessed, toneOfVoice).then(textRephrased => {
+            sendMessageToActiveTab({type: 'addText', content: textRephrased})
+        }).catch(error => {
+            sendMessageToActiveTab({type: 'showError', content: error.message})
+            logMessage(`Error during rephrasing: ${error.message}`, 'error')
+        })
     }
     else if([menuIdSuggestReplyStandard, menuIdSuggestReplyFluid, menuIdSuggestReplyCreative, menuIdSuggestReplySimple,
             menuIdSuggestReplyFormal, menuIdSuggestReplyAcademic, menuIdSuggestReplyExpanded, menuIdSuggestReplyShortened,
             menuIdSuggestReplyPolite].includes(info.menuItemId)) {
-        sendMessageToActiveTab({type: 'thinking', content: messenger.i18n.getMessage('thinking')})
+        // Extracts the tone of voice from the menuItemId by taking a substring
+        // starting from the 14th character.
+        // The value 14 corresponds to the length of the string 'aiSuggestReply',
+        // allowing the code to retrieve the portion of the menuItemId that
+        // follows 'aiRephrase'.
+        const toneOfVoice = (info.menuItemId as string).substring(14).toLowerCase()
 
-        const textForSuggestion = (info.selectionText) ? info.selectionText : await getCurrentMessageContent()
-
-        if(textForSuggestion == null) {
-            sendMessageToActiveTab({type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound')})
-        }
-        else {
-            // Extracts the tone of voice from the menuItemId by taking a substring
-            // starting from the 14th character.
-            // The value 14 corresponds to the length of the string 'aiSuggestReply',
-            // allowing the code to retrieve the portion of the menuItemId that
-            // follows 'aiRephrase'.
-            const toneOfVoice = (info.menuItemId as string).substring(14).toLowerCase()
-
-            llmProvider.suggestReplyFromText(textForSuggestion, toneOfVoice).then(textSuggested => {
-                sendMessageToActiveTab({type: 'addText', content: textSuggested})
-            }).catch(error => {
-                sendMessageToActiveTab({type: 'showError', content: error.message})
-                logMessage(`Error during reply generation: ${error.message}`, 'error')
-            })
-        }
+        llmProvider.suggestReplyFromText(textToBeProcessed, toneOfVoice).then(textSuggested => {
+            sendMessageToActiveTab({type: 'addText', content: textSuggested})
+        }).catch(error => {
+            sendMessageToActiveTab({type: 'showError', content: error.message})
+            logMessage(`Error during reply generation: ${error.message}`, 'error')
+        })
     }
     else if(info.menuItemId == menuIdSummarizeAndText2Speech) {
-        sendMessageToActiveTab({type: 'thinking', content: messenger.i18n.getMessage('thinking')})
+        try {
+            const textSummarized = await llmProvider.summarizeText(textToBeProcessed)
+            const blob = await llmProvider.getSpeechFromText(textSummarized)
 
-        const textToTranslateAndText2Speech = (info.selectionText) ? info.selectionText : await getCurrentMessageContent()
-
-        if(textToTranslateAndText2Speech == null) {
-            sendMessageToActiveTab({type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound')})
-        }
-        else {
-            try {
-                const textSummarized = await llmProvider.summarizeText(textToTranslateAndText2Speech)
-                const blob = await llmProvider.getSpeechFromText(textSummarized)
-
-                sendMessageToActiveTab({type: 'addAudio', content: blob})
-            } catch (error) {
-                sendMessageToActiveTab({type: 'showError', content: error.message})
-                logMessage(`Error during summarization and text-to-speech: ${error.message}`, 'error')
-            }
+            sendMessageToActiveTab({type: 'addAudio', content: blob})
+        } catch (error) {
+            sendMessageToActiveTab({type: 'showError', content: error.message})
+            logMessage(`Error during summarization and text-to-speech: ${error.message}`, 'error')
         }
     }
     else if(info.menuItemId == menuIdText2Speech) {
-        sendMessageToActiveTab({type: 'thinking', content: messenger.i18n.getMessage('thinking')})
-
-        const textToPlay = (info.selectionText) ? info.selectionText : await getCurrentMessageContent()
-
-        if(textToPlay == null) {
-            sendMessageToActiveTab({type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound')})
-        }
-        else {
-            llmProvider.getSpeechFromText(textToPlay).then(blob => {
-                sendMessageToActiveTab({type: 'addAudio', content: blob})
-            }).catch(error => {
-                sendMessageToActiveTab({type: 'showError', content: error.message})
-                logMessage(`Error during text-to-speech conversion: ${error.message}`, 'error')
-            })
-        }
+        llmProvider.getSpeechFromText(textToBeProcessed).then(blob => {
+            sendMessageToActiveTab({type: 'addAudio', content: blob})
+        }).catch(error => {
+            sendMessageToActiveTab({type: 'showError', content: error.message})
+            logMessage(`Error during text-to-speech conversion: ${error.message}`, 'error')
+        })
     }
     else if(info.menuItemId == menuIdTranslate || translationMenuItemIds?.includes(info.menuItemId)) {
-        sendMessageToActiveTab({type: 'thinking', content: messenger.i18n.getMessage('thinking')})
+        let languageCode = null
 
-        const textToTranslate = (info.selectionText) ? info.selectionText : await getCurrentMessageContent()
-
-        if(textToTranslate == null) {
-            sendMessageToActiveTab({type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound')})
+        // The language code is retrieved when selected from a menu item that
+        // propagates the specific code in its ID.
+        const prefix = 'aiTranslateTo_'
+        if ((info.menuItemId as string).startsWith(prefix)) {
+            languageCode = (info.menuItemId as string).slice(prefix.length)
         }
-        else {
-            let languageCode = null
 
-            // The language code is retrieved when selected from a menu item that
-            // propagates the specific code in its ID.
-            const prefix = 'aiTranslateTo_'
-            if ((info.menuItemId as string).startsWith(prefix)) {
-                languageCode = (info.menuItemId as string).slice(prefix.length)
-            }
-
-            llmProvider.translateText(textToTranslate, languageCode).then(textTranslated => {
-                sendMessageToActiveTab({type: 'addText', content: textTranslated})
-            }).catch(error => {
-                sendMessageToActiveTab({type: 'showError', content: error.message})
-                logMessage(`Error during translation: ${error.message}`, 'error')
-            })
-        }
+        llmProvider.translateText(textToBeProcessed, languageCode).then(textTranslated => {
+            sendMessageToActiveTab({type: 'addText', content: textTranslated})
+        }).catch(error => {
+            sendMessageToActiveTab({type: 'showError', content: error.message})
+            logMessage(`Error during translation: ${error.message}`, 'error')
+        })
     }
     else if(info.menuItemId == menuIdTranslateAndSummarize) {
-        sendMessageToActiveTab({type: 'thinking', content: messenger.i18n.getMessage('thinking')})
+        try {
+            const textTranslated = await llmProvider.translateText(textToBeProcessed)
+            const textTranslateAndSummarized = await llmProvider.summarizeText(textTranslated)
 
-        const textToTranslateAndSummarize = (info.selectionText) ? info.selectionText : await getCurrentMessageContent()
-
-        if(textToTranslateAndSummarize == null) {
-            sendMessageToActiveTab({type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound')})
-        }
-        else {
-            try {
-                const textTranslated = await llmProvider.translateText(textToTranslateAndSummarize)
-                const textTranslateAndSummarized = await llmProvider.summarizeText(textTranslated)
-
-                sendMessageToActiveTab({type: 'addText', content: textTranslateAndSummarized})
-            } catch (error) {
-                sendMessageToActiveTab({type: 'showError', content: error.message})
-                logMessage(`Error during translation and summarization: ${error.message}`, 'error')
-            }
+            sendMessageToActiveTab({type: 'addText', content: textTranslateAndSummarized})
+        } catch (error) {
+            sendMessageToActiveTab({type: 'showError', content: error.message})
+            logMessage(`Error during translation and summarization: ${error.message}`, 'error')
         }
     }
     else if(info.menuItemId == menuIdTranslateAndText2Speech) {
-        sendMessageToActiveTab({type: 'thinking', content: messenger.i18n.getMessage('thinking')})
+        try {
+            const textTranslated = await llmProvider.translateText(textToBeProcessed)
+            const blob = await llmProvider.getSpeechFromText(textTranslated)
 
-        const textToTranslateAndText2Speech = (info.selectionText) ? info.selectionText : await getCurrentMessageContent()
-
-        if(textToTranslateAndText2Speech == null) {
-            sendMessageToActiveTab({type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound')})
-        }
-        else {
-            try {
-                const textTranslated = await llmProvider.translateText(textToTranslateAndText2Speech)
-                const blob = await llmProvider.getSpeechFromText(textTranslated)
-
-                sendMessageToActiveTab({type: 'addAudio', content: blob})
-            } catch (error) {
-                sendMessageToActiveTab({type: 'showError', content: error.message})
-                logMessage(`Error during translation and text2Speech: ${error.message}`, 'error')
-            }
+            sendMessageToActiveTab({type: 'addAudio', content: blob})
+        } catch (error) {
+            sendMessageToActiveTab({type: 'showError', content: error.message})
+            logMessage(`Error during translation and text2Speech: ${error.message}`, 'error')
         }
     }
     else if(info.menuItemId == menuIdModerate) {
-        sendMessageToActiveTab({type: 'thinking', content: messenger.i18n.getMessage('thinking')})
-
-        const textToModerate = await getCurrentMessageContent()
-
-        if(textToModerate == null) {
-            sendMessageToActiveTab({type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound')})
-        }
-        else {
-            llmProvider.moderateText(textToModerate).then(moderatedResponse => {
-                sendMessageToActiveTab({type: 'addChart', content: moderatedResponse})
-            }).catch(error => {
-                sendMessageToActiveTab({type: 'showError', content: error.message})
-                logMessage(`Error during moderation: ${error.message}`, 'error')
-            })
-        }
+        llmProvider.moderateText(textToBeProcessed).then(moderatedResponse => {
+            sendMessageToActiveTab({type: 'addChart', content: moderatedResponse})
+        }).catch(error => {
+            sendMessageToActiveTab({type: 'showError', content: error.message})
+            logMessage(`Error during moderation: ${error.message}`, 'error')
+        })
     }
     else if(info.menuItemId == menuIdSuggestImprovements) {
-        sendMessageToActiveTab({type: 'thinking', content: messenger.i18n.getMessage('thinking')})
-
-        const textToImprove = await getCurrentMessageContent()
-
-        if(textToImprove == null) {
-            sendMessageToActiveTab({type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound')})
-        }
-        else {
-            llmProvider.suggestImprovementsForText(textToImprove).then(improvedText => {
-                sendMessageToActiveTab({type: 'addText', content: improvedText})
-            }).catch(error => {
-                sendMessageToActiveTab({type: 'showError', content: error.message})
-                logMessage(`Error while improving the text: ${error.message}`, 'error')
-            })
-        }
-    }
-    else if(info.menuItemId == menuIdCustomPrompt) {
-        sendMessageToActiveTab({showPromptDisplay: true})
-    }
-    else if(info.menuItemId == menuIdOptions) {
-        browser.runtime.openOptionsPage()
+        llmProvider.suggestImprovementsForText(textToBeProcessed).then(improvedText => {
+            sendMessageToActiveTab({type: 'addText', content: improvedText})
+        }).catch(error => {
+            sendMessageToActiveTab({type: 'showError', content: error.message})
+            logMessage(`Error while improving the text: ${error.message}`, 'error')
+        })
     }
     // Fallback message case, but only if the menu does not match any values to
     // ignore, e.g., options.
     else if (!['aiOptions'].includes(info.menuItemId as string)) {
+        sendMessageToActiveTab({type: 'showError', content: `Invalid menu item selected: ${info.menuItemId}`})
         logMessage(`Invalid menu item selected: ${info.menuItemId}`, 'error')
     }
 })
@@ -672,48 +584,6 @@ messenger.composeScripts.register({
         { file: '/promptDisplay/promptDisplay.css' }
     ]
 })
-
-// MANIFEST V3 -->
-/**
- * Using the scripting.messageDisplay API for customizing the content displayed
- * when viewing a message.
- *
- * For more information check the docs at:
- * https://webextension-api.thunderbird.net/en/mv3/scripting.messageDisplay.html
- */
-/*messenger.scripting.messageDisplay.registerScripts([
-    {
-        id: 'outputMessageDisplay',
-        js: [ '/outputDisplay/outputDisplay.js' ],
-        css: [ '/outputDisplay/outputDisplay.css' ]
-    },
-    {
-        id: 'promptMessageDisplay',
-        js: [ '/promptDisplay/promptDisplay.js' ],
-        css: ['/promptDisplay/promptDisplay.css' ]
-    }
-])*/
-
-/**
- * Using the scripting.compose API for customizing the content displayed when
- * create or edit a message.
- *
- * For more information check the docs at:
- * https://webextension-api.thunderbird.net/en/mv3/scripting.compose.html
- */
-/*messenger.scripting.compose.registerScripts([
-    {
-        id: 'outputComposeDisplay',
-        js: [ '/outputDisplay/outputDisplay.js' ],
-        css: [ '/outputDisplay/outputDisplay.css' ]
-    },
-    {
-        id: 'promptComposeDisplay',
-        js: [ '/promptDisplay/promptDisplay.js' ],
-        css: [ '/promptDisplay/promptDisplay.css' ]
-    }
-])*/
-// <-- MANIFEST V3
 
 // Listens for the message signaling the change in configurations to update the
 // interface.
