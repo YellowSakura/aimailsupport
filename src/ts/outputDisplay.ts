@@ -162,9 +162,10 @@ function createOutputDisplay(): void {
     const copyTopIcon: HTMLSpanElement = document.createElement('span')
     copyTopIcon.className = 'copy-top-icon'
     copyTopIcon.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 19V6"/>
             <path d="M5 12l7-7 7 7"/>
+            <path d="M19 21H5"/>
         </svg>
     `
     copyTopIcon.addEventListener('click', copyToEmailTop)
@@ -173,7 +174,12 @@ function createOutputDisplay(): void {
     // Reload icon
     /*const reloadIcon: HTMLSpanElement = document.createElement('span')
     reloadIcon.className = 'reload-icon'
-    reloadIcon.innerHTML = '&#128260;'
+    reloadIcon.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12a9 9 0 1 1-3-6.7" />
+            <path d="M21 3v6h-6" />
+        </svg>
+    `
     actionsContainer.appendChild(reloadIcon)*/
 
     amsInnerResponse.appendChild(actionsContainer)

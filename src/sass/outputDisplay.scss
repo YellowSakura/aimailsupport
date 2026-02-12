@@ -12,7 +12,7 @@
 
     &.show {
         // The use of !important is necessary to override any generic .show
-        // styles that might interfere with the display.
+        // styles in a mail, that might interfere with the display.
         display: block !important;
     }
 }
@@ -116,9 +116,9 @@
             }
 
             svg {
-                fill: #1b1c1d;
-                height: 24px;
-                width: 24px;
+                color: black;
+                height: 16px;
+                width: 16px;
             }
         }
 

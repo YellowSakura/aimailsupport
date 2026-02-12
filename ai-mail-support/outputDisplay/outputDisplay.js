@@ -5,8 +5,9 @@
             <path d="M8 6h8"/>
         </svg>
     `,p.addEventListener("click",c),d.appendChild(p);let _=document.createElement("span");_.className="copy-top-icon",_.innerHTML=`
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 19V6"/>
             <path d="M5 12l7-7 7 7"/>
+            <path d="M19 21H5"/>
         </svg>
     `,_.addEventListener("click",i),d.appendChild(_),r.appendChild(d),document.body.appendChild(e)}(),t.type){case"addAudio":let E;r=t.content,l(),(E=new FileReader).onload=()=>{let e=E.result,t=document.createElement("audio");t.src=e,t.autoplay=!0,t.controls=!0,o().querySelector("#amsContent").appendChild(t)},E.readAsDataURL(r);break;case"addChart":let m;n=t.content,l(),m=new e,o().querySelector("#amsContent").append(m.createBarChart(n,50));break;case"addText":let S;a=t.content,l(),o().classList.add("text-content"),S=((d=s)&&d.__esModule?d.default:d)(a),o().querySelector("#amsContent").textContent=S;break;case"setComposeMode":let I=o().querySelector("#actionsContainer");t.isCompose?I.classList.add("compose-mode"):I.classList.remove("compose-mode");break;case"showError":p=t.content,l(),o().classList.add("error"),o().querySelector("#amsContent").textContent=p;break;case"thinking":_=t.content,l(),o().classList.add("thinking"),o().querySelector("#amsContent").innerHTML=`${_}<span class="dots"></span>`}})})();
