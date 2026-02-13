@@ -52,7 +52,6 @@ export async function getConfigs(): Promise<ConfigType> | null {
  * the HTML content.
  *
  * @returns A Promise resolving to the plain text content of the current message.
- *          Returns `null` if the content cannot be retrieved.
  */
 export async function getCurrentMessageContent(): Promise<string> {
     const tabs = await messenger.tabs.query({ active: true, currentWindow: true })
@@ -68,6 +67,7 @@ export async function getCurrentMessageContent(): Promise<string> {
 
     let fullHtml = null
     let fullPlain = null
+    let subject = null
 
     // Case: Email viewing -->
     if(messageDisplayed) {
@@ -82,12 +82,16 @@ export async function getCurrentMessageContent(): Promise<string> {
                 fullPlain = part.content
             }
         }
+
+        // Get the message subject
+        subject = (await messenger.messages.get(messageDisplayed.id)).subject
     }
     // <-- case: Email viewing
     // Case: Email creation or edit -->
     else if(composeDetails) {
         fullHtml = composeDetails.body
         fullPlain = composeDetails.plainTextBody
+        subject = composeDetails.subject
     }
     // <-- case: Email creation or edit
 
@@ -95,6 +99,9 @@ export async function getCurrentMessageContent(): Promise<string> {
         // @ts-expect-error - Thunderbird 128+ introduce messengerUtilities
         fullPlain = await messenger.messengerUtilities.convertToPlainText(fullHtml)
     }
+
+    // PII Mask
+    const isMaskPiiEnabled: boolean = await getConfig('maskPii')
 
     // Remove link (https and https), newlines and extra spaces before returning
     // the plain text
@@ -105,15 +112,18 @@ export async function getCurrentMessageContent(): Promise<string> {
             .replace(/\s{2,}/g, ' ')            // Replace multiple spaces with a single space
             .trim()                             // Remove leading/trailing spaces
 
-        // PII Mask
-        const isMaskPiiEnabled: boolean = await getConfig('maskPii')
-        if(isMaskPiiEnabled === true) {
-            logMessage('Masking PII...', 'debug')
+        if(isMaskPiiEnabled) {
+            logMessage('Masking PII for body...', 'debug')
             fullPlain = mask(fullPlain)
         }
     }
 
-    return fullPlain || null
+    if(subject && isMaskPiiEnabled) {
+        logMessage('Masking PII for subject...', 'debug')
+        subject = mask(subject)
+    }
+
+    return `Subject: ${subject} - Body: ${fullPlain}`
 }
 
 /**
