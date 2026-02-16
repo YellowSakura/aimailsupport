@@ -14,6 +14,9 @@
     "localLlm.warningTimeout": {
         "message": "<strong>Attenzione</strong>: LM Studio od Ollama sono eseguiti totalmente localmente, il che richiede delle risorse hardware e dei tempi di esecuzione significativamente più alti rispetto ad una chiamata ad un servizio cloud. Impostare un timeout adeguato!"
     },
+    "mailCheckErrors": {
+        "message": "Controlla errori"
+    },
     "mailListen": {
         "message": "Ascolta"
     },

@@ -21,6 +21,7 @@ const configs: ConfigType = {
     temperature: 1,
     servicesTimeout: 30,
     debugMode: true,
+    maskPii: false,
 
     anthropic: {
         apiKey: null,
@@ -43,6 +44,7 @@ const configs: ConfigType = {
 
     mistral: {
         apiKey: null,
+        model: 'mistral-small-latest'
     },
 
     lms: {
@@ -136,6 +138,11 @@ describe('AnthropicClaudeProvider', () => {
         const output = await provider.translateText('Esempio di testo da tradurre')
         expect(typeof output).toBe('string')
     })
+
+    test('should be able to check text for errors', async () => {
+        const output = await provider.checkTextForErrors('This text contains some ERORS to find')
+        expect(typeof output).toBe('string')
+    })
 })
 
 // DeepseekProvider tests
@@ -187,6 +194,11 @@ describe('DeepseekProvider', () => {
     test('should be able to translate text', async () => {
         // 'Esempio di testo da tradurre' is Italian for 'Example of text to translate'
         const output = await provider.translateText('Esempio di testo da tradurre')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to check text for errors', async () => {
+        const output = await provider.checkTextForErrors('This text contains some ERORS to find')
         expect(typeof output).toBe('string')
     })
 })
@@ -242,6 +254,11 @@ describe('GoogleGeminiProvider', () => {
         const output = await provider.translateText('Esempio di testo da tradurre')
         expect(typeof output).toBe('string')
     })
+
+    test('should be able to check text for errors', async () => {
+        const output = await provider.checkTextForErrors('This text contains some ERORS to find')
+        expect(typeof output).toBe('string')
+    })
 })
 
 // GroqProvider tests
@@ -295,6 +312,11 @@ describe('GroqProvider', () => {
         const output = await provider.translateText('Esempio di testo da tradurre')
         expect(typeof output).toBe('string')
     })
+
+    test('should be able to check text for errors', async () => {
+        const output = await provider.checkTextForErrors('This text contains some ERORS to find')
+        expect(typeof output).toBe('string')
+    })
 })
 
 // LM Studio tests
@@ -345,6 +367,11 @@ describe('LmStudioProvider', () => {
     test('should be able to translate text', async () => {
         // 'Esempio di testo da tradurre' is Italian for 'Example of text to translate'
         const output = await provider.translateText('Esempio di testo da tradurre')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to check text for errors', async () => {
+        const output = await provider.checkTextForErrors('This text contains some ERORS to find')
         expect(typeof output).toBe('string')
     })
 })
@@ -414,6 +441,11 @@ describe('MistralProvider', () => {
         const output = await provider.translateText('Esempio di testo da tradurre')
         expect(typeof output).toBe('string')
     })
+
+    test('should be able to check text for errors', async () => {
+        const output = await provider.checkTextForErrors('This text contains some ERORS to find')
+        expect(typeof output).toBe('string')
+    })
 })
 
 // OllamaProvider tests
@@ -464,6 +496,11 @@ describe('OllamaProvider', () => {
     test('should be able to translate text', async () => {
         // 'Esempio di testo da tradurre' is Italian for 'Example of text to translate'
         const output = await provider.translateText('Esempio di testo da tradurre')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to check text for errors', async () => {
+        const output = await provider.checkTextForErrors('This text contains some ERORS to find')
         expect(typeof output).toBe('string')
     })
 })
@@ -537,6 +574,11 @@ describe('OpenAiGptProvider', () => {
     test('should be able to translate text', async () => {
         // 'Esempio di testo da tradurre' is Italian for 'Example of text to translate'
         const output = await provider.translateText('Esempio di testo da tradurre')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to check text for errors', async () => {
+        const output = await provider.checkTextForErrors('This text contains some ERORS to find')
         expect(typeof output).toBe('string')
     })
 })

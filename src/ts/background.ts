@@ -309,6 +309,15 @@ const menuIdModerate = messenger.menus.create({
     ]
 })
 
+const menuIdCheckErrors = messenger.menus.create({
+    id: 'aiCheckErrors',
+    title: browser.i18n.getMessage('mailCheckErrors'),
+    contexts: [
+        'compose_action_menu',
+        'selection'
+    ]
+})
+
 const menuIdSuggestImprovements = messenger.menus.create({
     id: 'aiSuggestImprovements',
     title: browser.i18n.getMessage('mailSuggestImprovements'),
@@ -509,6 +518,14 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData) 
             logMessage(`Error during moderation: ${error.message}`, 'error')
         })
     }
+    else if(info.menuItemId == menuIdCheckErrors) {
+        llmProvider.checkTextForErrors(textToBeProcessed).then(errorAnalysis => {
+            sendMessageToActiveTab({type: 'addText', content: errorAnalysis})
+        }).catch(error => {
+            sendMessageToActiveTab({type: 'showError', content: error.message})
+            logMessage(`Error during error checking error: ${error.message}`, 'error')
+        })
+    }
     else if(info.menuItemId == menuIdSuggestImprovements) {
         llmProvider.suggestImprovementsForText(textToBeProcessed).then(improvedText => {
             sendMessageToActiveTab({type: 'addText', content: improvedText})
@@ -623,6 +640,12 @@ async function updateMenuVisibility(): Promise<void> {
         enabled: llmProvider.canModerateText()
     })
     // <-- canModerateText
+
+    // canCheckTextForErrors -->
+    messenger.menus.update(menuIdCheckErrors, {
+        enabled: llmProvider.canCheckTextForErrors()
+    })
+    // <-- canCheckTextForErrors
 
     // canRephraseText -->
     messenger.menus.update(subMenuIdRephrase, {

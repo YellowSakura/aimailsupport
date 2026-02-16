@@ -15,6 +15,10 @@
         "message": "Unable to retrieve text for processing.",
         "description": "Text displayed when text cannot be retrieved for processing."
     },
+    "mailCheckErrors": {
+        "message": "Check for errors",
+        "description": "This option checks the email for spelling, logical, and other types of errors."
+    },
     "mailListen": {
         "message": "Listen",
         "description": "Menu option to play audio from the textual content of an email or a portion of it."

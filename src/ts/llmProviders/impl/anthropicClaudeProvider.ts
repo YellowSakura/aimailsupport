@@ -35,6 +35,12 @@ export class AnthropicClaudeProvider extends GenericProvider {
         return this.manageMessageContent(userPrompt, input)
     }
 
+    public async checkTextForErrors(input: string): Promise<string> {
+        logMessage(`Request to check for errors in ${getLanguageNameFromCode(this.mainUserLanguageCode)} the text: ${input}`, 'debug')
+
+        return this.manageMessageContent(this.PROMPTS.CHECK_ERRORS.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode)), input)
+    }
+
     public async explainText(input: string): Promise<string> {
         logMessage(`Request to explain in ${getLanguageNameFromCode(this.mainUserLanguageCode)} the text: ${input}`, 'debug')
 

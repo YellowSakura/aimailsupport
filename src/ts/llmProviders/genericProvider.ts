@@ -11,6 +11,7 @@ export class GenericProvider {
 
     protected readonly PROMPTS = {
         ANALYZE_INTENT: 'You are an assistant that analyzes the tone and perceived intent of an email and provides the analysis in %language%; describe how the email might come across to the recipient, considering tone, clarity, potential emotional impact, and coherence with the context of the email thread history; Ignore formatting, headers, footers, signatures, quoted replies and unusual characters',
+        CHECK_ERRORS: 'You are an assistant that carefully checks emails in %language% for spelling errors, logical inconsistencies, inaccuracies, typos, and other potential issues; provide a detailed analysis pointing out any problems found and suggesting corrections; Ignore formatting, headers, footers, signatures, quoted replies and unusual characters',
         EXPLAIN: 'You are an assistant that explains the content of emails in %language% in a clear and simple way, preserving the original meaning; avoid unnecessary complexity; Ignore formatting, headers, footers, signatures, quoted replies and unusual characters',
         REPHRASE: 'You are an assistant that rephrases the content of emails in %language% using a %toneOfVoice% tone of voice; preserve the original meaning; Ignore formatting, headers, footers, signatures, quoted replies and unusual characters',
         SUGGEST_IMPROVEMENTS: 'You are an assistant that suggests improvements to the content of emails in %language%, focusing on clarity, tone, and effectiveness; Ignore formatting, headers, footers, signatures, quoted replies and unusual characters',
@@ -46,6 +47,18 @@ export class GenericProvider {
      * @throws If the prompt application is unsupported or fails.
      */
     public async applyCustomPrompt(userPrompt: string, input: string): Promise<string> {
+        throw new Error(browser.i18n.getMessage('errorInvalidAddonOptions'))
+    }
+
+    /**
+     * Checks the provided text input for spelling errors, logical inconsistencies,
+     * inaccuracies, typos, and other potential issues.
+     *
+     * @param input - The input text to be checked for errors.
+     *
+     * @returns A Promise resolving to an analysis of errors found in the text.
+     */
+    public async checkTextForErrors(input: string): Promise<string> {
         throw new Error(browser.i18n.getMessage('errorInvalidAddonOptions'))
     }
 
@@ -183,6 +196,10 @@ export class GenericProvider {
 
     public canSpeechFromText(): boolean {
         return this.getSpeechFromText !== GenericProvider.prototype.getSpeechFromText
+    }
+
+    public canCheckTextForErrors(): boolean {
+        return this.checkTextForErrors !== GenericProvider.prototype.checkTextForErrors
     }
 
     public canSuggestImprovementsForText(): boolean {
