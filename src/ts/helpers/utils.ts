@@ -10,7 +10,7 @@ import { mask } from '@yellowsakura/js-pii-mask'
  * @returns A promise that resolves with the retrieved data, or null if an error
  *          occurs.
  */
-export async function getConfig(key: string): Promise<any> | null {
+export async function getConfig(key: string): Promise<any | null> {
     let config: any = null
 
     try {
