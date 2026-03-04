@@ -39,6 +39,6 @@
   },
   "dependencies": {
     "@yellowsakura/js-pii-mask": "0.8.93",
-    "remove-markdown": "^0.6.2"
+    "marked": "^17.0.0"
   }
 }

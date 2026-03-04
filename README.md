@@ -196,9 +196,9 @@ For more details, please refer to the [project page](https://www.yellowsakura.co
 Dependencies:
 
 * [ESLint](https://github.com/eslint/eslint) is licensed under [MIT License](https://opensource.org/licenses/MIT);
+* [marked](https://github.com/markedjs/marked) is licensed under [MIT License](https://opensource.org/licenses/MIT);
 * [parcel](https://github.com/parcel-bundler/parcel) is licensed under [MIT License](https://opensource.org/licenses/MIT);
 * [posthtml](https://github.com/posthtml/posthtml) is licensed under [MIT License](https://opensource.org/licenses/MIT);
-* [remove-markdown](https://github.com/zuchka/remove-markdown) is licensed under [MIT License](https://opensource.org/licenses/MIT);
 * [types/sanitize-html](https://github.com/apostrophecms/sanitize-html) is licensed under [MIT License](https://opensource.org/licenses/MIT);
 * [types/thunderbird-webext-browser](https://www.npmjs.com/package/@types/thunderbird-webext-browser) is licensed under [MIT License](https://opensource.org/licenses/MIT);
 * [typescript-eslint/parser](https://github.com/typescript-eslint/typescript-eslint) is licensed under [BSD 2-clause license](https://opensource.org/license/bsd-2-clause).

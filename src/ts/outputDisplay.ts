@@ -1,6 +1,6 @@
 import { ChartUtils } from './helpers/chartUtils'
 import { logMessage } from './helpers/utils'
-import removeMarkdown from 'remove-markdown'
+import { marked } from 'marked'
 
 // Manage async messages -->
 browser.runtime.onMessage.addListener(async (message: any) => {
@@ -72,14 +72,13 @@ function getInnerResponse() {
     return document.querySelector('#amsOuterResponse')?.shadowRoot?.querySelector('#amsInnerResponse')
 }
 
-function addText(newContent: string) {
+async function addText(newContent: string) {
     clearOutputDisplay()
 
     getInnerResponse().classList.add('text-content')
 
-    // Any Markdown present is converted to plain text
-    const rawText = removeMarkdown(newContent)
-    getInnerResponse().querySelector('#amsContent').textContent = rawText
+    const htmlContent = await marked.parse(newContent)
+    getInnerResponse().querySelector('#amsContent').innerHTML = htmlContent
 }
 
 function showError(newContent: string) {
@@ -240,16 +239,16 @@ function copyClipboard(): void {
  */
 function copyToEmailTop(): void {
     const contentElement = getInnerResponse().querySelector('#amsContent') as HTMLElement | null
-    const textToCopy: string = contentElement?.textContent?.trim() || ''
+    const htmlToCopy: string = contentElement?.innerHTML?.trim() || ''
 
-    if (textToCopy) {
+    if (htmlToCopy) {
         try {
             // Get the current content of the email body
             const emailBody: HTMLElement | null = document.querySelector('body')
             if (emailBody) {
                 // Create a new paragraph with the AI-generated content
                 const aiContent: HTMLDivElement = document.createElement('div')
-                aiContent.textContent = textToCopy
+                aiContent.innerHTML = htmlToCopy
 
                 // Insert at the beginning of the email body
                 emailBody.insertBefore(aiContent, emailBody.firstChild)
