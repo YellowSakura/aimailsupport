@@ -40,6 +40,17 @@
         overflow-y: auto;
         padding: 15px 35px 15px 25px;
 
+        // Prevent extra spacing at the top/bottom of the response box
+        // when HTML content starts or ends with <p> elements.
+        > p:first-child {
+            margin-top: 0;
+        }
+
+        > p:last-child {
+            margin-bottom: 0;
+        }
+        // <-- prevent extra spacing
+
         audio {
             display: block;
             margin: 0 auto;
