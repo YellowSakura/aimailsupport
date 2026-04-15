@@ -5,7 +5,7 @@ import { mask } from '@yellowsakura/js-pii-mask'
  * Retrieve data from browser storage for a specific key.
  * Returns null if no data is found or an error occurs.
  *
- * @param key - The key to retrieve data from storage.
+ * @param {string} key - The key to retrieve data from storage.
  *
  * @returns A promise that resolves with the retrieved data, or null if an error
  *          occurs.
@@ -51,10 +51,14 @@ export async function getConfigs(): Promise<ConfigType> | null {
  * If the plain text content is not available, it attempts to extract it from
  * the HTML content.
  *
+ * @param {number} tabId - Optional tab ID to retrieve the message from.
+ *        If not provided, falls back to querying the active tab in the
+ *        current window via messenger.tabs.query.
+ *
  * @returns A Promise resolving to the plain text content of the current message.
  */
-export async function getCurrentMessageContent(): Promise<string> {
-    const tabs = await messenger.tabs.query({ active: true, currentWindow: true })
+export async function getCurrentMessageContent(tabId?: number): Promise<string> {
+    const resolvedTabId = tabId ?? (await messenger.tabs.query({ active: true, currentWindow: true }))[0].id
 
     // The text of the current message is retrieved by distinguishing two cases:
     // whether we are dealing with an email being viewed, or whether we are in the
@@ -62,8 +66,8 @@ export async function getCurrentMessageContent(): Promise<string> {
     //
     // The second scenario is considered only if the messageDisplayed variable is
     // not valid.
-    const messageDisplayed = await messenger.messageDisplay.getDisplayedMessage(tabs[0].id)
-    const composeDetails = !messageDisplayed ? await messenger.compose.getComposeDetails(tabs[0].id) : null
+    const messageDisplayed = await messenger.messageDisplay.getDisplayedMessage(resolvedTabId)
+    const composeDetails = !messageDisplayed ? await messenger.compose.getComposeDetails(resolvedTabId) : null
 
     let fullHtml = null
     let fullPlain = null
@@ -138,14 +142,19 @@ export async function isMessageDisplayed(): Promise<boolean> {
 }
 
 /**
- * Checks if the active tab is a compose window.
- * @returns True if the active tab is a compose window, false otherwise.
+ * Checks if the specified tab is a compose window.
+ *
+ * @param {number} tabId - Optional tab ID to check.
+ *        If not provided, falls back to querying the active tab in the current
+ *        window via messenger.tabs.query.
+ *
+ * @returns True if the tab is a compose window, false otherwise.
  */
-export async function isComposeDisplayed(): Promise<boolean> {
-    const tabs = await messenger.tabs.query({ active: true, currentWindow: true })
+export async function isComposeDisplayed(tabId?: number): Promise<boolean> {
+    const resolvedTabId = tabId ?? (await messenger.tabs.query({ active: true, currentWindow: true }))[0].id
 
     try {
-        const composeDetails = await messenger.compose.getComposeDetails(tabs[0].id)
+        const composeDetails = await messenger.compose.getComposeDetails(resolvedTabId)
         return !!composeDetails;
     }
     catch (error) {
@@ -202,8 +211,8 @@ export function localizeNodes(): void {
  * If 'debugMode' is true, it will log the provided message using the specified 
  * console method (e.g., 'log', 'error', 'warn', 'info').
  * 
- * @param message - The message to log to the console.
- * @param method - The console method to use for logging. Defaults to 'log'.
+ * @param {string} message - The message to log to the console.
+ * @param {string} method - The console method to use for logging. Defaults to 'log'.
  * 
  * @returns A promise that resolves to void.
  */
@@ -216,16 +225,9 @@ export async function logMessage(message: string, method: string = 'log'): Promi
 }
 
 /**
- * Sends a message to the currently active tab in the browser.
- * 
- * The function accepts two possible message formats:
- * 
- * 1. A structured message with 'type' and 'content' properties:
- *    - type: string identifying the message type
- *    - content: can be a Blob, string, or an index signature type
- *      { [key: string]: number } (used to manage graphs)
- * 2. Prompt display toggle format with a boolean to control prompt visibility
- * 
+ * Sends a message to the specified tab.
+ *
+ * @param {number} tabId - The ID of the target tab
  * @param message - The message payload, which must be one of:
  *        - { type: string; content: Blob | string | { [key: string]: number } }
  *          for structured messages with content
@@ -236,12 +238,12 @@ export async function logMessage(message: string, method: string = 'log'): Promi
  *
  * @returns A Promise that resolves when the message has been sent successfully
  */
-export async function sendMessageToActiveTab(
-    message: 
+export async function sendMessageToTab(
+    tabId: number,
+    message:
         | { type: string; content: Blob | string | { [key: string]: number } }
         | { type: 'setComposeMode'; isCompose: boolean }
         | { showPromptDisplay: boolean }
 ): Promise<void> {
-    const tabs = await browser.tabs.query({ active: true, currentWindow: true })
-    await browser.tabs.sendMessage(tabs[0].id, message)
+    await browser.tabs.sendMessage(tabId, message)
 }

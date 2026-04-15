@@ -1,5 +1,5 @@
 import { ProviderFactory } from './llmProviders/providerFactory'
-import { getConfig, getConfigs, getCurrentMessageContent, getLanguageNameFromCode, isComposeDisplayed, logMessage, sendMessageToActiveTab } from './helpers/utils'
+import { getConfig, getConfigs, getCurrentMessageContent, getLanguageNameFromCode, isComposeDisplayed, logMessage, sendMessageToTab } from './helpers/utils'
 
 
 // The array contains references to the menus of any custom languages selected
@@ -361,60 +361,68 @@ updateMenuVisibility()
 // <-- create the menu entries
 
 // Register a listener for the menus.onClicked events
-messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData) => {
+messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, tab: messenger.tabs.Tab) => {
+    // Capture the originating tab ID so that the response is always sent back
+    // to the tab where the request was initiated, even if the user switches
+    // tabs while the LLM is processing.
+    const tabId = tab.id
 
-    // Handling scenarios that do not require LLM processing -->
+    // Handling menu actions that only open UI panels without LLM processing:
+    // - Options: opens the add-on settings page
+    // - Custom prompt: shows the prompt input popup (LLM processing is
+    //   deferred until the user submits the prompt via onMessage listener)
+    // -->
     if([menuIdOptions, menuIdCustomPrompt].includes(info.menuItemId)) {
         if(info.menuItemId == menuIdOptions) {
             browser.runtime.openOptionsPage()
         }
         else if(info.menuItemId == menuIdCustomPrompt) {
-            sendMessageToActiveTab({showPromptDisplay: true})
+            sendMessageToTab(tabId, {showPromptDisplay: true})
         }
 
         return
     }
-    // <-- handling scenarios that do not require LLM processing
+    // <-- handling menu actions that only open UI panels
 
     const configs = await getConfigs()
     const llmProvider = ProviderFactory.getInstance(configs)
 
     // Retrieving text for LLM processing regardless of the user-requested option,
     // with the application of the general "thinking" output.
-    sendMessageToActiveTab({ type: 'thinking', content: messenger.i18n.getMessage('thinking') })
-    const textToBeProcessed = info.selectionText ?? await getCurrentMessageContent()
+    sendMessageToTab(tabId, { type: 'thinking', content: messenger.i18n.getMessage('thinking') })
+    const textToBeProcessed = info.selectionText ?? await getCurrentMessageContent(tabId)
 
     if (textToBeProcessed == null) {
-        sendMessageToActiveTab({ type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound') })
+        sendMessageToTab(tabId, { type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound') })
         return
     }
 
     // Determine if we're in compose mode and notify the content script first
-    const isCompose = await isComposeDisplayed()
-    sendMessageToActiveTab({ type: 'setComposeMode', isCompose: isCompose })
+    const isCompose = await isComposeDisplayed(tabId)
+    sendMessageToTab(tabId, { type: 'setComposeMode', isCompose: isCompose })
 
     if(info.menuItemId == menuIdAnalyzeIntent) {
         llmProvider.analyzeTextIntent(textToBeProcessed).then(intentAnalysisResult => {
-            sendMessageToActiveTab({ type: 'addText', content: intentAnalysisResult })
+            sendMessageToTab(tabId, { type: 'addText', content: intentAnalysisResult })
         })
         .catch(error => {
-            sendMessageToActiveTab({ type: 'showError', content: error.message })
+            sendMessageToTab(tabId, { type: 'showError', content: error.message })
             logMessage(`Error during intent analysis: ${error.message}`, 'error')
         })
     }
     else if(info.menuItemId == menuIdExplain) {
         llmProvider.explainText(textToBeProcessed).then(textExplained => {
-            sendMessageToActiveTab({type: 'addText', content: textExplained})
+            sendMessageToTab(tabId, {type: 'addText', content: textExplained})
         }).catch(error => {
-            sendMessageToActiveTab({type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: error.message})
             logMessage(`Error during explanation: ${error.message}`, 'error')
         })
     }
     else if(info.menuItemId == menuIdSummarize) {
         llmProvider.summarizeText(textToBeProcessed).then(textSummarized => {
-            sendMessageToActiveTab({type: 'addText', content: textSummarized})
+            sendMessageToTab(tabId, {type: 'addText', content: textSummarized})
         }).catch(error => {
-            sendMessageToActiveTab({type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: error.message})
             logMessage(`Error during summarization: ${error.message}`, 'error')
         })
     }
@@ -429,9 +437,9 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData) 
         const toneOfVoice = (info.menuItemId as string).substring(10).toLowerCase()
 
         llmProvider.rephraseText(textToBeProcessed, toneOfVoice).then(textRephrased => {
-            sendMessageToActiveTab({type: 'addText', content: textRephrased})
+            sendMessageToTab(tabId, {type: 'addText', content: textRephrased})
         }).catch(error => {
-            sendMessageToActiveTab({type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: error.message})
             logMessage(`Error during rephrasing: ${error.message}`, 'error')
         })
     }
@@ -446,9 +454,9 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData) 
         const toneOfVoice = (info.menuItemId as string).substring(14).toLowerCase()
 
         llmProvider.suggestReplyFromText(textToBeProcessed, toneOfVoice).then(textSuggested => {
-            sendMessageToActiveTab({type: 'addText', content: textSuggested})
+            sendMessageToTab(tabId, {type: 'addText', content: textSuggested})
         }).catch(error => {
-            sendMessageToActiveTab({type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: error.message})
             logMessage(`Error during reply generation: ${error.message}`, 'error')
         })
     }
@@ -457,17 +465,17 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData) 
             const textSummarized = await llmProvider.summarizeText(textToBeProcessed)
             const blob = await llmProvider.getSpeechFromText(textSummarized)
 
-            sendMessageToActiveTab({type: 'addAudio', content: blob})
+            sendMessageToTab(tabId, {type: 'addAudio', content: blob})
         } catch (error) {
-            sendMessageToActiveTab({type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: error.message})
             logMessage(`Error during summarization and text-to-speech: ${error.message}`, 'error')
         }
     }
     else if(info.menuItemId == menuIdText2Speech) {
         llmProvider.getSpeechFromText(textToBeProcessed).then(blob => {
-            sendMessageToActiveTab({type: 'addAudio', content: blob})
+            sendMessageToTab(tabId, {type: 'addAudio', content: blob})
         }).catch(error => {
-            sendMessageToActiveTab({type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: error.message})
             logMessage(`Error during text-to-speech conversion: ${error.message}`, 'error')
         })
     }
@@ -482,9 +490,9 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData) 
         }
 
         llmProvider.translateText(textToBeProcessed, languageCode).then(textTranslated => {
-            sendMessageToActiveTab({type: 'addText', content: textTranslated})
+            sendMessageToTab(tabId, {type: 'addText', content: textTranslated})
         }).catch(error => {
-            sendMessageToActiveTab({type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: error.message})
             logMessage(`Error during translation: ${error.message}`, 'error')
         })
     }
@@ -493,9 +501,9 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData) 
             const textTranslated = await llmProvider.translateText(textToBeProcessed)
             const textTranslateAndSummarized = await llmProvider.summarizeText(textTranslated)
 
-            sendMessageToActiveTab({type: 'addText', content: textTranslateAndSummarized})
+            sendMessageToTab(tabId, {type: 'addText', content: textTranslateAndSummarized})
         } catch (error) {
-            sendMessageToActiveTab({type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: error.message})
             logMessage(`Error during translation and summarization: ${error.message}`, 'error')
         }
     }
@@ -504,62 +512,67 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData) 
             const textTranslated = await llmProvider.translateText(textToBeProcessed)
             const blob = await llmProvider.getSpeechFromText(textTranslated)
 
-            sendMessageToActiveTab({type: 'addAudio', content: blob})
+            sendMessageToTab(tabId, {type: 'addAudio', content: blob})
         } catch (error) {
-            sendMessageToActiveTab({type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: error.message})
             logMessage(`Error during translation and text2Speech: ${error.message}`, 'error')
         }
     }
     else if(info.menuItemId == menuIdModerate) {
         llmProvider.moderateText(textToBeProcessed).then(moderatedResponse => {
-            sendMessageToActiveTab({type: 'addChart', content: moderatedResponse})
+            sendMessageToTab(tabId, {type: 'addChart', content: moderatedResponse})
         }).catch(error => {
-            sendMessageToActiveTab({type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: error.message})
             logMessage(`Error during moderation: ${error.message}`, 'error')
         })
     }
     else if(info.menuItemId == menuIdCheckErrors) {
         llmProvider.checkTextForErrors(textToBeProcessed).then(errorAnalysis => {
-            sendMessageToActiveTab({type: 'addText', content: errorAnalysis})
+            sendMessageToTab(tabId, {type: 'addText', content: errorAnalysis})
         }).catch(error => {
-            sendMessageToActiveTab({type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: error.message})
             logMessage(`Error during error checking error: ${error.message}`, 'error')
         })
     }
     else if(info.menuItemId == menuIdSuggestImprovements) {
         llmProvider.suggestImprovementsForText(textToBeProcessed).then(improvedText => {
-            sendMessageToActiveTab({type: 'addText', content: improvedText})
+            sendMessageToTab(tabId, {type: 'addText', content: improvedText})
         }).catch(error => {
-            sendMessageToActiveTab({type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: error.message})
             logMessage(`Error while improving the text: ${error.message}`, 'error')
         })
     }
-    // Fallback message case, but only if the menu does not match any values to
-    // ignore, e.g., options.
+    // Fallback for unrecognized menu items. The 'aiOptions' entry is excluded
+    // because it is already handled in the actions that only open UI panels.
     else if (!['aiOptions'].includes(info.menuItemId as string)) {
-        sendMessageToActiveTab({type: 'showError', content: `Invalid menu item selected: ${info.menuItemId}`})
+        sendMessageToTab(tabId, {type: 'showError', content: `Invalid menu item selected: ${info.menuItemId}`})
         logMessage(`Invalid menu item selected: ${info.menuItemId}`, 'error')
     }
 })
 
 // Register a listener for the action sent from promptDisplay
-browser.runtime.onMessage.addListener(async (message) => {
+browser.runtime.onMessage.addListener(async (message, sender) => {
   if (message.action === 'sendUserPromptToBackground') {
+    // Capture the originating tab ID so that the response is always sent back
+    // to the tab where the request was initiated, even if the user switches
+    // tabs while the LLM is processing.
+    const tabId = sender.tab.id
+
     const configs = await getConfigs()
     const llmProvider = ProviderFactory.getInstance(configs)
 
-    sendMessageToActiveTab({ type: 'thinking', content: messenger.i18n.getMessage('thinking') })
+    sendMessageToTab(tabId, { type: 'thinking', content: messenger.i18n.getMessage('thinking') })
 
-    const currentMessageContent = await getCurrentMessageContent()
+    const currentMessageContent = await getCurrentMessageContent(tabId)
 
     if(currentMessageContent == null) {
-        sendMessageToActiveTab({type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound')})
+        sendMessageToTab(tabId, {type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound')})
     }
     else {
         llmProvider.applyCustomPrompt(message.data.userPrompt, currentMessageContent).then(textProcessed => {
-            sendMessageToActiveTab({type: 'addText', content: textProcessed})
+            sendMessageToTab(tabId, {type: 'addText', content: textProcessed})
         }).catch(error => {
-            sendMessageToActiveTab({type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: error.message})
             logMessage(`Error during the custom prompt: ${error.message}`, 'error')
         })
     }
