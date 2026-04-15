@@ -8,6 +8,9 @@
     "errorInvalidAddonOptions": {
         "message": "Le opzioni non sono valide. Configura le impostazioni necessarie per l'estensione \"AI Mail Support\"."
     },
+    "errorServiceTimeout": {
+        "message": "Operazione scaduta per timeout. Prova ad aumentare il valore di attesa nelle impostazioni."
+    },
     "errorTextNotFound": {
         "message": "Impossibile recuperare il testo per l'elaborazione."
     },

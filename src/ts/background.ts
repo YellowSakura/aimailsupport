@@ -2,6 +2,24 @@ import { ProviderFactory } from './llmProviders/providerFactory'
 import { getConfig, getConfigs, getCurrentMessageContent, getLanguageNameFromCode, isComposeDisplayed, logMessage, sendMessageToTab } from './helpers/utils'
 
 
+/**
+ * Returns a user-facing, localized error message for a given error.
+ *
+ * If the error is an AbortError (raised when a fetch request exceeds the
+ * configured timeout), a localized timeout message is returned instead of
+ * the browser's generic, non-localized default.
+ * For all other errors the original message is returned unchanged.
+ *
+ * @param error - The caught error object.
+ * @returns The localized error message string.
+ */
+function getLocalizedErrorMessage(error: any): string {
+    if (error?.name === 'AbortError') {
+        return messenger.i18n.getMessage('errorServiceTimeout')
+    }
+    return error.message
+}
+
 // The array contains references to the menus of any custom languages selected
 // by the user for which a translation is requested.
 let translationMenuItemIds: (number | string)[] = []
@@ -406,7 +424,7 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, 
             sendMessageToTab(tabId, { type: 'addText', content: intentAnalysisResult })
         })
         .catch(error => {
-            sendMessageToTab(tabId, { type: 'showError', content: error.message })
+            sendMessageToTab(tabId, { type: 'showError', content: getLocalizedErrorMessage(error) })
             logMessage(`Error during intent analysis: ${error.message}`, 'error')
         })
     }
@@ -414,7 +432,7 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, 
         llmProvider.explainText(textToBeProcessed).then(textExplained => {
             sendMessageToTab(tabId, {type: 'addText', content: textExplained})
         }).catch(error => {
-            sendMessageToTab(tabId, {type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
             logMessage(`Error during explanation: ${error.message}`, 'error')
         })
     }
@@ -422,7 +440,7 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, 
         llmProvider.summarizeText(textToBeProcessed).then(textSummarized => {
             sendMessageToTab(tabId, {type: 'addText', content: textSummarized})
         }).catch(error => {
-            sendMessageToTab(tabId, {type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
             logMessage(`Error during summarization: ${error.message}`, 'error')
         })
     }
@@ -439,7 +457,7 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, 
         llmProvider.rephraseText(textToBeProcessed, toneOfVoice).then(textRephrased => {
             sendMessageToTab(tabId, {type: 'addText', content: textRephrased})
         }).catch(error => {
-            sendMessageToTab(tabId, {type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
             logMessage(`Error during rephrasing: ${error.message}`, 'error')
         })
     }
@@ -456,7 +474,7 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, 
         llmProvider.suggestReplyFromText(textToBeProcessed, toneOfVoice).then(textSuggested => {
             sendMessageToTab(tabId, {type: 'addText', content: textSuggested})
         }).catch(error => {
-            sendMessageToTab(tabId, {type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
             logMessage(`Error during reply generation: ${error.message}`, 'error')
         })
     }
@@ -467,7 +485,7 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, 
 
             sendMessageToTab(tabId, {type: 'addAudio', content: blob})
         } catch (error) {
-            sendMessageToTab(tabId, {type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
             logMessage(`Error during summarization and text-to-speech: ${error.message}`, 'error')
         }
     }
@@ -475,7 +493,7 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, 
         llmProvider.getSpeechFromText(textToBeProcessed).then(blob => {
             sendMessageToTab(tabId, {type: 'addAudio', content: blob})
         }).catch(error => {
-            sendMessageToTab(tabId, {type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
             logMessage(`Error during text-to-speech conversion: ${error.message}`, 'error')
         })
     }
@@ -492,7 +510,7 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, 
         llmProvider.translateText(textToBeProcessed, languageCode).then(textTranslated => {
             sendMessageToTab(tabId, {type: 'addText', content: textTranslated})
         }).catch(error => {
-            sendMessageToTab(tabId, {type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
             logMessage(`Error during translation: ${error.message}`, 'error')
         })
     }
@@ -503,7 +521,7 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, 
 
             sendMessageToTab(tabId, {type: 'addText', content: textTranslateAndSummarized})
         } catch (error) {
-            sendMessageToTab(tabId, {type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
             logMessage(`Error during translation and summarization: ${error.message}`, 'error')
         }
     }
@@ -514,7 +532,7 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, 
 
             sendMessageToTab(tabId, {type: 'addAudio', content: blob})
         } catch (error) {
-            sendMessageToTab(tabId, {type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
             logMessage(`Error during translation and text2Speech: ${error.message}`, 'error')
         }
     }
@@ -522,7 +540,7 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, 
         llmProvider.moderateText(textToBeProcessed).then(moderatedResponse => {
             sendMessageToTab(tabId, {type: 'addChart', content: moderatedResponse})
         }).catch(error => {
-            sendMessageToTab(tabId, {type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
             logMessage(`Error during moderation: ${error.message}`, 'error')
         })
     }
@@ -530,7 +548,7 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, 
         llmProvider.checkTextForErrors(textToBeProcessed).then(errorAnalysis => {
             sendMessageToTab(tabId, {type: 'addText', content: errorAnalysis})
         }).catch(error => {
-            sendMessageToTab(tabId, {type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
             logMessage(`Error during error checking error: ${error.message}`, 'error')
         })
     }
@@ -538,7 +556,7 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, 
         llmProvider.suggestImprovementsForText(textToBeProcessed).then(improvedText => {
             sendMessageToTab(tabId, {type: 'addText', content: improvedText})
         }).catch(error => {
-            sendMessageToTab(tabId, {type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
             logMessage(`Error while improving the text: ${error.message}`, 'error')
         })
     }
@@ -572,7 +590,7 @@ browser.runtime.onMessage.addListener(async (message, sender) => {
         llmProvider.applyCustomPrompt(message.data.userPrompt, currentMessageContent).then(textProcessed => {
             sendMessageToTab(tabId, {type: 'addText', content: textProcessed})
         }).catch(error => {
-            sendMessageToTab(tabId, {type: 'showError', content: error.message})
+            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
             logMessage(`Error during the custom prompt: ${error.message}`, 'error')
         })
     }

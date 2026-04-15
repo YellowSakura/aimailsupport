@@ -11,6 +11,10 @@
         "message": "Options are invalid. Configure the necessary settings for the \"AI Mail Support\" add-on.",
         "description": "Text displayed when the add-on options are invalid and an attempt is made to invoke one of the options that requires the configuration of an AI system."
     },
+    "errorServiceTimeout": {
+        "message": "The operation timed out. Try increasing the value in settings.",
+        "description": "Displayed when a request to the AI service exceeds the configured timeout duration."
+    },
     "errorTextNotFound": {
         "message": "Unable to retrieve text for processing.",
         "description": "Text displayed when text cannot be retrieved for processing."
