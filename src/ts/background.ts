@@ -4,7 +4,7 @@ import { getConfig, getConfigs, getCurrentMessageContent, getLanguageNameFromCod
 
 // The array contains references to the menus of any custom languages selected
 // by the user for which a translation is requested.
-let translationMenuItemIds: (number | string)[] = null
+let translationMenuItemIds: (number | string)[] = []
 
 // Create the menu entries -->
 const menuIdAnalyzeIntent = messenger.menus.create({
