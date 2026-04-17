@@ -1,25 +1,6 @@
 import { ProviderFactory } from './llmProviders/providerFactory'
 import { getConfig, getConfigs, getCurrentMessageContent, getLanguageNameFromCode, isComposeDisplayed, logMessage, sendMessageToTab } from './helpers/utils'
 
-
-/**
- * Returns a user-facing, localized error message for a given error.
- *
- * If the error is an AbortError (raised when a fetch request exceeds the
- * configured timeout), a localized timeout message is returned instead of
- * the browser's generic, non-localized default.
- * For all other errors the original message is returned unchanged.
- *
- * @param error - The caught error object.
- * @returns The localized error message string.
- */
-function getLocalizedErrorMessage(error: any): string {
-    if (error?.name === 'AbortError') {
-        return messenger.i18n.getMessage('errorServiceTimeout')
-    }
-    return error.message
-}
-
 // The array contains references to the menus of any custom languages selected
 // by the user for which a translation is requested.
 let translationMenuItemIds: (number | string)[] = []
@@ -782,4 +763,23 @@ async function updateMenuWithUserTranslationPreferences(): Promise<void> {
             }
         })
     }
+}
+
+/**
+ * Returns a user-facing, localized error message for a given error.
+ *
+ * If the error is an AbortError (raised when a fetch request exceeds the
+ * configured timeout), a localized timeout message is returned instead of
+ * the browser's generic, non-localized default.
+ * For all other errors the original message is returned unchanged.
+ *
+ * @param error - The caught error object.
+ * @returns The localized error message string.
+ */
+function getLocalizedErrorMessage(error: any): string {
+    if (error?.name === 'AbortError') {
+        return messenger.i18n.getMessage('errorServiceTimeout')
+    }
+
+    return error.message
 }
