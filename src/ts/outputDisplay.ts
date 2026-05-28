@@ -188,8 +188,11 @@ function createOutputDisplay(): void {
     actionsContainer.appendChild(refineIcon)
     // <-- refine icon
 
-    amsInnerResponse.appendChild(actionsContainer)
-    // <-- actions container
+    // Footer: groups action icons and refine input in normal document flow -->
+    const amsFooter: HTMLDivElement = document.createElement('div')
+    amsFooter.id = 'amsFooter'
+
+    amsFooter.appendChild(actionsContainer)
 
     // Refine input area (hidden by default) -->
     const refineContainer: HTMLDivElement = document.createElement('div')
@@ -217,9 +220,11 @@ function createOutputDisplay(): void {
     refineSendBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>`
     refineSendBtn.addEventListener('click', () => submitRefinement(refineTextarea, refineContainer))
     refineContainer.appendChild(refineSendBtn)
-
-    amsInnerResponse.appendChild(refineContainer)
     // <-- refine input area
+
+    amsFooter.appendChild(refineContainer)
+    amsInnerResponse.appendChild(amsFooter)
+    // <-- footer
 
     document.body.appendChild(amsOuterResponse)
 }
