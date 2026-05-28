@@ -22,7 +22,9 @@
         "storage",
         "https://api.anthropic.com/",
         "https://api.openai.com/",
-        "https://api.x.ai/"
+        "https://api.x.ai/",
+        "http://localhost/*",
+        "http://127.0.0.1/*"
     ],
     "icons": {
         "64": "images/bot-icon-color-64.webp",
