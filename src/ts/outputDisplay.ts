@@ -2,6 +2,8 @@ import { ChartUtils } from './helpers/chartUtils'
 import { logMessage } from './helpers/utils'
 import { marked } from 'marked'
 
+let lastAiResponseText = ''
+
 // Manage async messages -->
 browser.runtime.onMessage.addListener(async (message: any) => {
     if (message?.type) {
@@ -74,6 +76,8 @@ function getInnerResponse() {
 
 async function addText(newContent: string) {
     clearOutputDisplay()
+
+    lastAiResponseText = newContent
 
     getInnerResponse().classList.add('text-content')
 
@@ -170,19 +174,52 @@ function createOutputDisplay(): void {
     copyTopIcon.addEventListener('click', copyToEmailTop)
     actionsContainer.appendChild(copyTopIcon)
 
-    // Reload icon
-    /*const reloadIcon: HTMLSpanElement = document.createElement('span')
-    reloadIcon.className = 'reload-icon'
-    reloadIcon.innerHTML = `
+    // Refine icon
+    const refineIcon: HTMLSpanElement = document.createElement('span')
+    refineIcon.className = 'refine-icon'
+    refineIcon.title = messenger.i18n.getMessage('outputDisplay.refine.placeholder')
+    refineIcon.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12a9 9 0 1 1-3-6.7" />
-            <path d="M21 3v6h-6" />
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
         </svg>
     `
-    actionsContainer.appendChild(reloadIcon)*/
+    refineIcon.addEventListener('click', () => toggleRefineInput(amsInnerResponse))
+    actionsContainer.appendChild(refineIcon)
+    // <-- refine icon
 
     amsInnerResponse.appendChild(actionsContainer)
     // <-- actions container
+
+    // Refine input area (hidden by default) -->
+    const refineContainer: HTMLDivElement = document.createElement('div')
+    refineContainer.id = 'refineContainer'
+
+    const refineTextarea: HTMLTextAreaElement = document.createElement('textarea')
+    refineTextarea.id = 'refineTextarea'
+    refineTextarea.rows = 1
+    refineTextarea.placeholder = messenger.i18n.getMessage('outputDisplay.refine.placeholder')
+    refineTextarea.addEventListener('input', () => {
+        refineTextarea.style.height = 'auto'
+        refineTextarea.style.height = `${refineTextarea.scrollHeight}px`
+        refineSendBtn.classList.toggle('active', refineTextarea.value.trim() !== '')
+    })
+    refineTextarea.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault()
+            submitRefinement(refineTextarea, refineContainer)
+        }
+    })
+    refineContainer.appendChild(refineTextarea)
+
+    const refineSendBtn: HTMLButtonElement = document.createElement('button')
+    refineSendBtn.className = 'refine-send'
+    refineSendBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>`
+    refineSendBtn.addEventListener('click', () => submitRefinement(refineTextarea, refineContainer))
+    refineContainer.appendChild(refineSendBtn)
+
+    amsInnerResponse.appendChild(refineContainer)
+    // <-- refine input area
 
     document.body.appendChild(amsOuterResponse)
 }
@@ -231,6 +268,31 @@ function copyClipboard(): void {
     } finally {
         selection.removeAllRanges()
     }
+}
+
+function toggleRefineInput(amsInnerResponse: HTMLDivElement): void {
+    const container = amsInnerResponse.querySelector('#refineContainer') as HTMLDivElement
+    const isVisible = container.classList.toggle('show')
+    if (isVisible) {
+        (amsInnerResponse.querySelector('#refineTextarea') as HTMLTextAreaElement).focus()
+    }
+}
+
+function submitRefinement(textarea: HTMLTextAreaElement, container: HTMLDivElement): void {
+    const prompt = textarea.value.trim()
+    if (!prompt || !lastAiResponseText) return
+
+    browser.runtime.sendMessage({
+        type: 'refineLastResponse',
+        refinementPrompt: prompt,
+        lastResponse: lastAiResponseText
+    }).catch((error: Error) => {
+        logMessage(`Error sending refinement: ${error.message}`, 'error')
+    })
+
+    textarea.value = ''
+    textarea.style.height = 'auto'
+    container.classList.remove('show')
 }
 
 /**

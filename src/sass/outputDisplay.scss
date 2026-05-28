@@ -144,6 +144,51 @@
         // <-- copy-top icon
     }
 
+    #refineContainer {
+        display: none;
+        align-items: center;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 0 8px rgba(black, .3);
+        gap: 6px;
+        margin-right: 60px;
+        margin-top: 6px;
+        padding: 6px 10px;
+
+        &.show {
+            display: flex;
+        }
+
+        #refineTextarea {
+            border: none;
+            color: black;
+            flex: 1;
+            font-size: 13px;
+            outline: none;
+            resize: none;
+            overflow: hidden;
+        }
+
+        button.refine-send {
+            background: none;
+            border: none;
+            cursor: pointer;
+            opacity: .35;
+            padding: 2px;
+
+            &.active {
+                opacity: 1;
+            }
+
+            svg {
+                display: block;
+                fill: black;
+                height: 16px;
+                width: 16px;
+            }
+        }
+    }
+
     #amsImage {
         bottom: 0;
         max-height: 48px;

@@ -413,6 +413,9 @@
     "options.xai.model": {
         "message": "Modello*"
     },
+    "outputDisplay.refine.placeholder": {
+        "message": "Affina questa risposta (es. rendila più breve, più formale…)"
+    },
     "promptDisplay.placeholder": {
         "message": "Come posso aiutarti?"
     },

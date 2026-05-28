@@ -569,9 +569,6 @@ browser.runtime.onMessage.addListener(async (message, sender) => {
   }
 
   if (message.action === 'sendUserPromptToBackground') {
-    // Capture the originating tab ID so that the response is always sent back
-    // to the tab where the request was initiated, even if the user switches
-    // tabs while the LLM is processing.
     const tabId = sender.tab.id
 
     const configs = await getConfigs()
@@ -592,6 +589,22 @@ browser.runtime.onMessage.addListener(async (message, sender) => {
             logMessage(`Error during the custom prompt: ${error.message}`, 'error')
         })
     }
+  }
+
+  if (message.type === 'refineLastResponse') {
+    const tabId = sender.tab.id
+
+    const configs = await getConfigs()
+    const llmProvider = ProviderFactory.getInstance(configs)
+
+    sendMessageToTab(tabId, { type: 'thinking', content: messenger.i18n.getMessage('thinking') })
+
+    llmProvider.applyCustomPrompt(message.refinementPrompt, message.lastResponse).then(textProcessed => {
+        sendMessageToTab(tabId, {type: 'addText', content: textProcessed})
+    }).catch(error => {
+        sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
+        logMessage(`Error during refinement: ${error.message}`, 'error')
+    })
   }
 })
 

@@ -545,6 +545,10 @@
         "message": "Model*",
         "description": "Model to be used for all text processing: https://docs.x.ai/docs/models"
     },
+    "outputDisplay.refine.placeholder": {
+        "message": "Refine this response (e.g. make it shorter, more formal…)",
+        "description": "Placeholder text for the inline refinement textarea shown below an AI response."
+    },
     "promptDisplay.placeholder": {
         "message": "How can I help you?",
         "description": "Placeholder text for the textbox where the user can directly interact with the LLM."
