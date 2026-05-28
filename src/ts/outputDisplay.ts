@@ -234,31 +234,23 @@ function copyClipboard(): void {
 }
 
 /**
- * Copies the LLM response content to the top of the email.
+ * Inserts the LLM response content at the top of the compose email body.
+ * Delegates to the background script which uses messenger.compose.setComposeDetails()
+ * to reliably update the compose area (both HTML and plain-text modes).
  * This function is only available when in compose mode.
  */
 function copyToEmailTop(): void {
     const contentElement = getInnerResponse().querySelector('#amsContent') as HTMLElement | null
-    const htmlToCopy: string = contentElement?.innerHTML?.trim() || ''
+    const htmlContent: string = contentElement?.innerHTML?.trim() || ''
+    const textContent: string = contentElement?.textContent?.trim() || ''
 
-    if (htmlToCopy) {
-        try {
-            // Get the current content of the email body
-            const emailBody: HTMLElement | null = document.querySelector('body')
-            if (emailBody) {
-                // Create a new paragraph with the AI-generated content
-                const aiContent: HTMLDivElement = document.createElement('div')
-                aiContent.innerHTML = htmlToCopy
-
-                // Insert at the beginning of the email body
-                emailBody.insertBefore(aiContent, emailBody.firstChild)
-            }
-        } catch (error) {
-            if (error instanceof Error) {
-                logMessage(`Error copying to email top: ${error.message}`, 'error')
-            } else {
-                logMessage('Unknown error copying to email top', 'error')
-            }
-        }
+    if (htmlContent) {
+        browser.runtime.sendMessage({
+            type: 'insertAtComposeTop',
+            htmlContent,
+            textContent
+        }).catch((error: Error) => {
+            logMessage(`Error inserting AI content into compose: ${error.message}`, 'error')
+        })
     }
 }

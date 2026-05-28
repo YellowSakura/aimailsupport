@@ -549,8 +549,25 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, 
     }
 })
 
-// Register a listener for the action sent from promptDisplay
+// Register a listener for compose content insertion and prompt display actions
 browser.runtime.onMessage.addListener(async (message, sender) => {
+  if (message.type === 'insertAtComposeTop') {
+    const tabId = sender.tab.id
+    try {
+        const composeDetails = await messenger.compose.getComposeDetails(tabId)
+        if (composeDetails.isPlainText) {
+            const newBody = `${message.textContent}\n\n${composeDetails.plainTextBody || ''}`
+            await messenger.compose.setComposeDetails(tabId, { plainTextBody: newBody })
+        } else {
+            const currentBody = composeDetails.body || ''
+            const newBody = `<div>${message.htmlContent}</div><br>${currentBody}`
+            await messenger.compose.setComposeDetails(tabId, { body: newBody })
+        }
+    } catch (error) {
+        logMessage(`Error inserting AI content into compose: ${(error as Error).message}`, 'error')
+    }
+  }
+
   if (message.action === 'sendUserPromptToBackground') {
     // Capture the originating tab ID so that the response is always sent back
     // to the tab where the request was initiated, even if the user switches
@@ -577,6 +594,7 @@ browser.runtime.onMessage.addListener(async (message, sender) => {
     }
   }
 })
+
 
 /**
  * Using the messageDisplayScripts API for customizing the content displayed when
