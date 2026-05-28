@@ -199,7 +199,8 @@ $options-labels-width: 150px;
                 display: none;
 
                 body[data-provider='lms'] &,
-                body[data-provider='ollama'] & {
+                body[data-provider='ollama'] &,
+                body[data-provider='vllm'] & {
                     display: block;
                 }
 
@@ -252,6 +253,7 @@ $options-labels-width: 150px;
         body[data-provider='mistral'] &#mistral,
         body[data-provider='ollama'] &#ollama,
         body[data-provider='openai'] &#openai,
+        body[data-provider='vllm'] &#vllm,
         body[data-provider='xai'] &#xai {
             display: block;
         }
