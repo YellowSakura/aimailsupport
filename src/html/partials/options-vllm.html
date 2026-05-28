@@ -1,0 +1,29 @@
+<fieldset id="vllm">
+    <legend>vLLM:</legend>
+
+    <div class="form-group">
+        <div class="full-description" data-l10n-ref="options.vllm.description"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="vllmServiceUrl" data-l10n-ref="options.vllm.serviceUrl">&nbsp;</label>
+        <input id="vllmServiceUrl" type="input" placeholder="http://localhost:8000" data-required>
+        <div class="description" data-l10n-ref="options.vllm.serviceUrl.description"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="vllmApiKey" data-l10n-ref="options.vllm.apiKey">&nbsp;</label>
+        <input id="vllmApiKey" type="password" placeholder="">
+        <password-toggle target="vllmApiKey"></password-toggle>
+        <div class="description" data-l10n-ref="options.vllm.apiKey.description"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="vllmModel" data-l10n-ref="options.vllm.model">&nbsp;</label>
+        <select id="vllmModel" data-required></select>
+        <button id="vllmListModel" data-l10n-ref="options.vllm.listModelsButton">&nbsp;</button>
+
+        <div class="description vllm-error-api" data-l10n-ref="options.vllm.errorApi"></div>
+        <div class="description vllm-warning-no-model" data-l10n-ref="options.vllm.warningNoModel"></div>
+    </div>
+</fieldset>

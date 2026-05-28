@@ -44,6 +44,7 @@
                     <option value="mistral">Mistral</option>
                     <option value="ollama">Ollama (Gemma, Llama, Mistral, Phi, &hellip;)</option>
                     <option value="openai">OpenAI GPT</option>
+                    <option value="vllm">vLLM (local OpenAI-compatible server)</option>
                     <option value="xai">xAI Grok</option>
                 </select>
 
@@ -100,6 +101,9 @@
             <!-- OpenAI GPT section -->
             <include src="partials/options-openai-gpt.html"></include><!-- /OpenAI GPT section -->
 
+            <!-- vLLM section -->
+            <include src="partials/options-vllm.html"></include><!-- /vLLM section -->
+
             <!-- xAI Grok section -->
             <include src="partials/options-xai-grok.html"></include><!-- /xAI Grok section -->
 
@@ -120,5 +124,6 @@
         <script type="module" src="../ts/options/optionsLms.ts"></script>
         <script type="module" src="../ts/options/optionsOllama.ts"></script>
         <script type="module" src="../ts/options/optionsOpenai.ts"></script>
+        <script type="module" src="../ts/options/optionsVllm.ts"></script>
     </body>
 </html>

@@ -56,6 +56,12 @@ export interface ConfigType {
         }
     }
 
+    vllm: {
+        serviceUrl: string
+        model: string
+        apiKey: string
+    }
+
     xai: {
         apiKey: string
         model: string
