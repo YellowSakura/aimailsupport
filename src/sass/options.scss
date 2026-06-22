@@ -208,6 +208,21 @@ $options-labels-width: 150px;
                 }
             }
 
+            // Style for a warning message that notifies the user that the currently
+            // selected model does not support the temperature setting, which is
+            // therefore locked. Toggled at runtime via the "show" class.
+            &.local-llm-warning-no-temperature {
+                display: none;
+
+                &.show {
+                    display: block;
+                }
+
+                strong {
+                    color: red;
+                }
+            }
+
             audio {
                 display: inline-block;
                 margin: 5px 0 5px;

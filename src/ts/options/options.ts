@@ -37,6 +37,12 @@ document.querySelectorAll('#optionsForm select').forEach((node) => {
 })
 // <-- capture all changes in the form fields, disabling the test button
 
+// Whenever a model is selected, the temperature field availability is
+// re-evaluated, since some models do not support a configurable temperature.
+document.querySelectorAll('select[id$=Model]').forEach((node) => {
+    node.addEventListener('change', updateTemperatureAvailability)
+})
+
 // Test management -->
 document.querySelector('#optionsForm button.test').addEventListener('click', async (event) => {
     // Disable the test button while waiting for the result
@@ -287,4 +293,41 @@ function updateDOMBasedOnSelectLlmProvider(selectedValue: string): void {
     // select, ensures the visibility of the correct section (from CSS rules)
     // for configuring the specific AI LLM service provider.
     document.querySelector('body').setAttribute('data-provider', selectedValue)
+
+    // Once the active provider (and therefore its model selection) is known, the
+    // temperature field availability is re-evaluated.
+    updateTemperatureAvailability()
+}
+
+/**
+ * Update the temperature field availability based on the currently selected
+ * model.
+ *
+ * When the selected model option declares the "data-no-temperature" attribute,
+ * the temperature is not configurable: the field is locked, a dedicated warning
+ * is shown and the value is forced to 1. Otherwise the field is restored to its
+ * editable state.
+ *
+ * @returns {void}
+ */
+function updateTemperatureAvailability(): void {
+    const temperatureInput = document.querySelector<HTMLInputElement>('#llmTemperature')
+    const temperatureValueLabel = document.querySelector<HTMLInputElement>('label[for=llmTemperature] span')
+    const noTemperatureWarning = document.querySelector('.local-llm-warning-no-temperature')
+
+    const selectedProvider = document.querySelector('body').getAttribute('data-provider')
+    const modelSelect = selectedProvider ? document.querySelector<HTMLSelectElement>(`#${selectedProvider}Model`) : null
+    const selectedModelOption = modelSelect?.selectedOptions?.[0]
+    const isTemperatureDisabled = selectedModelOption?.getAttribute('data-no-temperature') === 'true'
+
+    if (isTemperatureDisabled) {
+        // The temperature is locked at 1 and the field is made non-editable.
+        temperatureInput.value = '1'
+        temperatureInput.setAttribute('disabled', 'disabled')
+        temperatureValueLabel.innerText = Number.parseFloat(temperatureInput.value).toFixed(2)
+        noTemperatureWarning.classList.add('show')
+    } else {
+        temperatureInput.removeAttribute('disabled')
+        noTemperatureWarning.classList.remove('show')
+    }
 }

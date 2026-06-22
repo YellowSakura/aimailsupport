@@ -254,6 +254,9 @@
     "options.llmTemperature.description": {
         "message": "Valori più alti come 0.8 renderanno l'output più casuale, mentre valori più bassi come 0.25 lo renderanno più focalizzato e deterministico.<p><b>Attenzione:</b> modelli LLM con range di temperatura diversi da 0 a 2, vengono normalizzati rispetto al loro intervallo di riferimento.</p>"
     },
+    "options.llmTemperature.noTemperatureDescription": {
+        "message": "<b><strong>Attenzione</strong>:</b> La temperatura è disabilitata per il modello attualmente selezionato ed è fissa a 1."
+    },
     "options.mainUserLanguage": {
         "message": "Lingua principale"
     },

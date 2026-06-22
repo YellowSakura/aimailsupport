@@ -219,7 +219,18 @@ export class OpenAiGptProvider extends GenericProvider {
         }
 
         const responseData = await response.json()
-        return responseData.output[0].content[0].text
+
+        // The OpenAI "responses" endpoint returns an "output" array that can
+        // contain several items (e.g. reasoning items on reasoning models)
+        // before the actual assistant message. We pick the first item flagged
+        // as "completed", which is the one carrying the generated text.
+        const completedOutput = responseData.output.find((item: any) => item.status === 'completed')
+
+        if (!completedOutput) {
+            throw new Error('OpenAI error: the response did not contain any completed output')
+        }
+
+        return completedOutput.content[0].text
     }
 
     /**

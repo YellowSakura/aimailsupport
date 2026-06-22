@@ -333,6 +333,10 @@
         "message": "Higher values like 0.8 will make the output more random, while lower values like 0.25 will make it more focused and deterministic.<p><b>Attention:</b> LLM models with a temperature range different from 0 to 2 are normalized according to their reference range.</p>",
         "description": "Explain the effect of the temperature setting on the model's responses, highlighting the trade-off between predictability and creativity."
     },
+    "options.llmTemperature.noTemperatureDescription": {
+        "message": "<b><strong>Attention</strong>:</b>The temperature setting is disabled for the currently selected model and is fixed at 1.",
+        "description": "Notify the user that the selected model does not support the temperature setting, which is therefore locked at 1."
+    },
     "options.mainUserLanguage": {
         "message": "Primary language",
         "description": "Primary language that the user can select."
