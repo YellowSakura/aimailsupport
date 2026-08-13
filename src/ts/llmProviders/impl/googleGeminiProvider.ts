@@ -10,12 +10,14 @@ import { getLanguageNameFromCode, logMessage } from '../../helpers/utils'
 export class GoogleGeminiProvider extends GenericProvider {
     private readonly apiKey: string
     private readonly model: string
+    private readonly reasoningEffort: string
 
     public constructor(config: ConfigType) {
         super(config)
 
         this.apiKey = config.google.apiKey
         this.model = config.google.model
+        this.reasoningEffort = config.google.reasoningEffort || 'medium'
     }
 
     public async analyzeTextIntent(input: string): Promise<string> {
@@ -114,6 +116,28 @@ export class GoogleGeminiProvider extends GenericProvider {
     private async manageMessageContent(systemInput: string, userInput: string): Promise<string> {
         const { signal, clearAbortSignalWithTimeout } = this.createAbortSignalWithTimeout(this.servicesTimeout)
 
+        const generationConfig: any = {
+            'temperature': this.temperature
+        }
+
+        if (this.reasoningEffort === 'off') {
+            generationConfig.thinkingConfig = {
+                'thinkingBudget': 0
+            }
+        } else if (this.reasoningEffort === 'low') {
+            generationConfig.thinkingConfig = {
+                'thinkingBudget': 1024
+            }
+        } else if (this.reasoningEffort === 'high') {
+            generationConfig.thinkingConfig = {
+                'thinkingBudget': 8192
+            }
+        } else if (this.reasoningEffort === 'medium') {
+            generationConfig.thinkingConfig = {
+                'thinkingBudget': 2048
+            }
+        }
+
         const requestData = JSON.stringify({
             'system_instruction': {
                 'parts': { 'text': systemInput }
@@ -142,9 +166,7 @@ export class GoogleGeminiProvider extends GenericProvider {
                     'threshold': "BLOCK_NONE"
                 }
             ],
-            'generationConfig': {
-                'temperature': this.temperature
-            }
+            'generationConfig': generationConfig
         })
 
         const requestOptions: RequestInit = {
@@ -173,6 +195,9 @@ export class GoogleGeminiProvider extends GenericProvider {
             throw new Error(`Google AI error: ${browser.i18n.getMessage('errorGoogleGeminiSafetyThresholdExceeded')}`)
         }
 
-        return responseData.candidates[0].content.parts[0].text
+        const parts = responseData.candidates[0].content.parts
+        const textPart = parts.find((part: any) => !part.thought && part.text) || parts[parts.length - 1]
+
+        return textPart.text
     }
 }
