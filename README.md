@@ -35,7 +35,7 @@ The LLMs* currently supported are:
 * DeepSeek by [Hangzhou DeepSeek Artificial Intelligence Basic Technology Research](https://www.deepseek.com);
 * Gemini by [Google](https://ai.google.dev);
 * GPT by [OpenAI](https://openai.com);
-* Grok by [xAI](https://x.ai);
+* Grok by [SpaceXAI](https://x.ai);
 * Mistral by [Mistral AI](https://mistral.ai).
 
 It is possible to access a wider set of models (e.g., Llama, Phi, Mistral, Gemma, and many others) through the use of:
