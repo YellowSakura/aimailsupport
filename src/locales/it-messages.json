@@ -380,6 +380,33 @@
     "options.translationLanguageCodes.description": {
         "message": "Le lingue selezionate sono quelle che verranno usate per creare traduzioni di contenuti, è possibile selezionare la/le lingue che sono oggetto di traduzioni effettivamente usate."
     },
+    "options.vllm.apiKey": {
+        "message": "API Key (opzionale)"
+    },
+    "options.vllm.apiKey.description": {
+        "message": "Lasciare vuoto se il server vLLM non richiede autenticazione."
+    },
+    "options.vllm.description": {
+        "message": "vLLM è un server di inferenza ad alto throughput che espone un'API compatibile con OpenAI. Può essere eseguito in locale o su un server remoto.<br />Consulta la <a href=\"https://docs.vllm.ai\">documentazione ufficiale</a> per le istruzioni di configurazione."
+    },
+    "options.vllm.errorApi": {
+        "message": "<strong>Attenzione</strong>: Impossibile comunicare con il server vLLM. Assicurarsi che sia in esecuzione e raggiungibile da Thunderbird."
+    },
+    "options.vllm.listModelsButton": {
+        "message": "Carica modelli"
+    },
+    "options.vllm.model": {
+        "message": "Modello*"
+    },
+    "options.vllm.serviceUrl": {
+        "message": "URL del servizio*"
+    },
+    "options.vllm.serviceUrl.description": {
+        "message": "URL del server vLLM che espone l'API compatibile con OpenAI (es. <code>http://localhost:8000</code>)."
+    },
+    "options.vllm.warningNoModel": {
+        "message": "<strong>Attenzione</strong>: Nessun modello trovato sul server vLLM. Assicurarsi che almeno un modello sia caricato."
+    },
     "options.xai.apiKey": {
         "message": "Chiave API*"
     },
@@ -388,6 +415,9 @@
     },
     "options.xai.model": {
         "message": "Modello*"
+    },
+    "outputDisplay.refine.placeholder": {
+        "message": "Affina questa risposta (es. rendila più breve, più formale…)"
     },
     "promptDisplay.placeholder": {
         "message": "Come posso aiutarti?"

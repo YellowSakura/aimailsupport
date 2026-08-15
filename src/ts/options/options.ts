@@ -127,6 +127,11 @@ document.querySelector('#optionsForm').addEventListener('submit', async (event) 
                 speed: Number.parseFloat(document.querySelector<HTMLInputElement>('#openaiText2SpeechSpeed').value)
             }
         },
+        vllm: {
+            serviceUrl: document.querySelector<HTMLInputElement>('#vllmServiceUrl').value,
+            model: document.querySelector<HTMLInputElement>('#vllmModel').value,
+            apiKey: document.querySelector<HTMLInputElement>('#vllmApiKey').value
+        },
         xai: {
             apiKey: document.querySelector<HTMLInputElement>('#xaiApiKey').value,
             model: document.querySelector<HTMLInputElement>('#xaiModel').value
@@ -236,6 +241,12 @@ document.addEventListener('DOMContentLoaded', async _ => {
     document.querySelector<HTMLInputElement>('#openaiText2SpeechSpeed').value = (configs.openai?.text2speech?.speed || 1).toString()
     document.querySelector<HTMLInputElement>('label[for=openaiText2SpeechSpeed] span').innerText = Number.parseFloat(document.querySelector<HTMLInputElement>('#openaiText2SpeechSpeed').value).toFixed(2)
     // <-- OpenAI GPT section
+
+    // vLLM section -->
+    document.querySelector<HTMLInputElement>('#vllmServiceUrl').value = configs.vllm?.serviceUrl || 'http://localhost:8000'
+    document.querySelector<HTMLInputElement>('#vllmModel').value = configs.vllm?.model || ''
+    document.querySelector<HTMLInputElement>('#vllmApiKey').value = configs.vllm?.apiKey || ''
+    // <-- vLLM section
 
     // xAI Grok section -->
     document.querySelector<HTMLInputElement>('#xaiApiKey').value = configs.xai?.apiKey || ''

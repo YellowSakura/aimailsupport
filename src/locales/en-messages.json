@@ -501,6 +501,42 @@
         "message": "The selected languages are those that will be used to create content translations. It is possible to select the language(s) that will actually be used for translations.",
         "description": "The displayed text shown to the user to explain the rationale behind selecting a set of languages."
     },
+    "options.vllm.apiKey": {
+        "message": "API Key (optional)",
+        "description": "Optional API key field for vLLM."
+    },
+    "options.vllm.apiKey.description": {
+        "message": "Leave empty if your vLLM server does not require authentication.",
+        "description": "Description for the optional API key field."
+    },
+    "options.vllm.description": {
+        "message": "vLLM is a high-throughput inference server that exposes an OpenAI-compatible API. It can run locally or on a remote server.<br />See the <a href=\"https://docs.vllm.ai\">official documentation</a> for setup instructions.",
+        "description": "Description of the vLLM provider."
+    },
+    "options.vllm.errorApi": {
+        "message": "<strong>Attention</strong>: Unable to communicate with the vLLM server. Please ensure it is running and accessible from Thunderbird.",
+        "description": "Error message displayed when unable to communicate with vLLM."
+    },
+    "options.vllm.listModelsButton": {
+        "message": "Load models",
+        "description": "Button to load available models from the vLLM server."
+    },
+    "options.vllm.model": {
+        "message": "Model*",
+        "description": "Model to be used for all text processing."
+    },
+    "options.vllm.serviceUrl": {
+        "message": "Service URL*",
+        "description": "URL of the vLLM REST API server."
+    },
+    "options.vllm.serviceUrl.description": {
+        "message": "URL of the vLLM server exposing the OpenAI-compatible API (e.g. <code>http://localhost:8000</code>).",
+        "description": "Description of the vLLM service URL field."
+    },
+    "options.vllm.warningNoModel": {
+        "message": "<strong>Attention</strong>: No model found on the vLLM server. Please ensure at least one model is loaded.",
+        "description": "Warning message when no models are available on the vLLM server."
+    },
     "options.xai.apiKey": {
         "message": "API Key*",
         "description": "API key field for xAI Grok."
@@ -512,6 +548,10 @@
     "options.xai.model": {
         "message": "Model*",
         "description": "Model to be used for all text processing: https://docs.x.ai/docs/models"
+    },
+    "outputDisplay.refine.placeholder": {
+        "message": "Refine this response (e.g. make it shorter, more formal…)",
+        "description": "Placeholder text for the inline refinement textarea shown below an AI response."
     },
     "promptDisplay.placeholder": {
         "message": "How can I help you?",
