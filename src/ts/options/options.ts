@@ -100,7 +100,8 @@ document.querySelector('#optionsForm')?.addEventListener('submit', async (event)
         },
         google: {
             apiKey: document.querySelector<HTMLInputElement>('#googleApiKey').value,
-            model: document.querySelector<HTMLInputElement>('#googleModel').value
+            model: document.querySelector<HTMLInputElement>('#googleModel').value,
+            reasoningEffort: document.querySelector<HTMLInputElement>('#googleReasoningEffort').value
         },
         groq: {
             apiKey: document.querySelector<HTMLInputElement>('#groqApiKey').value,
@@ -206,6 +207,10 @@ document.addEventListener('DOMContentLoaded', async _ => {
 
     if(configs.google?.model) {
         document.querySelector<HTMLInputElement>('#googleModel').value = configs.google.model
+    }
+
+    if(configs.google?.reasoningEffort) {
+        document.querySelector<HTMLInputElement>('#googleReasoningEffort').value = configs.google.reasoningEffort
     }
     // <-- Google Gemini section
 

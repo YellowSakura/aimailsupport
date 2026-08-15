@@ -230,6 +230,24 @@
     "options.google.model": {
         "message": "Modello*"
     },
+    "options.google.reasoningEffort": {
+        "message": "Sforzo di ragionamento*"
+    },
+    "options.google.reasoningEffort.description": {
+        "message": "Controlla lo sforzo di ragionamento per i modelli che supportano le modalità di pensiero. Nota: uno sforzo Medio/Alto richiede di aumentare il Timeout dei servizi (es. 30-60s)."
+    },
+    "options.google.reasoningEffort.off": {
+        "message": "Disattivato (Più veloce)"
+    },
+    "options.google.reasoningEffort.low": {
+        "message": "Basso"
+    },
+    "options.google.reasoningEffort.medium": {
+        "message": "Medio"
+    },
+    "options.google.reasoningEffort.high": {
+        "message": "Alto"
+    },
     "options.groq.apiKey": {
         "message": "Chiave API*"
     },

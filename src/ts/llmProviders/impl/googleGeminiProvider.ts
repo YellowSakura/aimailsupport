@@ -10,12 +10,14 @@ import { getLanguageNameFromCode, logMessage } from '../../helpers/utils'
 export class GoogleGeminiProvider extends GenericProvider {
     private readonly apiKey: string
     private readonly model: string
+    private readonly reasoningEffort: string
 
     public constructor(config: ConfigType) {
         super(config)
 
         this.apiKey = config.google.apiKey
         this.model = config.google.model
+        this.reasoningEffort = config.google.reasoningEffort || 'medium'
     }
 
     public async analyzeTextIntent(input: string): Promise<string> {
@@ -143,7 +145,10 @@ export class GoogleGeminiProvider extends GenericProvider {
                 }
             ],
             'generationConfig': {
-                'temperature': this.temperature
+                'temperature': this.temperature,
+                'thinkingConfig': {
+                    'thinking_level': (this.reasoningEffort === 'off') ? 'MINIMAL' : this.reasoningEffort.toUpperCase()
+                }
             }
         })
 
@@ -173,6 +178,15 @@ export class GoogleGeminiProvider extends GenericProvider {
             throw new Error(`Google AI error: ${browser.i18n.getMessage('errorGoogleGeminiSafetyThresholdExceeded')}`)
         }
 
-        return responseData.candidates[0].content.parts[0].text
+        const parts = responseData.candidates[0].content.parts
+
+        // When thinking is enabled the answer is split across several parts, and
+        // the ones carrying the reasoning summary are flagged with "thought".
+        // The first part holding actual text and not marked as a thought is the
+        // answer, while the fallback on the last part covers the responses that
+        // come as a single part, as happens when thinking is turned off.
+        const textPart = parts.find((part: any) => !part.thought && part.text) || parts[parts.length - 1]
+
+        return textPart.text
     }
 }

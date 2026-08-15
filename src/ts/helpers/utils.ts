@@ -205,18 +205,24 @@ export function localizeNodes(): void {
 }
 
 /**
+ * The console methods available for logging, restricted to a union so that the
+ * value can be used to index the Console object.
+ */
+export type LogMethod = 'debug' | 'error' | 'info' | 'log' | 'warn'
+
+/**
  * Logs a message to the console if the debug mode is enabled.
- * 
+ *
  * This function checks the configuration for the 'debugMode' setting.
  * If 'debugMode' is true, it will log the provided message using the specified 
  * console method (e.g., 'log', 'error', 'warn', 'info').
- * 
+ *
  * @param {string} message - The message to log to the console.
- * @param {string} method - The console method to use for logging. Defaults to 'log'.
- * 
+ * @param {LogMethod} method - The console method to use for logging. Defaults to 'log'.
+ *
  * @returns A promise that resolves to void.
  */
-export async function logMessage(message: string, method: string = 'log'): Promise<void> {
+export async function logMessage(message: string, method: LogMethod = 'log'): Promise<void> {
     const isDebugModeEnabled: boolean = await getConfig('debugMode')
 
     if (isDebugModeEnabled === true) {

@@ -23,6 +23,7 @@ export interface ConfigType {
     google: {
         apiKey: string
         model: string
+        reasoningEffort?: string
     }
 
     groq: {

@@ -4,6 +4,7 @@
     "esModuleInterop": true,
     "moduleResolution": "bundler",
     "target": "esnext",
+    "strictNullChecks": false,
     "types": ["thunderbird-webext-browser", "jest"]
   }
 }

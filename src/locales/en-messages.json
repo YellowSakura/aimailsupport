@@ -305,6 +305,30 @@
         "message": "Model*",
         "description": "Model to be used for all text processing: https://ai.google.dev/gemini-api/docs/models/gemini#model-variations."
     },
+    "options.google.reasoningEffort": {
+        "message": "Reasoning effort*",
+        "description": "Label for reasoning effort selector for Google Gemini models."
+    },
+    "options.google.reasoningEffort.description": {
+        "message": "Controls the reasoning effort for models supporting thinking modes. Note: Medium/High effort requires increasing the Services Timeout setting (e.g., 30-60s).",
+        "description": "Description of reasoning effort for Google Gemini models."
+    },
+    "options.google.reasoningEffort.off": {
+        "message": "Off (Fastest)",
+        "description": "Disable reasoning effort for fastest responses."
+    },
+    "options.google.reasoningEffort.low": {
+        "message": "Low",
+        "description": "Low reasoning effort mode."
+    },
+    "options.google.reasoningEffort.medium": {
+        "message": "Medium",
+        "description": "Medium reasoning effort mode."
+    },
+    "options.google.reasoningEffort.high": {
+        "message": "High",
+        "description": "High reasoning effort mode."
+    },
     "options.groq.apiKey": {
         "message": "API Key*",
         "description": "API key field for Groq cloud console."
