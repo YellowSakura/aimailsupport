@@ -11,7 +11,7 @@ if((await getConfig('llmProvider')) == 'groq') {
 
 // The LLM provider change event is handled to reload all available Groq
 // Cloud models.
-document.querySelector('#llmProvider').addEventListener('change', (event) => {
+document.querySelector('#llmProvider')?.addEventListener('change', (event) => {
     const selectedValue = (event.target as HTMLSelectElement).value
 
     if(selectedValue == 'groq') {
@@ -20,7 +20,7 @@ document.querySelector('#llmProvider').addEventListener('change', (event) => {
 })
 
 // Adds a click event listener for loading all available Groq Cloud models
-document.querySelector('#groqListModel').addEventListener('click', async _ => {
+document.querySelector('#groqListModel')?.addEventListener('click', async _ => {
     getGroqModels()
 })
 

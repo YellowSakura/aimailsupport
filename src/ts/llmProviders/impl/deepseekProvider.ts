@@ -9,11 +9,13 @@ import { getLanguageNameFromCode, logMessage } from '../../helpers/utils'
  */
 export class DeepseekProvider extends GenericProvider {
     private readonly apiKey: string
+    private readonly model: string
 
     public constructor(config: ConfigType) {
         super(config)
 
         this.apiKey = config.deepseek.apiKey
+        this.model = config.deepseek.model
     }
 
     public async analyzeTextIntent(input: string): Promise<string> {
@@ -113,7 +115,7 @@ export class DeepseekProvider extends GenericProvider {
         const { signal, clearAbortSignalWithTimeout } = this.createAbortSignalWithTimeout(this.servicesTimeout)
 
         const requestData = JSON.stringify({
-            'model': 'deepseek-chat',
+            'model': this.model,
             'messages': [
                 { 'role': 'system', 'content': systemInput },
                 { 'role': 'user', 'content': userInput }

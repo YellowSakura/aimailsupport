@@ -15,7 +15,7 @@
         "message": "Impossibile recuperare il testo per l'elaborazione."
     },
     "localLlm.warningTimeout": {
-        "message": "<strong>Attenzione</strong>: LM Studio o Ollama sono eseguiti totalmente localmente, il che richiede delle risorse hardware e dei tempi di esecuzione significativamente più alti rispetto a una chiamata a un servizio cloud. Impostare un timeout adeguato!"
+        "message": "<strong>Attenzione</strong>: I modelli eseguiti localmente richiedono delle risorse hardware e dei tempi di esecuzione significativamente più alti rispetto a una chiamata a un servizio cloud. Impostare un timeout adeguato!"
     },
     "mailCheckErrors": {
         "message": "Controlla errori"
@@ -214,6 +214,9 @@
     },
     "options.deepseek.apiKey.description": {
         "message": "Vai nella <a href=\"https://platform.deepseek.com/api_keys\">DeepSeek Platform</a> per recuperare o creare una chiave."
+    },
+    "options.deepseek.model": {
+        "message": "Modello*"
     },
     "options.errorOwlForExchangeBug": {
         "message": "<b>ATTENZIONE</b>: Sembra che almeno uno dei tuoi account usi l'estensione Owl for Exchange (Gufo per Exchange), che ha un bug con le <a href=\"https://webextension-api.thunderbird.net/en/mv3/scripting.messageDisplay.html\">scripting.messageDisplay API ufficiali di Thunderbird</a>.<br>Questo impedirà all'estensione \"AI Mail Support\" di funzionare quando si lavora su account Exchange o Office365."

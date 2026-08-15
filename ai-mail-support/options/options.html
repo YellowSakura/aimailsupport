@@ -31,11 +31,11 @@
                     <option value=google>Google Gemini</option>
                     <option value=groq>Groq cloud (Gemma, Llama, Mistral)</option>
                     <option value=deepseek>Hangzhou DeepSeek AI</option>
-                    <option value=lms>LM Studio (Gemma, Llama, Mistral, Phi, StarCoder, …)</option>
+                    <option value=lms>LM Studio (Gemma, GLM, Mistral, …)</option>
                     <option value=mistral>Mistral</option>
-                    <option value=ollama>Ollama (Gemma, Llama, Mistral, Phi, …)</option>
+                    <option value=ollama>Ollama (Gemma, GLM, Mistral, …)</option>
                     <option value=openai>OpenAI GPT</option>
-                    <option value=vllm>vLLM (local OpenAI-compatible server)</option>
+                    <option value=vllm>vLLM (Gemma, GLM, Mistral, …)</option>
                     <option value=xai>xAI Grok</option>
                 </select>
 
@@ -83,9 +83,12 @@
     <div class=form-group>
         <label for=anthropicModel data-l10n-ref=options.anthropic.model>&nbsp;</label>
         <select id=anthropicModel data-required>
-            <option value=claude-opus-4-7>Claude 4.7 Opus</option>
-            <option selected value=claude-sonnet-4-6>Claude 4.6 Sonnet</option>
-            <option value=claude-haiku-4-5>Claude Haiku 4.5</option>
+            <option value=claude-fable-5>Fable 5</option>
+            <option value=claude-opus-5>Opus 5</option>
+            <option value=claude-opus-4-8>Opus 4.8</option>
+            <option selected value=claude-sonnet-5>Sonnet 5</option>
+            <option value=claude-sonnet-4-7>Sonnet 4.7</option>
+            <option value=claude-haiku-4-5>Haiku 4.5</option>
         </select>
     </div>
 </fieldset>
@@ -98,6 +101,15 @@
         <label for=deepseekApiKey data-l10n-ref=options.deepseek.apiKey>&nbsp;</label>
         <input id=deepseekApiKey is=password-toggle data-required>
         <div class=description data-l10n-ref=options.deepseek.apiKey.description></div>
+    </div>
+
+    
+    <div class=form-group>
+        <label for=deepseekModel data-l10n-ref=options.deepseek.model>&nbsp;</label>
+        <select id=deepseekModel data-required>
+            <option value=deepseek-v4-pro>DeepSeek V4 Pro</option>
+            <option selected value=deepseek-v4-flash>DeepSeek V4 Flash</option>
+        </select>
     </div>
 </fieldset>
 
@@ -330,9 +342,9 @@
     <div class=form-group>
         <label for=xaiModel data-l10n-ref=options.xai.model>&nbsp;</label>
         <select id=xaiModel data-required>
-            <option value=grok-4.3-latest>Grok 4.3</option>
-            <option value=grok-4.20-reasoning-latest>Grok 4.20 (Reasoning)</option>
-            <option selected value=grok-4.20-non-reasoning-latest>Grok 4.20 (Non-Reasoning)</option>
+            <option value=grok-4.6>Grok 4.6</option>
+            <option value=grok-4.5>Grok 4.5</option>
+            <option selected value=grok-4.3>Grok 4.3</option>
         </select>
     </div>
 </fieldset>

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "esnext",
     "esModuleInterop": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "target": "esnext",
     "types": ["thunderbird-webext-browser", "jest"]
   }

@@ -20,7 +20,7 @@
         "description": "Text displayed when text cannot be retrieved for processing."
     },
     "localLlm.warningTimeout": {
-        "message": "<strong>Warning</strong>: LM Studio and Ollama run entirely locally, which requires significantly more hardware resources and execution time than a call to a cloud service. Set an appropriate timeout!",
+        "message": "<strong>Warning</strong>: Locally executed models require significantly more hardware resources and execution time than a call to a cloud service. Set an appropriate timeout!",
         "description": "Warning displayed in the options page for locally executed LLMs, to point out that they need a higher timeout than cloud services."
     },
     "mailCheckErrors": {
@@ -284,6 +284,10 @@
     "options.deepseek.apiKey.description": {
         "message": "Go to the <a href=\"https://platform.deepseek.com/api_keys\">DeepSeek Platform</a> to retrieve or create a key.",
         "description": "Description of the API Key section with details on how to retrieve it from the official DeepSeek Platform website."
+    },
+    "options.deepseek.model": {
+        "message": "Model*",
+        "description": "Model to be used for all text processing: https://api-docs.deepseek.com/quick_start/pricing."
     },
     "options.errorOwlForExchangeBug": {
         "message": "<b>WARNING</b>: It appears that at least one of your accounts is using the Owl for Exchange add-on, which has a bug with Thunderbird's official <a href=\"https://webextension-api.thunderbird.net/en/mv3/scripting.messageDisplay.html\">scripting.messageDisplay API</a>.<br>This will prevent the 'AI Mail Support' add-on from functioning when working with Exchange or Office365 accounts.",

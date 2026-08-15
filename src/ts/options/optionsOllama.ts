@@ -11,7 +11,7 @@ if((await getConfig('llmProvider')) == 'ollama') {
 
 // The LLM provider change event is handled to reload all available Ollama
 // local models.
-document.querySelector('#llmProvider').addEventListener('change', (event) => {
+document.querySelector('#llmProvider')?.addEventListener('change', (event) => {
     const selectedValue = (event.target as HTMLSelectElement).value
 
     if(selectedValue == 'ollama') {
@@ -20,7 +20,7 @@ document.querySelector('#llmProvider').addEventListener('change', (event) => {
 })
 
 // Adds a click event listener for loading all available Ollama local models
-document.querySelector('#ollamaListModel').addEventListener('click', async _ => {
+document.querySelector('#ollamaListModel')?.addEventListener('click', async _ => {
     getOllamaLocalModels()
 })
 

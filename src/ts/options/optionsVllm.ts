@@ -10,7 +10,7 @@ if((await getConfig('llmProvider')) == 'vllm') {
 }
 
 // The LLM provider change event is handled to reload all available vLLM models.
-document.querySelector('#llmProvider').addEventListener('change', (event) => {
+document.querySelector('#llmProvider')?.addEventListener('change', (event) => {
     const selectedValue = (event.target as HTMLSelectElement).value
 
     if(selectedValue == 'vllm') {
@@ -19,7 +19,7 @@ document.querySelector('#llmProvider').addEventListener('change', (event) => {
 })
 
 // Adds a click event listener for loading all available vLLM models
-document.querySelector('#vllmListModel').addEventListener('click', async _ => {
+document.querySelector('#vllmListModel')?.addEventListener('click', async _ => {
     getVllmModels()
 })
 

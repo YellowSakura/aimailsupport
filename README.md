@@ -42,12 +42,13 @@ It is possible to access a wider set of models (e.g., Llama, Phi, Mistral, Gemma
 
 * [Groq Cloud*](https://groq.com);
 * [LM Studio](https://lmstudio.ai);
-* [Ollama](https://ollama.com).
+* [Ollama](https://ollama.com);
+* [vLLM](https://docs.vllm.ai).
 
 \* To use them, it is necessary to create an account on the respective platforms and enable an API access key. <u>Usage fees apply</u>; for more details, please refer to the respective websites.
 
 **ATTENTION 1**: The services offered by Groq Cloud and Mistral AI include the option to use a free plan, albeit with low rate limits on requests.  
-**ATTENTION 2**: Unlike other LLM models, LM Studio and Ollama allow you to run open-source models directly on your own PC, with no additional costs and maximum privacy, as everything is executed locally.  
+**ATTENTION 2**: Unlike other LLM models, LM Studio, Ollama and vLLM allow you to run open-source models directly on your own PC, with no additional costs and maximum privacy, as everything is executed locally.  
 The downside is that this requires *SIGNIFICANT* hardware resources.
 
 ### Settings and usage
@@ -155,6 +156,14 @@ To test Ollama, it is necessary to install the model ```gemma4:e2b``` using the 
 $ ollama pull gemma4:e2b
 ```
 
+To test vLLM, it is necessary to serve the model ```google/gemma-4-E2B-it``` using the command:
+
+```console
+$ vllm serve google/gemma-4-E2B-it --gpu-memory-utilization 0.3
+```
+
+The `--gpu-memory-utilization` value is the fraction of GPU memory vLLM is allowed to reserve, and must be adjusted to the memory actually available on your machine: raise it if the GPU is dedicated to vLLM, lower it if other processes are competing for the same memory.
+
 ## Permissions details
 
 AI Mail Support for Thunderbird aims to make use of a minimal set of permissions for its operation, specifically:
@@ -176,7 +185,7 @@ AI Mail Support for Thunderbird aims to make use of a minimal set of permissions
 In addition, the following host permissions are declared, which allow the add-on to contact the LLM services directly, without any intermediate server:
 
 - `https://api.anthropic.com/`, `https://api.openai.com/` and `https://api.x.ai/`: used to reach the Anthropic, OpenAI and xAI endpoints.
-- `http://localhost/*` and `http://127.0.0.1/*`: used to reach LM Studio and Ollama when they run locally on your own machine.
+- `http://localhost/*` and `http://127.0.0.1/*`: used to reach LM Studio, Ollama and vLLM when they run locally on your own machine.
 
 ## Localization
 

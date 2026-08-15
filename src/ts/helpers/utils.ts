@@ -174,17 +174,17 @@ export async function isComposeDisplayed(tabId?: number): Promise<boolean> {
  *         'it' to display names in Italian.
  *          If not specified, 'en' (English) is used as the default.
  *
- * @returns {string | undefined} The extended name of the language if found,
- *          otherwise undefined.
+ * @returns {string } The extended name of the language if found, otherwise
+ *          empty string.
  */
-export function getLanguageNameFromCode(languageCode: string, locale: string = 'en'): string | undefined {
+export function getLanguageNameFromCode(languageCode: string, locale: string = 'en'): string {
     const languageNames = new Intl.DisplayNames([locale], { type: 'language' })
 
     try {
-        return languageNames.of(languageCode)
+        return languageNames.of(languageCode) as string
     } catch (error) {
         logMessage(`Error in retrieving the language name from the code: ${error}`, 'error')
-        return undefined
+        return ''
     }
 }
 

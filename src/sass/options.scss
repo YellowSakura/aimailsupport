@@ -192,6 +192,24 @@ $options-labels-width: 150px;
                 }
             }
 
+            // Styles for messages that for vLLM notify the user about two scenarios:
+            //
+            //   1. When an issue occurs during API calls while attempting to list
+            //      available models;
+            //   2. When no models are found.
+            &.vllm-error-api,
+            &.vllm-warning-no-model {
+                display: none;
+
+                &.show {
+                    display: block;
+                }
+
+                strong {
+                    color: red;
+                }
+            }
+
             // Style for a warning message that notifies the user about the significant
             // response times of the local LLM models, emphasizing the importance of
             // setting an appropriate timeout.

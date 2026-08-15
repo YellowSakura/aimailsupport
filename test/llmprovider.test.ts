@@ -8,6 +8,7 @@ import { LmsProvider } from '../src/ts/llmProviders/impl/lmsProvider'
 import { MistralProvider } from '../src/ts/llmProviders/impl/mistralProvider'
 import { OllamaProvider } from '../src/ts/llmProviders/impl/ollamaProvider'
 import { OpenAiGptProvider } from '../src/ts/llmProviders/impl/openAiGptProvider'
+import { VllmProvider } from '../src/ts/llmProviders/impl/vllmProvider'
 import { XaiGrokProvider } from '../src/ts/llmProviders/impl/xaiGrokProvider'
 
 import dotenv from 'dotenv'
@@ -29,7 +30,8 @@ const configs: ConfigType = {
     },
 
     deepseek: {
-        apiKey: ''
+        apiKey: '',
+        model: 'deepseek-v4-flash'
     },
 
     google: {
@@ -71,12 +73,12 @@ const configs: ConfigType = {
 
     xai: {
         apiKey: '',
-        model: 'grok-3-mini-latest'
+        model: 'grok-4.3'
     },
 
     vllm: {
-        serviceUrl: '',
-        model: '',
+        serviceUrl: 'http://localhost:8000',
+        model: 'google/gemma-4-E2B-it',
         apiKey: ''
     }
 }
@@ -555,6 +557,63 @@ describe('OpenAiGptProvider', () => {
         const output = await provider.getSpeechFromText('Example of text to speach')
         expect(output).toBeInstanceOf(Blob)
         expect(output.type).toBe('audio/mpeg')
+    })
+
+    test('should be able to rephrase a text', async () => {
+        const output = await provider.rephraseText('Example of text to rephrase', 'shortened')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to suggest how to improve a text', async () => {
+        const output = await provider.suggestImprovementsForText('Example of text to improve')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to suggest a reply from text', async () => {
+        const output = await provider.suggestReplyFromText('Example of text for which to request a suggestion for a reply', 'shortened')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to summarize text', async () => {
+        const output = await provider.summarizeText('Example of text to summarize')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to translate text', async () => {
+        // 'Esempio di testo da tradurre' is Italian for 'Example of text to translate'
+        const output = await provider.translateText('Esempio di testo da tradurre')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to check text for errors', async () => {
+        const output = await provider.checkTextForErrors('This text contains some ERORS to find')
+        expect(typeof output).toBe('string')
+    })
+})
+
+// vLLM tests
+describe('VllmProvider', () => {
+    configs.llmProvider = 'vllm'
+
+    const provider = ProviderFactory.getInstance(configs)
+
+    test('should be an instance of VllmProvider', () => {
+        expect(provider).toBeInstanceOf(VllmProvider)
+    })
+
+    test('should be able to analyze the intent of a text', async () => {
+        const output = await provider.analyzeTextIntent('Example of text to analyze')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to apply a custom promt to the text', async () => {
+        const output = await provider.applyCustomPrompt('Reverse the order of the words in the text', 'text of example')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to explain a text', async () => {
+        const output = await provider.explainText('Example of text to explain')
+        expect(typeof output).toBe('string')
     })
 
     test('should be able to rephrase a text', async () => {
