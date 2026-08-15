@@ -1,6 +1,6 @@
 {
     "addonDescription": {
-        "message": "L'estensione ottimizza l'esperienza della tua caselle di posta tramite il supporto AI (LLM)."
+        "message": "L'estensione ottimizza l'esperienza della tua casella di posta tramite il supporto AI (LLM)."
     },
     "errorGoogleGeminiSafetyThresholdExceeded": {
         "message": "Soglia di sicurezza superata."
@@ -15,7 +15,7 @@
         "message": "Impossibile recuperare il testo per l'elaborazione."
     },
     "localLlm.warningTimeout": {
-        "message": "<strong>Attenzione</strong>: LM Studio od Ollama sono eseguiti totalmente localmente, il che richiede delle risorse hardware e dei tempi di esecuzione significativamente più alti rispetto ad una chiamata ad un servizio cloud. Impostare un timeout adeguato!"
+        "message": "<strong>Attenzione</strong>: LM Studio o Ollama sono eseguiti totalmente localmente, il che richiede delle risorse hardware e dei tempi di esecuzione significativamente più alti rispetto a una chiamata a un servizio cloud. Impostare un timeout adeguato!"
     },
     "mailCheckErrors": {
         "message": "Controlla errori"
@@ -24,7 +24,7 @@
         "message": "Ascolta"
     },
     "mailListenAndAfter": {
-        "message": "Ed ascolta"
+        "message": "E ascolta"
     },
     "mailModerate": {
         "message": "Modera"
@@ -216,7 +216,7 @@
         "message": "Vai nella <a href=\"https://platform.deepseek.com/api_keys\">DeepSeek Platform</a> per recuperare o creare una chiave."
     },
     "options.errorOwlForExchangeBug": {
-        "message": "<b>ATTENZIONE</b>: Sembra che almeno uno dei tuoi account usi l'estensione Owl for Exchange (Gufo per Exchange), che ha un bug con le <a href=\"https://webextension-api.thunderbird.net/en/mv3/scripting.messageDisplay.html\">scripting.messageDisplay API ufficiali di Thunderbird</a>.<br>Questo impedirà all'estensione di \"AI Mail Support\" di funzionare quando si lavora su account Exchange od Office365."
+        "message": "<b>ATTENZIONE</b>: Sembra che almeno uno dei tuoi account usi l'estensione Owl for Exchange (Gufo per Exchange), che ha un bug con le <a href=\"https://webextension-api.thunderbird.net/en/mv3/scripting.messageDisplay.html\">scripting.messageDisplay API ufficiali di Thunderbird</a>.<br>Questo impedirà all'estensione \"AI Mail Support\" di funzionare quando si lavora su account Exchange o Office365."
     },
     "options.google.apiKey": {
         "message": "Chiave API*"
@@ -261,19 +261,19 @@
         "message": "Lingua principale"
     },
     "options.mainUserLanguage.description": {
-        "message": "Lingua principale che si usarerà in tutte le integrazioni."
+        "message": "Lingua principale che si userà in tutte le integrazioni."
     },
     "options.maskPii": {
         "message": "Maschera dati personali"
     },
     "options.maskPii.description": {
-        "message": "Quando l'opzione è attiva, si applicano alcune strategia per mascherare i dati personali pre-invio ai modelli LLM, anche se NON è possibile garantire un mascheramento esaustivo.<br>L'opzione aumenta la privacy, ma potrebbe causare un degrado nella qualità delle risposte con falsi positivi."
+        "message": "Quando l'opzione è attiva, si applicano alcune strategie per mascherare i dati personali pre-invio ai modelli LLM, anche se NON è possibile garantire un mascheramento esaustivo.<br>L'opzione aumenta la privacy, ma potrebbe causare un degrado nella qualità delle risposte con falsi positivi."
     },
     "options.lms.description": {
-        "message": "LM Studio è un progetto open source che permette di utilizzare diversi LLM avanzati in locale, senza bisogno di collegarsi ad un server esterno.<br />È possibile scaricare il tutto dal <a href=\"https://lmstudio.ai\">sito ufficiale</a>."
+        "message": "LM Studio è un progetto open source che permette di utilizzare diversi LLM avanzati in locale, senza bisogno di collegarsi a un server esterno.<br />È possibile scaricare il tutto dal <a href=\"https://lmstudio.ai\">sito ufficiale</a>."
     },
     "options.lms.errorApi": {
-        "message": "<strong>Attenzione</strong>: Impossibile comunicare con LM Studio. Assicurarsi che sia in esecuzione e che l'opzione CORS sia attivate nei Settings."
+        "message": "<strong>Attenzione</strong>: Impossibile comunicare con LM Studio. Assicurarsi che sia in esecuzione e che l'opzione CORS sia attivata nei Settings."
     },
     "options.lms.listModelsButton": {
         "message": "Elenca modelli"
@@ -285,10 +285,10 @@
         "message": "URL servizi LM Studio"
     },
     "options.lms.serviceUrl.description": {
-        "message": "È possibile eseguire LM Studio localmente (URL: <code>http://localhost:1234</code>), oppure su una macchina separata che è possibile raggiungere definendo il relativo URL od IP di destinazione."
+        "message": "È possibile eseguire LM Studio localmente (URL: <code>http://localhost:1234</code>), oppure su una macchina separata che è possibile raggiungere definendo il relativo URL o IP di destinazione."
     },
     "options.lms.warningNoModel": {
-         "message": "<strong>Attenzione</strong>: Nessun modello trovato in LM Studio, procedere all'installazione di un modello, es. Llama, come indicato sul <a href=\"https://lmstudio.ai/models\">sito ufficiale</a>."
+        "message": "<strong>Attenzione</strong>: Nessun modello trovato in LM Studio, procedere all'installazione di un modello, es. Llama, come indicato sul <a href=\"https://lmstudio.ai/models\">sito ufficiale</a>."
     },
     "options.mistral.apiKey": {
         "message": "Chiave API*"
@@ -300,10 +300,10 @@
         "message": "Modello*"
     },
     "options.ollama.description": {
-        "message": "Ollama è un progetto open source che permette di utilizzare diversi LLM avanzati in locale, senza bisogno di collegarsi ad un server esterno.<br />È possibile scaricare il tutto dal <a href=\"https://ollama.com/download\">sito ufficiale</a>."
+        "message": "Ollama è un progetto open source che permette di utilizzare diversi LLM avanzati in locale, senza bisogno di collegarsi a un server esterno.<br />È possibile scaricare il tutto dal <a href=\"https://ollama.com/download\">sito ufficiale</a>."
     },
     "options.ollama.errorApi": {
-        "message": "<strong>Attenzione</strong>: Impossibile comunicare con Ollama, assicurarsi che sia in esecuzione e che sia stata <a href=\"https://docs.ollama.com/faq#how-can-i-allow-additional-web-origins-to-access-ollama\">opportunamente configurata l'origine</a> per l'invocazione da Thunderbird, abilitando <code>moz-extension://*</code> come indicato in <a href=\"https://docs.ollama.com/faq#how-do-i-configure-ollama-server\">questa sezione</a><br/>Ad esempio, in macOS con: <code>launchctl setenv OLLAMA_ORIGINS \"moz-extension://*\"</code>."
+        "message": "<strong>Attenzione</strong>: Impossibile comunicare con Ollama, assicurarsi che sia in esecuzione e che sia stata <a href=\"https://docs.ollama.com/faq#how-can-i-allow-additional-web-origins-to-access-ollama\">opportunamente configurata l'origine</a> per l'invocazione da Thunderbird, abilitando <code>moz-extension://*</code> come indicato in <a href=\"https://docs.ollama.com/faq#how-do-i-configure-ollama-server\">questa sezione</a>.<br />Ad esempio, in macOS con: <code>launchctl setenv OLLAMA_ORIGINS \"moz-extension://*\"</code>."
     },
     "options.ollama.listModelsButton": {
         "message": "Elenca modelli"
@@ -315,7 +315,7 @@
         "message": "URL servizi Ollama"
     },
     "options.ollama.serviceUrl.description": {
-        "message": "È possibile eseguire Ollama localmente (URL: <code>http://localhost:11434</code>), oppure su una macchina separata che è possibile raggiungere definendo il relativo URL od IP di destinazione."
+        "message": "È possibile eseguire Ollama localmente (URL: <code>http://localhost:11434</code>), oppure su una macchina separata che è possibile raggiungere definendo il relativo URL o IP di destinazione."
     },
     "options.ollama.warningNoModel": {
         "message": "<strong>Attenzione</strong>: Nessun modello trovato in Ollama, procedere all'installazione di un modello, es. Llama, come indicato sul <a href=\"https://ollama.com/library\">sito ufficiale</a>."
@@ -357,7 +357,7 @@
         "message": "Voce*"
     },
     "options.openai.text2speech.voice.description": {
-        "message": "L'anteprima delle voci è quella inglese proposta da OpenAI e non è influenzata dalle opzioni di configurazioni presenti in questo pannello."
+        "message": "L'anteprima delle voci è quella inglese proposta da OpenAI e non è influenzata dalle opzioni di configurazione presenti in questo pannello."
     },
     "options.saveButton": {
         "message": "Salva"
@@ -416,7 +416,13 @@
     "options.xai.model": {
         "message": "Modello*"
     },
-    "outputDisplay.refine.placeholder": {
+    "outputDisplay.title.copyClipboard": {
+        "message": "Copia negli appunti"
+    },
+    "outputDisplay.title.copyTop": {
+        "message": "Inserisci all'inizio dell'email"
+    },
+    "outputDisplay.title.refine": {
         "message": "Affina questa risposta (es. rendila più breve, più formale…)"
     },
     "promptDisplay.placeholder": {

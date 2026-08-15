@@ -143,16 +143,16 @@ openai_api_key = KEY_VALUE
 xai_api_key = KEY_VALUE
 ```
 
-To test LM Studio, it is necessary to install the model ```llama-3.2-1b``` from the GUI or using the command:
+To test LM Studio, it is necessary to install the model ```gemma-4-e2b``` from the GUI or using the command:
 
 ```console
-$ lms get llama-3.2-1b
+$ lms get gemma-4-e2b
 ```
 
-To test Ollama, it is necessary to install the model ```llama3.2:1b``` using the command:
+To test Ollama, it is necessary to install the model ```gemma4:e2b``` using the command:
 
 ```console
-$ ollama pull llama3.2:1b
+$ ollama pull gemma4:e2b
 ```
 
 ## Permissions details
@@ -173,6 +173,11 @@ AI Mail Support for Thunderbird aims to make use of a minimal set of permissions
 - storage: Enables the add-on to store and retrieve data, and listen for changes to stored items.  
   Used to store user settings, see https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage.
 
+In addition, the following host permissions are declared, which allow the add-on to contact the LLM services directly, without any intermediate server:
+
+- `https://api.anthropic.com/`, `https://api.openai.com/` and `https://api.x.ai/`: used to reach the Anthropic, OpenAI and xAI endpoints.
+- `http://localhost/*` and `http://127.0.0.1/*`: used to reach LM Studio and Ollama when they run locally on your own machine.
+
 ## Localization
 
 The add-on has a small set of messages that require localization. If you want to extend the translation, the process is straightforward:
@@ -185,8 +190,9 @@ The add-on has a small set of messages that require localization. If you want to
    "build:locales-%ISO_CODE%": "node_modules/.bin/json-minify src/locales/%ISO_CODE%-messages.json > ai-mail-support/_locales/%ISO_CODE%/messages.json",
    ```
 4. Add a corresponding entry to the `build:locales` script in `package.json`, again maintaining alphabetical order.
-5. Add the folder `%ISO_CODE%` to the `_locales` key in your `src/manifest.json`.
-6. Test your changes using the build process described in the [Build section](#build) and submit the changes in a pull request.
+5. Test your changes using the build process described in the [Build section](#build) and submit the changes in a pull request.
+
+No change to `src/manifest.json` is required: it only declares `default_locale`, and Thunderbird automatically picks up every folder under `_locales`.
 
 ## License and references
 
@@ -196,10 +202,11 @@ For more details, please refer to the [project page](https://www.yellowsakura.co
 Dependencies:
 
 * [ESLint](https://github.com/eslint/eslint) is licensed under [MIT License](https://opensource.org/licenses/MIT);
+* [jest](https://github.com/jestjs/jest) is licensed under [MIT License](https://opensource.org/licenses/MIT);
+* [js-pii-mask](https://github.com/YellowSakura/js-pii-mask) is licensed under [MIT License](https://opensource.org/licenses/MIT);
 * [marked](https://github.com/markedjs/marked) is licensed under [MIT License](https://opensource.org/licenses/MIT);
 * [parcel](https://github.com/parcel-bundler/parcel) is licensed under [MIT License](https://opensource.org/licenses/MIT);
 * [posthtml](https://github.com/posthtml/posthtml) is licensed under [MIT License](https://opensource.org/licenses/MIT);
-* [types/sanitize-html](https://github.com/apostrophecms/sanitize-html) is licensed under [MIT License](https://opensource.org/licenses/MIT);
 * [types/thunderbird-webext-browser](https://www.npmjs.com/package/@types/thunderbird-webext-browser) is licensed under [MIT License](https://opensource.org/licenses/MIT);
 * [typescript-eslint/parser](https://github.com/typescript-eslint/typescript-eslint) is licensed under [BSD 2-clause license](https://opensource.org/license/bsd-2-clause).
 

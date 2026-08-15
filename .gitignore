@@ -11,3 +11,6 @@ Thumbs.db
 
 # Environment variabile file for Jest
 .env
+
+# Claude Code personal settings
+.claude/settings.local.json

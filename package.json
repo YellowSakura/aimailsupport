@@ -16,7 +16,7 @@
     "build:options": "parcel build src/html/options.html --dist-dir ai-mail-support/options --public-url /options/ --no-source-maps --no-content-hash --no-cache",
     "build": "npm run build:manifest && npm run build:locales && npm run build:addon",
     "build:package": "npm run build && cd ai-mail-support && zip -r -FS ../ai-mail-support.xpi * --exclude '*.DS_Store*'",
-    "lint": "node_modules/.bin/eslint src/ts/*.ts",
+    "lint": "node_modules/.bin/eslint \"src/ts/**/*.ts\"",
     "test": "jest",
     "test:single": "jest -t"
   },
@@ -28,7 +28,7 @@
     "@typescript-eslint/parser": "^8.32.1",
     "buffer": "^6.0.3",
     "dotenv": "^17.0",
-    "eslint": "^9.27.0",
+    "eslint": "^10.8",
     "jest": "^30.0",
     "jest-webextension-mock": "^4.0",
     "json-minify": "^1.0.0",

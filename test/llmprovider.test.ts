@@ -17,49 +17,49 @@ import 'jest-webextension-mock'
 const configs: ConfigType = {
     mainUserLanguageCode: 'en',
     translationLanguageCodes: [],
-    llmProvider: null,
+    llmProvider: '',
     temperature: 1,
-    servicesTimeout: 30,
+    servicesTimeout: 45,
     debugMode: true,
     maskPii: false,
 
     anthropic: {
-        apiKey: null,
+        apiKey: '',
         model: 'claude-haiku-4-5'
     },
 
     deepseek: {
-        apiKey: null
+        apiKey: ''
     },
 
     google: {
-        apiKey: null,
+        apiKey: '',
         model: 'gemini-2.5-flash'
     },
 
     groq: {
-        apiKey: null,
+        apiKey: '',
         model: 'llama-3.1-8b-instant'
     },
 
     mistral: {
-        apiKey: null,
+        apiKey: '',
         model: 'mistral-small-latest'
     },
 
     lms: {
         serviceUrl: 'http://localhost:1234',
-        model: 'llama-3.2-1b-instruct'
+        model: 'google/gemma-4-e2b'
     },
 
     ollama: {
         serviceUrl: 'http://localhost:11434',
-        model: 'llama3.2:1b'
+        model: 'gemma4:e2b'
     },
 
     openai: {
-        apiKey: null,
-        organizationId: null,
+        apiKey: '',
+        organizationId: '',
         model: 'gpt-4.1-mini',
 
         text2speech: {
@@ -70,8 +70,14 @@ const configs: ConfigType = {
     },
 
     xai: {
-        apiKey: null,
+        apiKey: '',
         model: 'grok-3-mini-latest'
+    },
+
+    vllm: {
+        serviceUrl: '',
+        model: '',
+        apiKey: ''
     }
 }
 
@@ -90,7 +96,7 @@ afterEach(() => new Promise(resolve => setTimeout(resolve, 3000)))
 // AnthropicClaudeProvider tests
 describe('AnthropicClaudeProvider', () => {
     configs.llmProvider = 'anthropic'
-    configs.anthropic.apiKey = process.env.anthropic_api_key
+    configs.anthropic.apiKey = process.env.anthropic_api_key as string
 
     const provider = ProviderFactory.getInstance(configs)
 
@@ -148,7 +154,7 @@ describe('AnthropicClaudeProvider', () => {
 // DeepseekProvider tests
 describe('DeepseekProvider', () => {
     configs.llmProvider = 'deepseek'
-    configs.deepseek.apiKey = process.env.deepseek_api_key
+    configs.deepseek.apiKey = process.env.deepseek_api_key as string
 
     const provider = ProviderFactory.getInstance(configs)
 
@@ -206,7 +212,7 @@ describe('DeepseekProvider', () => {
 // GoogleGeminiProvider tests
 describe('GoogleGeminiProvider', () => {
     configs.llmProvider = 'google'
-    configs.google.apiKey = process.env.google_api_key
+    configs.google.apiKey = process.env.google_api_key as string
 
     const provider = ProviderFactory.getInstance(configs)
 
@@ -264,7 +270,7 @@ describe('GoogleGeminiProvider', () => {
 // GroqProvider tests
 describe('GroqProvider', () => {
     configs.llmProvider = 'groq'
-    configs.groq.apiKey = process.env.groq_api_key
+    configs.groq.apiKey = process.env.groq_api_key as string
 
     const provider = ProviderFactory.getInstance(configs)
 
@@ -379,7 +385,7 @@ describe('LmStudioProvider', () => {
 // MistralProvider tests
 describe('MistralProvider', () => {
     configs.llmProvider = 'mistral'
-    configs.mistral.apiKey = process.env.mistral_api_key
+    configs.mistral.apiKey = process.env.mistral_api_key as string
 
     const provider = ProviderFactory.getInstance(configs)
 
@@ -508,7 +514,7 @@ describe('OllamaProvider', () => {
 // OpenAiGptProvider tests
 describe('OpenAiGptProvider', () => {
     configs.llmProvider = 'openai'
-    configs.openai.apiKey = process.env.openai_api_key
+    configs.openai.apiKey = process.env.openai_api_key as string
 
     const provider = ProviderFactory.getInstance(configs)
 
@@ -586,7 +592,7 @@ describe('OpenAiGptProvider', () => {
 // XaiGrokProvider tests
 describe('XaiGrokProvider', () => {
     configs.llmProvider = 'xai'
-    configs.xai.apiKey = process.env.xai_api_key
+    configs.xai.apiKey = process.env.xai_api_key as string
 
     const provider = ProviderFactory.getInstance(configs)
 

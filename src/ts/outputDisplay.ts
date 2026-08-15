@@ -2,6 +2,12 @@ import { ChartUtils } from './helpers/chartUtils'
 import { logMessage } from './helpers/utils'
 import { marked } from 'marked'
 
+/**
+ * Holds the raw markdown of the last AI response displayed in this document,
+ * as received from the provider and before being rendered to HTML.
+ * It is used as the input whenever the user asks to refine a response already
+ * received.
+ */
 let lastAiResponseText = ''
 
 // Manage async messages -->
@@ -77,6 +83,7 @@ function getInnerResponse() {
 async function addText(newContent: string) {
     clearOutputDisplay()
 
+    // Store the last response for any subsequent refinement
     lastAiResponseText = newContent
 
     getInnerResponse().classList.add('text-content')
@@ -151,6 +158,7 @@ function createOutputDisplay(): void {
     // Copy in clipboard icon
     const copyClipboardIcon: HTMLSpanElement = document.createElement('span')
     copyClipboardIcon.className = 'copy-clipboard-icon'
+    copyClipboardIcon.title = messenger.i18n.getMessage('outputDisplay.title.copyClipboard')
     copyClipboardIcon.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2m0 4h8m-8 4h6m-6 4h6"/>
@@ -164,6 +172,7 @@ function createOutputDisplay(): void {
     // Copy top icon
     const copyTopIcon: HTMLSpanElement = document.createElement('span')
     copyTopIcon.className = 'copy-top-icon'
+    copyTopIcon.title = messenger.i18n.getMessage('outputDisplay.title.copyTop')
     copyTopIcon.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 19V6"/>
@@ -177,7 +186,7 @@ function createOutputDisplay(): void {
     // Refine icon
     const refineIcon: HTMLSpanElement = document.createElement('span')
     refineIcon.className = 'refine-icon'
-    refineIcon.title = messenger.i18n.getMessage('outputDisplay.refine.placeholder')
+    refineIcon.title = messenger.i18n.getMessage('outputDisplay.title.refine')
     refineIcon.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -188,7 +197,7 @@ function createOutputDisplay(): void {
     actionsContainer.appendChild(refineIcon)
     // <-- refine icon
 
-    // Footer: groups action icons and refine input in normal document flow -->
+    // Footer: groups action icons and refine input -->
     const amsFooter: HTMLDivElement = document.createElement('div')
     amsFooter.id = 'amsFooter'
 
@@ -275,6 +284,46 @@ function copyClipboard(): void {
     }
 }
 
+/**
+ * Inserts the LLM response content at the top of the compose email body.
+ * This function is only available when in compose mode.
+ */
+function copyToEmailTop(): void {
+    const contentElement = getInnerResponse().querySelector('#amsContent') as HTMLElement | null
+    const htmlToCopy: string = contentElement?.innerHTML?.trim() || ''
+
+    if (htmlToCopy) {
+        try {
+            // Get the current content of the email body
+            const emailBody: HTMLElement | null = document.querySelector('body')
+            if (emailBody) {
+                // Create a new paragraph with the AI-generated content
+                const aiContent: HTMLDivElement = document.createElement('div')
+                aiContent.innerHTML = htmlToCopy
+
+                // Insert at the beginning of the email body
+                emailBody.insertBefore(aiContent, emailBody.firstChild)
+
+                // Scroll the email back to the very top, since the user may be
+                // composing further down.
+                globalThis.scrollTo({ top: 0, behavior: 'smooth' })
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                logMessage(`Error copying to email top: ${error.message}`, 'error')
+            } else {
+                logMessage('Unknown error copying to email top', 'error')
+            }
+        }
+    }
+}
+
+/**
+ * Shows or hides the input area used to ask for a refinement, moving the focus
+ * to the textarea as soon as it becomes visible.
+ *
+ * @param amsInnerResponse - The inner response node hosting the refine input.
+ */
 function toggleRefineInput(amsInnerResponse: HTMLDivElement): void {
     const container = amsInnerResponse.querySelector('#refineContainer') as HTMLDivElement
     const isVisible = container.classList.toggle('show')
@@ -283,6 +332,17 @@ function toggleRefineInput(amsInnerResponse: HTMLDivElement): void {
     }
 }
 
+/**
+ * Sends a refinement request to the background script, pairing the prompt typed
+ * by the user with the last AI response, which is the text to be reworked.
+ *
+ * Nothing is sent when the prompt is empty or when no response has been
+ * received yet. The input area is emptied and closed right away, while the new
+ * response arrives asynchronously and replaces the current one.
+ *
+ * @param textarea - The textarea holding the refinement prompt.
+ * @param container - The input area to be reset and hidden after sending.
+ */
 function submitRefinement(textarea: HTMLTextAreaElement, container: HTMLDivElement): void {
     const prompt = textarea.value.trim()
     if (!prompt || !lastAiResponseText) return
@@ -298,26 +358,4 @@ function submitRefinement(textarea: HTMLTextAreaElement, container: HTMLDivEleme
     textarea.value = ''
     textarea.style.height = 'auto'
     container.classList.remove('show')
-}
-
-/**
- * Inserts the LLM response content at the top of the compose email body.
- * Delegates to the background script which uses messenger.compose.setComposeDetails()
- * to reliably update the compose area (both HTML and plain-text modes).
- * This function is only available when in compose mode.
- */
-function copyToEmailTop(): void {
-    const contentElement = getInnerResponse().querySelector('#amsContent') as HTMLElement | null
-    const htmlContent: string = contentElement?.innerHTML?.trim() || ''
-    const textContent: string = contentElement?.textContent?.trim() || ''
-
-    if (htmlContent) {
-        browser.runtime.sendMessage({
-            type: 'insertAtComposeTop',
-            htmlContent,
-            textContent
-        }).catch((error: Error) => {
-            logMessage(`Error inserting AI content into compose: ${error.message}`, 'error')
-        })
-    }
 }

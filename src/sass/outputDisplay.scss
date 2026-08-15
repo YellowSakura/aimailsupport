@@ -118,9 +118,21 @@
     }
 
     #actionsContainer {
+        align-items: center;
+        // Light translucent pill that embeds the action icons, keeping them
+        // legible over any email background.
+        backdrop-filter: blur(4px);
+        background: rgba(white, .55);
+        border: 1px solid rgba(black, .06);
+        border-radius: 999px;
+        box-shadow: 0 1px 4px rgba(black, .15);
         display: flex;
-        justify-content: flex-end;
         gap: 5px;
+        // Shrink-wraps the pill around the icons; the auto left margin keeps it
+        // aligned to the right edge, as justify-content did before.
+        margin-left: auto;
+        padding: 4px 8px;
+        width: fit-content;
 
         span {
             cursor: pointer;

@@ -19,6 +19,10 @@
         "message": "Unable to retrieve text for processing.",
         "description": "Text displayed when text cannot be retrieved for processing."
     },
+    "localLlm.warningTimeout": {
+        "message": "<strong>Warning</strong>: LM Studio and Ollama run entirely locally, which requires significantly more hardware resources and execution time than a call to a cloud service. Set an appropriate timeout!",
+        "description": "Warning displayed in the options page for locally executed LLMs, to point out that they need a higher timeout than cloud services."
+    },
     "mailCheckErrors": {
         "message": "Check for errors",
         "description": "This option checks the email for spelling, logical, and other types of errors."
@@ -60,7 +64,7 @@
         "description": "Content that requests, shares, or attempts to elicit personal identifying information such as full names, addresses, phone numbers, social security numbers, or financial account details."
     },
     "mailModerate.mistralClassification.selfharm": {
-        "message": "Self-Harm",
+        "message": "Self-harm",
         "description": "Content that promotes, instructs, plans, or encourages deliberate self-injury, suicide, eating disorders, or other self-destructive behaviors."
     },
     "mailModerate.mistralClassification.sexual": {
@@ -165,7 +169,7 @@
     },
     "mailSuggestImprovements": {
         "message": "Suggest improvements",
-        "description": "This option suggest improvements to an email."
+        "description": "This option suggests improvements to an email."
     },
     "mailSuggestReply": {
         "message": "Suggest reply…",
@@ -225,7 +229,7 @@
     },
     "mailSummarizeAnd": {
         "message": "Summarize and…",
-        "description": "Submenu option to summarize the content of an email or a portion of it and apply other operation."
+        "description": "Submenu option to summarize the content of an email or a portion of it and apply another operation."
     },
     "mailSummarizeAndAfter": {
         "message": "And summarize",
@@ -237,7 +241,7 @@
     },
     "mailTranslateAnd": {
         "message": "Translate…",
-        "description": "Submenu option to translate the content of an email or a portion of it and apply other operation."
+        "description": "Submenu option to translate the content of an email or a portion of it and apply another operation."
     },
     "mailTranslateTo": {
         "message": "Into $language$",
@@ -283,7 +287,7 @@
     },
     "options.errorOwlForExchangeBug": {
         "message": "<b>WARNING</b>: It appears that at least one of your accounts is using the Owl for Exchange add-on, which has a bug with Thunderbird's official <a href=\"https://webextension-api.thunderbird.net/en/mv3/scripting.messageDisplay.html\">scripting.messageDisplay API</a>.<br>This will prevent the 'AI Mail Support' add-on from functioning when working with Exchange or Office365 accounts.",
-        "description": "The text displayed on the options page when at least one account managed by the Owl for Exchange is founded."
+        "description": "The text displayed on the options page when at least one account managed by the Owl for Exchange add-on is found."
     },
     "options.google.apiKey": {
         "message": "API Key*",
@@ -334,7 +338,7 @@
         "description": "Explain the effect of the temperature setting on the model's responses, highlighting the trade-off between predictability and creativity."
     },
     "options.llmTemperature.noTemperatureDescription": {
-        "message": "<b><strong>Attention</strong>:</b>The temperature setting is disabled for the currently selected model and is fixed at 1.",
+        "message": "<b><strong>Attention</strong>:</b> The temperature setting is disabled for the currently selected model and is fixed at 1.",
         "description": "Notify the user that the selected model does not support the temperature setting, which is therefore locked at 1."
     },
     "options.mainUserLanguage": {
@@ -358,7 +362,7 @@
         "description": "Message displayed when the LLM service provider LM Studio is selected."
     },
     "options.lms.errorApi": {
-        "message": "<strong>Attention</strong>: Unable to communicate with LM Studio. Please ensure that it is running and that the CORS option is enabled in the Settings",
+        "message": "<strong>Attention</strong>: Unable to communicate with LM Studio. Please ensure that it is running and that the CORS option is enabled in the Settings.",
         "description": "Error message displayed in case of inability to call the local LM Studio APIs or if CORS is not configured."
     },
     "options.lms.listModelsButton": {
@@ -549,9 +553,17 @@
         "message": "Model*",
         "description": "Model to be used for all text processing: https://docs.x.ai/docs/models"
     },
-    "outputDisplay.refine.placeholder": {
+    "outputDisplay.title.copyClipboard": {
+        "message": "Copy to clipboard",
+        "description": "Tooltip of the icon that copies the AI response to the system clipboard."
+    },
+    "outputDisplay.title.copyTop": {
+        "message": "Insert at the top of the email",
+        "description": "Tooltip of the icon that inserts the AI response at the beginning of the email being composed."
+    },
+    "outputDisplay.title.refine": {
         "message": "Refine this response (e.g. make it shorter, more formal…)",
-        "description": "Placeholder text for the inline refinement textarea shown below an AI response."
+        "description": "Tooltip of the icon that opens the input field used to ask for a refinement of the AI response."
     },
     "promptDisplay.placeholder": {
         "message": "How can I help you?",

@@ -549,67 +549,62 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, 
     }
 })
 
-// Register a listener for compose content insertion and prompt display actions
+// Listens for the message signaling.
 browser.runtime.onMessage.addListener(async (message, sender) => {
-  if (message.type === 'insertAtComposeTop') {
-    const tabId = sender.tab.id
+    // Settings saved by the user: the interface is realigned immediately, without
+    // restarting the add-on. For example, choosing a model that supports text to
+    // speech enables the related menu entries, which are disabled again as soon as
+    // a model without that capability is selected.
+    if (message.type === 'optionsChanged') {
+        updateMenuVisibility()
+        updateMenuWithUserTranslationPreferences()
+    }
 
-    try {
-        const composeDetails = await messenger.compose.getComposeDetails(tabId)
-        if (composeDetails.isPlainText) {
-            const newBody = `${message.textContent}\n\n${composeDetails.plainTextBody || ''}`
-            await messenger.compose.setComposeDetails(tabId, { plainTextBody: newBody })
-        } else {
-            const currentBody = composeDetails.body || ''
-            const newBody = `<div>${message.htmlContent}</div><br>${currentBody}`
-            await messenger.compose.setComposeDetails(tabId, { body: newBody })
+    // Custom prompt typed by the user in the promptDisplay panel: it is applied to
+    // the content of the email currently displayed or being composed.
+    if (message.action === 'sendUserPromptToBackground') {
+        // Capture the originating tab ID so that the response is always sent back
+        // to the tab where the request was initiated, even if the user switches
+        // tabs while the LLM is processing.
+        const tabId = sender.tab.id
+
+        const configs = await getConfigs()
+        const llmProvider = ProviderFactory.getInstance(configs)
+
+        sendMessageToTab(tabId, { type: 'thinking', content: messenger.i18n.getMessage('thinking') })
+
+        const currentMessageContent = await getCurrentMessageContent(tabId)
+
+        if(currentMessageContent == null) {
+            sendMessageToTab(tabId, {type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound')})
         }
-    } catch (error) {
-        logMessage(`Error inserting AI content into compose: ${(error as Error).message}`, 'error')
+        else {
+            llmProvider.applyCustomPrompt(message.data.userPrompt, currentMessageContent).then(textProcessed => {
+                sendMessageToTab(tabId, {type: 'addText', content: textProcessed})
+            }).catch(error => {
+                sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
+                logMessage(`Error during the custom prompt: ${error.message}`, 'error')
+            })
+        }
     }
-  }
 
-  if (message.action === 'sendUserPromptToBackground') {
-    // Capture the originating tab ID so that the response is always sent back
-    // to the tab where the request was initiated, even if the user switches
-    // tabs while the LLM is processing.
-    const tabId = sender.tab.id
+    // Refinement requested from the outputDisplay panel: the prompt is applied to
+    // the previous AI response, carried by the message itself, and not to the email.
+    if (message.type === 'refineLastResponse') {
+        const tabId = sender.tab.id
 
-    const configs = await getConfigs()
-    const llmProvider = ProviderFactory.getInstance(configs)
+        const configs = await getConfigs()
+        const llmProvider = ProviderFactory.getInstance(configs)
 
-    sendMessageToTab(tabId, { type: 'thinking', content: messenger.i18n.getMessage('thinking') })
+        sendMessageToTab(tabId, { type: 'thinking', content: messenger.i18n.getMessage('thinking') })
 
-    const currentMessageContent = await getCurrentMessageContent(tabId)
-
-    if(currentMessageContent == null) {
-        sendMessageToTab(tabId, {type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound')})
-    }
-    else {
-        llmProvider.applyCustomPrompt(message.data.userPrompt, currentMessageContent).then(textProcessed => {
+        llmProvider.applyCustomPrompt(message.refinementPrompt, message.lastResponse).then(textProcessed => {
             sendMessageToTab(tabId, {type: 'addText', content: textProcessed})
         }).catch(error => {
             sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
-            logMessage(`Error during the custom prompt: ${error.message}`, 'error')
+            logMessage(`Error during refinement: ${error.message}`, 'error')
         })
     }
-  }
-
-  if (message.type === 'refineLastResponse') {
-    const tabId = sender.tab.id
-
-    const configs = await getConfigs()
-    const llmProvider = ProviderFactory.getInstance(configs)
-
-    sendMessageToTab(tabId, { type: 'thinking', content: messenger.i18n.getMessage('thinking') })
-
-    llmProvider.applyCustomPrompt(message.refinementPrompt, message.lastResponse).then(textProcessed => {
-        sendMessageToTab(tabId, {type: 'addText', content: textProcessed})
-    }).catch(error => {
-        sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
-        logMessage(`Error during refinement: ${error.message}`, 'error')
-    })
-  }
 })
 
 /**
@@ -646,15 +641,6 @@ messenger.composeScripts.register({
         { file: '/outputDisplay/outputDisplay.css' },
         { file: '/promptDisplay/promptDisplay.css' }
     ]
-})
-
-// Listens for the message signaling the change in configurations to update the
-// interface.
-browser.runtime.onMessage.addListener(async (message) => {
-    if (message.type === 'optionsChanged') {
-        updateMenuVisibility()
-        updateMenuWithUserTranslationPreferences()
-    }
 })
 
 // The function manages the visibility of menu options based on the user-selected

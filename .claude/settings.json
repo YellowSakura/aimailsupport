@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"${CLAUDE_PROJECT_DIR:-.}\" && out=$(npm run lint 2>&1) || { printf 'ESLint validation failed. Fix these errors before completing the task:\\n%s\\n' \"$out\" >&2; exit 2; }",
+            "timeout": 120,
+            "statusMessage": "Validating with ESLint..."
+          }
+        ]
+      }
+    ]
+  }
+}
