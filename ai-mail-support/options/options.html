@@ -35,8 +35,8 @@
                     <option value=mistral>Mistral</option>
                     <option value=ollama>Ollama (Gemma, GLM, Mistral, …)</option>
                     <option value=openai>OpenAI GPT</option>
+                    <option value=xai>SpaceXAI Grok</option>
                     <option value=vllm>vLLM (Gemma, GLM, Mistral, …)</option>
-                    <option value=xai>xAI Grok</option>
                 </select>
 
                 <div class=description data-l10n-ref=options.llmProvider.description></div>
@@ -259,11 +259,12 @@
     <div class=form-group>
         <label for=openaiModel data-l10n-ref=options.openai.model>&nbsp;</label>
         <select id=openaiModel data-required>
+            <option value=gpt-5.6-sol data-no-temperature=true>GPT-5.6 Sol</option>
+            <option value=gpt-5.6-terra data-no-temperature=true>GPT-5.6 Terra</option>
+            <option value=gpt-5.6-luna data-no-temperature=true>GPT-5.6 Luna</option>
             <option value=gpt-5.5 data-no-temperature=true>GPT-5.5</option>
             <option value=gpt-5.4>GPT-5.4</option>
-            <option value=gpt-5.2>GPT-5.2</option>
-            <option value=gpt-4.1>GPT-4.1</option>
-            <option selected value=gpt-4.1-mini>GPT-4.1 mini</option>
+            <option selected value=gpt-5.2>GPT-5.2</option>
         </select>
     </div>
 
@@ -309,6 +310,27 @@
 </fieldset>
 
             
+            <fieldset id=xai>
+    <legend>SpaceXAI Grok:</legend>
+
+    <div class=form-group>
+        <label for=xaiApiKey data-l10n-ref=options.xai.apiKey>&nbsp;</label>
+        <input id=xaiApiKey is=password-toggle data-required>
+        <div class=description data-l10n-ref=options.xai.apiKey.description></div>
+    </div>
+
+    
+    <div class=form-group>
+        <label for=xaiModel data-l10n-ref=options.xai.model>&nbsp;</label>
+        <select id=xaiModel data-required>
+            <option value=grok-4.6>Grok 4.6</option>
+            <option value=grok-4.5>Grok 4.5</option>
+            <option selected value=grok-4.3>Grok 4.3</option>
+        </select>
+    </div>
+</fieldset>
+
+            
             <fieldset id=vllm>
     <legend>vLLM:</legend>
 
@@ -339,27 +361,6 @@
     </div>
 </fieldset>
 
-
-            
-            <fieldset id=xai>
-    <legend>xAI Grok:</legend>
-
-    <div class=form-group>
-        <label for=xaiApiKey data-l10n-ref=options.xai.apiKey>&nbsp;</label>
-        <input id=xaiApiKey is=password-toggle data-required>
-        <div class=description data-l10n-ref=options.xai.apiKey.description></div>
-    </div>
-
-    
-    <div class=form-group>
-        <label for=xaiModel data-l10n-ref=options.xai.model>&nbsp;</label>
-        <select id=xaiModel data-required>
-            <option value=grok-4.6>Grok 4.6</option>
-            <option value=grok-4.5>Grok 4.5</option>
-            <option selected value=grok-4.3>Grok 4.3</option>
-        </select>
-    </div>
-</fieldset>
 
             <div class="buttons form-group">
                 <button type=button class=test data-l10n-ref=options.testButton disabled>&nbsp;</button>

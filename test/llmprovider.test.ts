@@ -63,7 +63,7 @@ const configs: ConfigType = {
     openai: {
         apiKey: '',
         organizationId: '',
-        model: 'gpt-4.1-mini',
+        model: 'gpt-5.2',
 
         text2speech: {
             audioQuality: 'tts-1',
