@@ -1,0 +1,18 @@
+<fieldset id="openrouter">
+    <legend>OpenRouter:</legend>
+
+    <div class="form-group">
+        <label for="openrouterApiKey" data-l10n-ref="options.openrouter.apiKey">&nbsp;</label>
+        <input id="openrouterApiKey" is="password-toggle" data-required>
+        <div class="description" data-l10n-ref="options.openrouter.apiKey.description"></div>
+    </div>
+
+    <!-- https://openrouter.ai/models -->
+    <div class="form-group">
+        <label for="openrouterModel" data-l10n-ref="options.openrouter.model">&nbsp;</label>
+        <select id="openrouterModel" data-required></select>
+        <button id="openrouterListModel" data-l10n-ref="options.openrouter.listModelsButton">&nbsp;</button>
+
+        <div class="description openrouter-error-api"></div>
+    </div>
+</fieldset>

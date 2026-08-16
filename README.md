@@ -41,6 +41,7 @@ The LLMs* currently supported are:
 It is possible to access a wider set of models (e.g., Llama, Phi, Mistral, Gemma, and many others) through the use of:
 
 * [Groq Cloud*](https://groq.com);
+* [OpenRouter*](https://openrouter.ai);
 * [LM Studio](https://lmstudio.ai);
 * [Ollama](https://ollama.com);
 * [vLLM](https://docs.vllm.ai).
@@ -141,6 +142,7 @@ google_api_key = KEY_VALUE
 groq_api_key = KEY_VALUE
 mistral_api_key = KEY_VALUE
 openai_api_key = KEY_VALUE
+openrouter_api_key = KEY_VALUE
 xai_api_key = KEY_VALUE
 ```
 

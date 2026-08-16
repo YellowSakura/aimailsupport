@@ -116,6 +116,21 @@ $options-labels-width: 150px;
             }
         }
 
+        // By default the width of a select is the one of its widest option: with
+        // the very long model IDs of some services (e.g. OpenRouter) the field
+        // pushed the "list models" button onto the following line.
+        //
+        // The flex base size is zeroed so that the content does not take part in
+        // the line breaking of the flex container, while the minimum width is
+        // zeroed so that the automatic minimum size does not restore it right
+        // afterwards: the select then simply fills the space left by the label
+        // and by the button, ellipsizing the text of the selected option when
+        // needed.
+        select {
+            flex-basis: 0;
+            min-width: 0;
+        }
+
         input[is="password-toggle"] {
             padding-right: 20px;
 
@@ -147,56 +162,21 @@ $options-labels-width: 150px;
             padding-left: calc($options-labels-width + 10px);
             text-align: justify;
 
-            // Styles for messages that for Groq notify errors
-            &.groq-error-api {
-                display: none;
-
-                &.show {
-                    display: block;
-                }
-            }
-
-            // Styles for messages that for LM Studio notify the user about two scenarios:
+            // Styles for the messages with which the providers listing their own
+            // models notify the user about two scenarios:
             //
             //   1. When an issue occurs during API calls while attempting to list
             //      available models;
             //   2. When no models are found.
+            //
+            // They are all hidden by default and revealed at runtime through the
+            // "show" class, added by the per-provider modules of src/ts/options/.
+            &.groq-error-api,
             &.lms-error-api,
-            &.lms-warning-no-model {
-                display: none;
-
-                &.show {
-                    display: block;
-                }
-
-                strong {
-                    color: red;
-                }
-            }
-
-            // Styles for messages that for Ollama notify the user about two scenarios:
-            //
-            //   1. When an issue occurs during API calls while attempting to list
-            //      available models;
-            //   2. When no models are found.
+            &.lms-warning-no-model,
             &.ollama-error-api,
-            &.ollama-warning-no-model {
-                display: none;
-
-                &.show {
-                    display: block;
-                }
-
-                strong {
-                    color: red;
-                }
-            }
-
-            // Styles for messages that for vLLM notify the user about two scenarios:
-            //
-            //   1. When an issue occurs during API calls while attempting to list
-            //      available models;
-            //   2. When no models are found.
+            &.ollama-warning-no-model,
+            &.openrouter-error-api,
             &.vllm-error-api,
             &.vllm-warning-no-model {
                 display: none;
@@ -286,6 +266,7 @@ $options-labels-width: 150px;
         body[data-provider='mistral'] &#mistral,
         body[data-provider='ollama'] &#ollama,
         body[data-provider='openai'] &#openai,
+        body[data-provider='openrouter'] &#openrouter,
         body[data-provider='vllm'] &#vllm,
         body[data-provider='xai'] &#xai {
             display: block;

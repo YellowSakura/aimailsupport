@@ -1,53 +1,36 @@
-import { GenericProvider } from '../genericProvider'
+import { OpenAiApiCompatibleProvider } from '../openAiApiCompatible'
 import { ConfigType } from '../../helpers/configType'
-import { getLanguageNameFromCode, logMessage } from '../../helpers/utils'
+import { logMessage } from '../../helpers/utils'
 
 /**
  * Class with the implementation of methods useful for interfacing with the
  * OpenAI APIs.
+ *
+ * The text operations are based on the "responses" endpoint instead of the
+ * OpenAI-compatible "chat/completions" one, so `manageMessageContent` is
+ * overridden, while everything else (prompts, headers, error handling) comes
+ * from the base class.
+ *
  * Official documentation: https://platform.openai.com/docs/api-reference
  */
-export class OpenAiGptProvider extends GenericProvider {
-    private readonly apiKey: string
+export class OpenAiGptProvider extends OpenAiApiCompatibleProvider {
     private readonly organizationId: string
-    private readonly model: string
     private readonly text2speechAudioQuality: string
     private readonly text2speechVoice: string
     private readonly text2speechSpeed: number
 
     public constructor(config: ConfigType) {
-        super(config)
+        super(config, {
+            serviceLabel: 'OpenAI',
+            baseUrl: 'https://api.openai.com',
+            model: config.openai.model,
+            apiKey: config.openai.apiKey
+        })
 
-        this.apiKey = config.openai.apiKey
         this.organizationId = config.openai.organizationId
-        this.model = config.openai.model
         this.text2speechAudioQuality = config.openai.text2speech.audioQuality
         this.text2speechVoice = config.openai.text2speech.voice
         this.text2speechSpeed = config.openai.text2speech.speed
-    }
-
-    public async analyzeTextIntent(input: string): Promise<string> {
-        logMessage(`Request to analyze text intent of ${input} in ${getLanguageNameFromCode(this.mainUserLanguageCode)}`, 'debug')
-
-        return this.manageMessageContent(this.PROMPTS.ANALYZE_INTENT.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode)), input)
-    }
-
-    public async applyCustomPrompt(userPrompt: string, input: string): Promise<string> {
-        logMessage(`Applying custom user prompt "${userPrompt}" to input text: "${input}"`, 'debug')
-
-        return this.manageMessageContent(userPrompt, input)
-    }
-
-    public async checkTextForErrors(input: string): Promise<string> {
-        logMessage(`Request to check for errors in ${getLanguageNameFromCode(this.mainUserLanguageCode)} the text: ${input}`, 'debug')
-
-        return this.manageMessageContent(this.PROMPTS.CHECK_ERRORS.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode)), input)
-    }
-
-    public async explainText(input: string): Promise<string> {
-        logMessage(`Request to explain in ${getLanguageNameFromCode(this.mainUserLanguageCode)} the text: ${input}`, 'debug')
-
-        return this.manageMessageContent(this.PROMPTS.EXPLAIN.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode)), input)
     }
 
     public async getSpeechFromText(input: string): Promise<Blob> {
@@ -76,12 +59,11 @@ export class OpenAiGptProvider extends GenericProvider {
             signal: signal
         }
 
-        const response = await fetch('https://api.openai.com/v1/audio/speech', requestOptions)
+        const response = await fetch(`${this.baseUrl}/v1/audio/speech`, requestOptions)
         clearAbortSignalWithTimeout()
 
         if (!response.ok) {
-            const errorResponse = await response.json()
-            throw new Error(`OpenAI error: ${errorResponse.error.message}`)
+            throw new Error(`${this.serviceLabel} error: ${await OpenAiGptProvider.extractErrorMessage(response)}`)
         }
 
         return await response.blob()
@@ -105,64 +87,25 @@ export class OpenAiGptProvider extends GenericProvider {
             signal: signal
         }
 
-        const response = await fetch('https://api.openai.com/v1/moderations', requestOptions)
+        const response = await fetch(`${this.baseUrl}/v1/moderations`, requestOptions)
         clearAbortSignalWithTimeout()
 
         if (!response.ok) {
-            const errorResponse = await response.json()
-            throw new Error(`OpenAI error: ${errorResponse.error.message}`)
+            throw new Error(`${this.serviceLabel} error: ${await OpenAiGptProvider.extractErrorMessage(response)}`)
         }
 
         const jsonData = await response.json()
         return this.normalizeModerationResponse(jsonData)
     }
 
-    public async rephraseText(input: string, toneOfVoice: string): Promise<string> {
-        logMessage(`Request to use the tone of voice "${toneOfVoice}" to rephrase in ${getLanguageNameFromCode(this.mainUserLanguageCode)} the text: ${input}`, 'debug')
-
-        return this.manageMessageContent(this.PROMPTS.REPHRASE.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode))
-            .replace('%toneOfVoice%', toneOfVoice), input)
-    }
-
-    public async suggestImprovementsForText(input: string): Promise<string> {
-        logMessage(`Request suggest improvements in ${getLanguageNameFromCode(this.mainUserLanguageCode)} for the text: ${input}`, 'debug')
-
-        return this.manageMessageContent(this.PROMPTS.SUGGEST_IMPROVEMENTS.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode)), input)
-    }
-
-    public async suggestReplyFromText(input: string, toneOfVoice: string): Promise<string> {
-        logMessage(`Request to use the tone of voice "${toneOfVoice}" to suggest a reply in ${getLanguageNameFromCode(this.mainUserLanguageCode)} to the text: ${input}`, 'debug')
-
-        return this.manageMessageContent(this.PROMPTS.SUGGEST_REPLY.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode))
-            .replace('%toneOfVoice%', toneOfVoice), input)
-    }
-
-    public async summarizeText(input: string): Promise<string> {
-        logMessage(`Request to summarize in ${getLanguageNameFromCode(this.mainUserLanguageCode)} the text: ${input} in ${getLanguageNameFromCode(this.mainUserLanguageCode)}`, 'debug')
-
-        return this.manageMessageContent(this.PROMPTS.SUMMARIZE.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode)), input)
-    }
-
-    public async testIntegration(): Promise<void> {
-        await this.translateText('Hi!')
-    }
-
-    public async translateText(input: string, languageCode: string | null = null): Promise<string> {
-        languageCode = languageCode ?? this.mainUserLanguageCode
-        logMessage(`Request to translate in ${getLanguageNameFromCode(languageCode)} the text: ${input}`, 'debug')
-
-        return this.manageMessageContent(this.PROMPTS.TRANSLATE.replace('%language%', getLanguageNameFromCode(languageCode)), input)
-    }
-
     /**
-     * Function to generate headers for API requests.
+     * Function to generate headers for API requests, adding the organization
+     * header to the standard ones when an organization ID is available.
      *
      * @returns {Headers} The headers object with necessary headers appended.
      */
-    private getHeaders(): Headers {
-        const headers: Headers = new Headers()
-        headers.append('Authorization', `Bearer ${this.apiKey}`)
-        headers.append('Content-Type', 'application/json')
+    protected getHeaders(): Headers {
+        const headers: Headers = super.getHeaders()
 
         if(this.organizationId) {
             headers.append('OpenAI-Organization', this.organizationId)
@@ -190,7 +133,7 @@ export class OpenAiGptProvider extends GenericProvider {
      *
      * @throws An error if the API response is not successful.
      */
-    private async manageMessageContent(systemInput: string, userInput: string): Promise<string> {
+    protected async manageMessageContent(systemInput: string, userInput: string): Promise<string> {
         const { signal, clearAbortSignalWithTimeout } = this.createAbortSignalWithTimeout(this.servicesTimeout)
 
         const requestData = JSON.stringify({
@@ -199,7 +142,9 @@ export class OpenAiGptProvider extends GenericProvider {
                 { 'role': 'system', 'content': systemInput },
                 { 'role': 'user', 'content': userInput }
             ],
-            'temperature': this.temperature
+            // The temperature is omitted when the selected model does not
+            // accept it, since those models reject the parameter.
+            ...(this.temperature !== null && { 'temperature': this.temperature })
         })
 
         const requestOptions: RequestInit = {
@@ -210,12 +155,11 @@ export class OpenAiGptProvider extends GenericProvider {
             signal: signal
         }
 
-        const response = await fetch('https://api.openai.com/v1/responses', requestOptions)
+        const response = await fetch(`${this.baseUrl}/v1/responses`, requestOptions)
         clearAbortSignalWithTimeout()
 
         if (!response.ok) {
-            const errorResponse = await response.json()
-            throw new Error(`OpenAI error: ${errorResponse.error.message}`)
+            throw new Error(`${this.serviceLabel} error: ${await OpenAiGptProvider.extractErrorMessage(response)}`)
         }
 
         const responseData = await response.json()
@@ -227,7 +171,7 @@ export class OpenAiGptProvider extends GenericProvider {
         const completedOutput = responseData.output.find((item: any) => item.status === 'completed')
 
         if (!completedOutput) {
-            throw new Error('OpenAI error: the response did not contain any completed output')
+            throw new Error(`${this.serviceLabel} error: the response did not contain any completed output`)
         }
 
         return completedOutput.content[0].text
@@ -252,13 +196,13 @@ export class OpenAiGptProvider extends GenericProvider {
                 // category.
                 // Each moderation category (e.g., "hate/threatening") has an
                 // associated name that may contain the "/" character, but
-                // since localization keys cannot contain "/", it’s necessary 
+                // since localization keys cannot contain "/", it’s necessary
                 // to replace "/" with "_",
                 // The string 'mailModerate.openaiClassification.' is concatenated
                 // with the modified category (where "/" is replaced with "_") to
                 // form a localization key. This key is then used to retrieve the
                 // translated text associated with that specific moderation category
-                // in line with OpenAI’s moderation documentation available at: 
+                // in line with OpenAI’s moderation documentation available at:
                 // https://platform.openai.com/docs/guides/moderation/quickstart?moderation-quickstart-examples=text
                 const translatedCategory = browser.i18n.getMessage('mailModerate.openaiClassification.' + category.replace(/\//g, '_'))
 

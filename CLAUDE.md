@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-AI Mail Support is a Thunderbird WebExtension add-on (manifest v2) that integrates LLM capabilities into email workflows. It supports multiple LLM providers (Anthropic Claude, Google Gemini, OpenAI GPT, xAI Grok, Mistral, DeepSeek, Groq, Ollama, LM Studio) through a provider abstraction layer.
+AI Mail Support is a Thunderbird WebExtension add-on (manifest v2) that integrates LLM capabilities into email workflows. It supports multiple LLM providers (Anthropic Claude, Google Gemini, OpenAI GPT, SpaceXAI Grok, Mistral, DeepSeek, Groq, OpenRouter, Ollama, LM Studio and vLLM) through a provider abstraction layer.
 
 ## Build & development commands
 
@@ -33,16 +33,34 @@ npm run build                        # Must compile successfully
 ## Architecture
 
 ### Provider pattern (core abstraction)
-- **`src/ts/llmProviders/genericProvider.ts`** — Base class defining all LLM operations (analyzeTextIntent, explainText, summarizeText, rephraseText, suggestReplyFromText, translateText, moderateText, etc.) with standardized prompt templates.
-- **`src/ts/llmProviders/impl/`** — Provider implementations extending GenericProvider. Each overrides the API call mechanism.
+- **`src/ts/llmProviders/genericProvider.ts`** — Base class declaring all LLM operations (analyzeTextIntent, explainText, summarizeText, rephraseText, suggestReplyFromText, translateText, moderateText, etc.) with the standardized prompt templates and `createAbortSignalWithTimeout()`. Every operation throws by default: a provider "supports" a feature simply by overriding it.
+- **`src/ts/llmProviders/openAiApiCompatible.ts`** — Abstract class extending GenericProvider for every service speaking the OpenAI protocol (`{baseUrl}/v1/chat/completions`). It implements the prompt wrappers, `getHeaders()`, `manageMessageContent()`, plus the `fetchModels()` and `extractErrorMessage()` static helpers. Subclasses usually consist of the constructor alone.
+- **`src/ts/llmProviders/impl/`** — Concrete providers. Groq, DeepSeek, SpaceXAI, Mistral, OpenRouter, LM Studio, Ollama, vLLM and OpenAI extend OpenAiApiCompatibleProvider; Anthropic and Google extend GenericProvider directly, since they use their own protocol. OpenAI is a special case: it inherits everything but overrides `manageMessageContent()` for the Responses API (`/v1/responses`); OpenRouter only overrides `getHeaders()` to add its optional attribution headers.
 - **`src/ts/llmProviders/providerFactory.ts`** — Factory that maps provider name strings to implementation classes.
+
+### Capability detection (careful when refactoring)
+`background.ts` enables the context-menu entries through the `can*()` methods of GenericProvider, which compare method identity against `GenericProvider.prototype`:
+
+```ts
+return this.summarizeText !== GenericProvider.prototype.summarizeText
+```
+
+Never move a shared implementation of those operations onto GenericProvider: every `can*()` would return false and the menu entries would silently disappear. Shared code must live in an intermediate class, as OpenAiApiCompatibleProvider does.
+
+### Adding an OpenAI-compatible provider
+1. `src/ts/llmProviders/impl/{name}Provider.ts` — extend OpenAiApiCompatibleProvider, passing `serviceLabel`, `baseUrl`, `model` and the optional `apiKey` to `super()`; add a `static getModels()` delegating to `fetchModels()` only if the service exposes `/v1/models`.
+2. Register it in `providerFactory.ts`.
+3. Add its block to `ConfigType`, the `<option>` in `options.html` and the partial in `src/html/partials/` (the fieldset `id` must equal the factory key).
+4. Add the read/restore of its fields in `options.ts`.
+5. Add the host permission in `src/manifest.json`.
+6. Add a `describe` block in `test/llmprovider.test.ts`.
 
 ### Entry points (defined in `src/manifest.json`)
 - **`src/ts/background.ts`** — Background script (MV2 background page, loaded as an ES module): creates context menus, handles message routing, delegates to LLM providers. This is the main orchestration hub.
 - **`src/ts/outputDisplay.ts`** — Popup that displays AI-generated responses and handles text-to-speech.
 - **`src/ts/promptDisplay.ts`** — Popup for custom prompt input.
 - **`src/html/options.html`** — Settings page, uses `posthtml-include` to compose provider-specific partials from `src/html/partials/`.
-- **`src/ts/options/`** — Settings page logic: `options.ts` is the main module, alongside per-provider modules (`optionsGroq.ts`, `optionsLms.ts`, `optionsOllama.ts`, `optionsOpenai.ts`). All are loaded as `<script type="module">` from `options.html`.
+- **`src/ts/options/`** — Settings page logic: `options.ts` is the main module, alongside per-provider modules (`optionsGroq.ts`, `optionsLms.ts`, `optionsOllama.ts`, `optionsOpenai.ts`, `optionsOpenrouter.ts`, `optionsVllm.ts`). All are loaded as `<script type="module">` from `options.html`.
 
 ### Helpers
 - **`src/ts/helpers/configType.ts`** — TypeScript interface for all configuration (provider keys, models, general settings).

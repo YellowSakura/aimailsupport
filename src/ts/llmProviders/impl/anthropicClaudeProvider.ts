@@ -18,7 +18,9 @@ export class AnthropicClaudeProvider extends GenericProvider {
         // range of 0 to 1 for Anthropic, while for other LLM models, and
         // consequently in the add-on options, values can be set between 0
         // and 2.
-        this.temperature = config.temperature / 2
+        // A null value means that the selected model does not accept the
+        // parameter at all, so there is nothing to normalize.
+        this.temperature = (config.temperature === null) ? null : config.temperature / 2
         this.apiKey = config.anthropic.apiKey
         this.model = config.anthropic.model
     }
@@ -123,8 +125,13 @@ export class AnthropicClaudeProvider extends GenericProvider {
 
         const requestData = JSON.stringify({
             'model': this.model,
-            'temperature': this.temperature,
-            'max_tokens': 2048,
+            // The temperature is omitted when the selected model does not
+            // accept it, since those models reject the parameter.
+            ...(this.temperature !== null && { 'temperature': this.temperature }),
+            // The limit covers the reasoning tokens too, which the most recent
+            // models produce by default, so it must leave room for both the
+            // reasoning and the actual answer.
+            'max_tokens': 8192,
             'system': systemInput,
             'messages': [
                 { 'role': 'user', 'content': userInput }
@@ -148,6 +155,20 @@ export class AnthropicClaudeProvider extends GenericProvider {
         }
 
         const responseData = await response.json()
-        return responseData.content[0].text
+
+        // The most recent models can decline a request through their safety
+        // classifiers: the call succeeds, but the content is empty or partial,
+        // so it has to be handled before reading the text.
+        if (responseData.stop_reason === 'refusal') {
+            throw new Error('Anthropic error: the request was declined by the safety filters of the model')
+        }
+
+        const textContent = responseData.content?.find((block: { type: string }) => block.type === 'text')
+
+        if (!textContent) {
+            throw new Error('Anthropic error: the response did not contain any text content')
+        }
+
+        return textContent.text
     }
 }

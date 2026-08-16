@@ -44,6 +44,7 @@
                     <option value="mistral">Mistral</option>
                     <option value="ollama">Ollama (Gemma, GLM, Mistral, &hellip;)</option>
                     <option value="openai">OpenAI GPT</option>
+                    <option value="openrouter">OpenRouter (Claude, GPT, Gemini, &hellip;)</option>
                     <option value="xai">SpaceXAI Grok</option>
                     <option value="vllm">vLLM (Gemma, GLM, Mistral, &hellip;)</option>
                 </select>
@@ -102,6 +103,9 @@
             <!-- OpenAI GPT section -->
             <include src="partials/options-openai-gpt.html"></include><!-- /OpenAI GPT section -->
 
+            <!-- OpenRouter section -->
+            <include src="partials/options-openrouter.html"></include><!-- /OpenRouter section -->
+
             <!-- SpaceXAI Grok section -->
             <include src="partials/options-xai-grok.html"></include><!-- /SpaceXAI Grok section -->
 
@@ -125,6 +129,7 @@
         <script type="module" src="../ts/options/optionsLms.ts"></script>
         <script type="module" src="../ts/options/optionsOllama.ts"></script>
         <script type="module" src="../ts/options/optionsOpenai.ts"></script>
+        <script type="module" src="../ts/options/optionsOpenrouter.ts"></script>
         <script type="module" src="../ts/options/optionsVllm.ts"></script>
     </body>
 </html>

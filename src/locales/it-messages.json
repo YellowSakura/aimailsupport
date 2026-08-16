@@ -29,8 +29,11 @@
     "mailModerate": {
         "message": "Modera"
     },
-    "mailModerate.mistralClassification.dangerous_and_criminal_content": {
-        "message": "Contenuti pericolosi e criminali"
+    "mailModerate.mistralClassification.criminal": {
+        "message": "Contenuti criminali"
+    },
+    "mailModerate.mistralClassification.dangerous": {
+        "message": "Contenuti pericolosi"
     },
     "mailModerate.mistralClassification.financial": {
         "message": "Finanziario"
@@ -40,6 +43,9 @@
     },
     "mailModerate.mistralClassification.health": {
         "message": "Salute"
+    },
+    "mailModerate.mistralClassification.jailbreaking": {
+        "message": "Jailbreaking (elusione delle protezioni)"
     },
     "mailModerate.mistralClassification.law": {
         "message": "Legale"
@@ -276,7 +282,7 @@
         "message": "Valori più alti come 0.8 renderanno l'output più casuale, mentre valori più bassi come 0.25 lo renderanno più focalizzato e deterministico.<p><b>Attenzione:</b> modelli LLM con range di temperatura diversi da 0 a 2, vengono normalizzati rispetto al loro intervallo di riferimento.</p>"
     },
     "options.llmTemperature.noTemperatureDescription": {
-        "message": "<b><strong>Attenzione</strong>:</b> La temperatura è disabilitata per il modello attualmente selezionato ed è fissa a 1."
+        "message": "<b><strong>Attenzione</strong>:</b> La temperatura è disabilitata per il modello attualmente selezionato."
     },
     "options.mainUserLanguage": {
         "message": "Lingua principale"
@@ -380,6 +386,18 @@
     "options.openai.text2speech.voice.description": {
         "message": "L'anteprima delle voci è quella inglese proposta da OpenAI e non è influenzata dalle opzioni di configurazione presenti in questo pannello."
     },
+    "options.openrouter.apiKey": {
+        "message": "Chiave API*"
+    },
+    "options.openrouter.apiKey.description": {
+        "message": "Vai sulla <a href=\"https://openrouter.ai/keys\">pagina delle chiavi</a> di OpenRouter per recuperare o creare una chiave."
+    },
+    "options.openrouter.listModelsButton": {
+        "message": "Elenca modelli"
+    },
+    "options.openrouter.model": {
+        "message": "Modello*"
+    },
     "options.saveButton": {
         "message": "Salva"
     },
@@ -414,7 +432,7 @@
         "message": "<strong>Attenzione</strong>: Impossibile comunicare con il server vLLM. Assicurarsi che sia in esecuzione e raggiungibile da Thunderbird."
     },
     "options.vllm.listModelsButton": {
-        "message": "Carica modelli"
+        "message": "Elenca modelli"
     },
     "options.vllm.model": {
         "message": "Modello*"

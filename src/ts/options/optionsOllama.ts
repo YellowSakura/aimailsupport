@@ -44,17 +44,17 @@ async function getOllamaLocalModels() {
         const ollamaLocalModels = await OllamaProvider.getModels(document.querySelector<HTMLSelectElement>('#ollamaServiceUrl').value)
 
         if (ollamaLocalModels.length != 0) {
-            // Sort the array by the 'name' field
-            ollamaLocalModels.sort((a, b) => a.name.localeCompare(b.name))
+            // Sort the array
+            ollamaLocalModels.sort((a, b) => a.localeCompare(b))
 
             // Add the newly retrieved models
             ollamaLocalModels.forEach(model => {
                 const option = document.createElement('option')
-                option.textContent = model.name
-                option.value = model.model
+                option.textContent = model
+                option.value = model
 
                 // Restore the previously selected model (if any)
-                if (selectedValue && model.name == selectedValue) {
+                if (selectedValue && model == selectedValue) {
                     option.selected = true
                 }
 

@@ -7,7 +7,7 @@ import { ConfigType } from '../helpers/configType'
 export class GenericProvider {
     protected mainUserLanguageCode: string
     protected servicesTimeout: number
-    protected temperature: number
+    protected temperature: number | null
 
     protected readonly PROMPTS = {
         ANALYZE_INTENT: 'You are an assistant that analyzes the tone and perceived intent of an email and provides the analysis in %language%; describe how the email might come across to the recipient, considering tone, clarity, potential emotional impact, and coherence with the context of the email thread history; Ignore formatting, headers, footers, signatures, quoted replies and unusual characters',

@@ -39,9 +39,13 @@
         "message": "Moderate",
         "description": "Menu option to moderate the content of a received email."
     },
-    "mailModerate.mistralClassification.dangerous_and_criminal_content": {
-        "message": "Dangerous and criminal content",
-        "description": "Content that promotes or provides instructions for illegal activities or extremely hazardous behaviors that pose a significant risk of physical harm, death, or legal consequences."
+    "mailModerate.mistralClassification.criminal": {
+        "message": "Criminal content",
+        "description": "Content that promotes, plans, or provides instructions for illegal activities, or that seeks assistance in carrying them out, exposing those involved to legal consequences."
+    },
+    "mailModerate.mistralClassification.dangerous": {
+        "message": "Dangerous content",
+        "description": "Content that encourages or provides instructions for extremely hazardous behaviors, such as the manufacture of weapons or the handling of dangerous substances, that pose a significant risk of physical harm or death."
     },
     "mailModerate.mistralClassification.financial": {
         "message": "Financial",
@@ -54,6 +58,10 @@
     "mailModerate.mistralClassification.health": {
         "message": "Health",
         "description": "Content that contains or tries to elicit detailed or tailored medical advice."
+    },
+    "mailModerate.mistralClassification.jailbreaking": {
+        "message": "Jailbreaking",
+        "description": "Content that tries to bypass the safety instructions or the intended behavior of the model, for example through a prompt injection."
     },
     "mailModerate.mistralClassification.law": {
         "message": "Law",
@@ -366,8 +374,8 @@
         "description": "Explain the effect of the temperature setting on the model's responses, highlighting the trade-off between predictability and creativity."
     },
     "options.llmTemperature.noTemperatureDescription": {
-        "message": "<b><strong>Attention</strong>:</b> The temperature setting is disabled for the currently selected model and is fixed at 1.",
-        "description": "Notify the user that the selected model does not support the temperature setting, which is therefore locked at 1."
+        "message": "<b><strong>Attention</strong>:</b> The temperature setting is disabled for the currently selected model.",
+        "description": "Notify the user that the selected model does not support the temperature setting."
     },
     "options.mainUserLanguage": {
         "message": "Primary language",
@@ -505,6 +513,22 @@
         "message": "The preview of the voices is the English one proposed by OpenAI and is not influenced by the configuration options present in this panel.",
         "description": "Explanation that the preview voices are the official English voices provided by OpenAI and that they are not influenced by the options available in the add-on panel."
     },
+    "options.openrouter.apiKey": {
+        "message": "API Key*",
+        "description": "API key field for OpenRouter."
+    },
+    "options.openrouter.apiKey.description": {
+        "message": "Go to the OpenRouter <a href=\"https://openrouter.ai/keys\">keys page</a> to retrieve or create a key.",
+        "description": "Description of the API Key section with details on how to retrieve it from the official OpenRouter website."
+    },
+    "options.openrouter.listModelsButton": {
+        "message": "List models",
+        "description": "List the available models on OpenRouter."
+    },
+    "options.openrouter.model": {
+        "message": "Model*",
+        "description": "Model to be used for all text processing: https://openrouter.ai/models."
+    },
     "options.saveButton": {
         "message": "Save",
         "description": "Button used to save settings or preferences."
@@ -550,7 +574,7 @@
         "description": "Error message displayed when unable to communicate with vLLM."
     },
     "options.vllm.listModelsButton": {
-        "message": "Load models",
+        "message": "List models",
         "description": "Button to load available models from the vLLM server."
     },
     "options.vllm.model": {

@@ -5,7 +5,11 @@ export interface ConfigType {
     mainUserLanguageCode: string
     translationLanguageCodes: string[] // Array of ISO 639-1 codes (e.g. ['en', 'it', 'fr'])
     llmProvider: string
-    temperature: number
+
+    // A null value means that the currently selected model does not accept the
+    // temperature parameter at all (e.g. Anthropic Opus 5 or OpenAI GPT-5.5),
+    // in which case it must not be sent with the request.
+    temperature: number | null
     servicesTimeout: number
     maskPii: boolean
     debugMode: boolean
@@ -56,6 +60,11 @@ export interface ConfigType {
             voice: string
             speed: number
         }
+    }
+
+    openrouter: {
+        apiKey: string
+        model: string
     }
 
     vllm: {

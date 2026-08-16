@@ -86,7 +86,9 @@ document.querySelector('#optionsForm')?.addEventListener('submit', async (event)
         mainUserLanguageCode: document.querySelector<HTMLInputElement>('#mainUserLanguageCode').value,
         translationLanguageCodes: document.querySelector<MultipleLanguageSelector>('#translationLanguageCodes').getValues(),
         llmProvider: document.querySelector<HTMLInputElement>('#llmProvider').value,
-        temperature: Number.parseFloat(document.querySelector<HTMLInputElement>('#llmTemperature').value),
+        // A null value is stored when the selected model does not accept the
+        // temperature, so that the providers know they must not send it.
+        temperature: isTemperatureUnsupported() ? null : Number.parseFloat(document.querySelector<HTMLInputElement>('#llmTemperature').value),
         servicesTimeout: Number.parseInt(document.querySelector<HTMLInputElement>('#servicesTimeout').value),
         maskPii: document.querySelector<HTMLInputElement>('#maskPii').checked,
         debugMode: document.querySelector<HTMLInputElement>('#debugMode').checked,
@@ -129,6 +131,10 @@ document.querySelector('#optionsForm')?.addEventListener('submit', async (event)
                 speed: Number.parseFloat(document.querySelector<HTMLInputElement>('#openaiText2SpeechSpeed').value)
             }
         },
+        openrouter: {
+            apiKey: document.querySelector<HTMLInputElement>('#openrouterApiKey').value,
+            model: document.querySelector<HTMLInputElement>('#openrouterModel').value
+        },
         vllm: {
             serviceUrl: document.querySelector<HTMLInputElement>('#vllmServiceUrl').value,
             model: document.querySelector<HTMLInputElement>('#vllmModel').value,
@@ -170,7 +176,7 @@ document.addEventListener('DOMContentLoaded', async _ => {
     const selectedLlmProvider = configs.llmProvider
 
     // Temperature -->
-    document.querySelector<HTMLInputElement>('#llmTemperature').value = (configs.temperature || 0.25).toString()
+    document.querySelector<HTMLInputElement>('#llmTemperature').value = (configs.temperature ?? 0.25).toString()
     document.querySelector<HTMLInputElement>('label[for=llmTemperature] span').innerText = Number.parseFloat(document.querySelector<HTMLInputElement>('#llmTemperature').value).toFixed(2)
     // <-- temperature
 
@@ -251,6 +257,11 @@ document.addEventListener('DOMContentLoaded', async _ => {
     document.querySelector<HTMLInputElement>('#openaiText2SpeechSpeed').value = (configs.openai?.text2speech?.speed || 1).toString()
     document.querySelector<HTMLInputElement>('label[for=openaiText2SpeechSpeed] span').innerText = Number.parseFloat(document.querySelector<HTMLInputElement>('#openaiText2SpeechSpeed').value).toFixed(2)
     // <-- OpenAI GPT section
+
+    // OpenRouter section -->
+    document.querySelector<HTMLInputElement>('#openrouterApiKey').value = configs.openrouter?.apiKey || ''
+    document.querySelector<HTMLInputElement>('#openrouterModel').value = configs.openrouter?.model || ''
+    // <-- OpenRouter section
 
     // vLLM section -->
     document.querySelector<HTMLInputElement>('#vllmServiceUrl').value = configs.vllm?.serviceUrl || 'http://localhost:8000'
@@ -336,12 +347,7 @@ function updateTemperatureAvailability(): void {
     const temperatureValueLabel = document.querySelector<HTMLInputElement>('label[for=llmTemperature] span')
     const noTemperatureWarning = document.querySelector('.local-llm-warning-no-temperature')
 
-    const selectedProvider = document.querySelector('body').getAttribute('data-provider')
-    const modelSelect = selectedProvider ? document.querySelector<HTMLSelectElement>(`#${selectedProvider}Model`) : null
-    const selectedModelOption = modelSelect?.selectedOptions?.[0]
-    const isTemperatureDisabled = selectedModelOption?.getAttribute('data-no-temperature') === 'true'
-
-    if (isTemperatureDisabled) {
+    if (isTemperatureUnsupported()) {
         // The temperature is locked at 1 and the field is made non-editable.
         temperatureInput.value = '1'
         temperatureInput.setAttribute('disabled', 'disabled')
@@ -351,4 +357,22 @@ function updateTemperatureAvailability(): void {
         temperatureInput.removeAttribute('disabled')
         noTemperatureWarning.classList.remove('show')
     }
+}
+
+/**
+ * Check whether the currently selected model accepts the temperature parameter.
+ *
+ * The models that do not accept it declare the "data-no-temperature" attribute
+ * on their own option of the model list: this is the single place where the
+ * information is maintained, both to lock the field in the options page and to
+ * omit the parameter from the requests.
+ *
+ * @returns {boolean} True when the selected model does not accept the parameter.
+ */
+function isTemperatureUnsupported(): boolean {
+    const selectedProvider = document.querySelector('body').getAttribute('data-provider')
+    const modelSelect = selectedProvider ? document.querySelector<HTMLSelectElement>(`#${selectedProvider}Model`) : null
+    const selectedModelOption = modelSelect?.selectedOptions?.[0]
+
+    return selectedModelOption?.getAttribute('data-no-temperature') === 'true'
 }

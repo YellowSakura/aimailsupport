@@ -145,7 +145,9 @@ export class GoogleGeminiProvider extends GenericProvider {
                 }
             ],
             'generationConfig': {
-                'temperature': this.temperature,
+                // The temperature is omitted when the selected model does not
+                // accept it, since those models reject the parameter.
+                ...(this.temperature !== null && { 'temperature': this.temperature }),
                 'thinkingConfig': {
                     'thinking_level': (this.reasoningEffort === 'off') ? 'MINIMAL' : this.reasoningEffort.toUpperCase()
                 }

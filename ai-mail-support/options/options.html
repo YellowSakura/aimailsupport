@@ -35,6 +35,7 @@
                     <option value=mistral>Mistral</option>
                     <option value=ollama>Ollama (Gemma, GLM, Mistral, …)</option>
                     <option value=openai>OpenAI GPT</option>
+                    <option value=openrouter>OpenRouter (Claude, GPT, Gemini, …)</option>
                     <option value=xai>SpaceXAI Grok</option>
                     <option value=vllm>vLLM (Gemma, GLM, Mistral, …)</option>
                 </select>
@@ -83,11 +84,10 @@
     <div class=form-group>
         <label for=anthropicModel data-l10n-ref=options.anthropic.model>&nbsp;</label>
         <select id=anthropicModel data-required>
-            <option value=claude-fable-5>Fable 5</option>
-            <option value=claude-opus-5>Opus 5</option>
-            <option value=claude-opus-4-8>Opus 4.8</option>
-            <option selected value=claude-sonnet-5>Sonnet 5</option>
-            <option value=claude-sonnet-4-7>Sonnet 4.7</option>
+            <option value=claude-fable-5 data-no-temperature=true>Fable 5</option>
+            <option value=claude-opus-5 data-no-temperature=true>Opus 5</option>
+            <option value=claude-opus-4-8 data-no-temperature=true>Opus 4.8</option>
+            <option selected value=claude-sonnet-5 data-no-temperature=true>Sonnet 5</option>
             <option value=claude-haiku-4-5>Haiku 4.5</option>
         </select>
     </div>
@@ -310,6 +310,27 @@
 </fieldset>
 
             
+            <fieldset id=openrouter>
+    <legend>OpenRouter:</legend>
+
+    <div class=form-group>
+        <label for=openrouterApiKey data-l10n-ref=options.openrouter.apiKey>&nbsp;</label>
+        <input id=openrouterApiKey is=password-toggle data-required>
+        <div class=description data-l10n-ref=options.openrouter.apiKey.description></div>
+    </div>
+
+    
+    <div class=form-group>
+        <label for=openrouterModel data-l10n-ref=options.openrouter.model>&nbsp;</label>
+        <select id=openrouterModel data-required></select>
+        <button id=openrouterListModel data-l10n-ref=options.openrouter.listModelsButton>&nbsp;</button>
+
+        <div class="description openrouter-error-api"></div>
+    </div>
+</fieldset>
+
+
+            
             <fieldset id=xai>
     <legend>SpaceXAI Grok:</legend>
 
@@ -379,5 +400,6 @@
         <script type=module src=/options/options.da67942c.js></script>
         <script type=module src=/options/options.6600a3f2.js></script>
         <script type=module src=/options/options.d184e9e7.js></script>
+        <script type=module src=/options/options.fcbac510.js></script>
         <script type=module src=/options/options.78cf43d9.js></script>
     
