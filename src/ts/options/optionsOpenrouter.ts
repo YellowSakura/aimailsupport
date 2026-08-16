@@ -1,7 +1,7 @@
 // Specific code to manage options for OpenRouter
 
 import { getConfig } from '../helpers/utils'
-import { OpenrouterProvider } from '../llmProviders/impl/openrouterProvider'
+import { OpenRouterProvider } from '../llmProviders/impl/openRouterProvider'
 
 // Check if the currently used LLM provider is OpenRouter, and if so, load the
 // available models.
@@ -37,7 +37,7 @@ async function getOpenrouterModels() {
     document.querySelector('#openrouter .description.openrouter-error-api').classList.remove('show')
 
     try {
-        const openrouterModels = await OpenrouterProvider.getModels(document.querySelector<HTMLSelectElement>('#openrouterApiKey').value)
+        const openrouterModels = await OpenRouterProvider.getModels(document.querySelector<HTMLSelectElement>('#openrouterApiKey').value)
 
         // Sort the array
         openrouterModels.sort((a, b) => a.localeCompare(b))

@@ -8,7 +8,7 @@ import { LmsProvider } from '../src/ts/llmProviders/impl/lmsProvider'
 import { MistralProvider } from '../src/ts/llmProviders/impl/mistralProvider'
 import { OllamaProvider } from '../src/ts/llmProviders/impl/ollamaProvider'
 import { OpenAiGptProvider } from '../src/ts/llmProviders/impl/openAiGptProvider'
-import { OpenrouterProvider } from '../src/ts/llmProviders/impl/openrouterProvider'
+import { OpenRouterProvider } from '../src/ts/llmProviders/impl/openRouterProvider'
 import { VllmProvider } from '../src/ts/llmProviders/impl/vllmProvider'
 import { XaiGrokProvider } from '../src/ts/llmProviders/impl/xaiGrokProvider'
 
@@ -598,15 +598,15 @@ describe('OpenAiGptProvider', () => {
     })
 })
 
-// OpenrouterProvider tests
-describe('OpenrouterProvider', () => {
+// OpenRouterProvider tests
+describe('OpenRouterProvider', () => {
     configs.llmProvider = 'openrouter'
     configs.openrouter.apiKey = process.env.openrouter_api_key as string
 
     const provider = ProviderFactory.getInstance(configs)
 
-    test('should be an instance of OpenrouterProvider', () => {
-        expect(provider).toBeInstanceOf(OpenrouterProvider)
+    test('should be an instance of OpenRouterProvider', () => {
+        expect(provider).toBeInstanceOf(OpenRouterProvider)
     })
 
     test('should be able to analyze the intent of a text', async () => {

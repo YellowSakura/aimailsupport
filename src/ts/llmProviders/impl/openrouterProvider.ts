@@ -7,13 +7,13 @@ import { ConfigType } from '../../helpers/configType'
  * behind a single OpenAI-compatible endpoint.
  * Official documentation: https://openrouter.ai/docs/api-reference/overview
  */
-export class OpenrouterProvider extends OpenAiApiCompatibleProvider {
+export class OpenRouterProvider extends OpenAiApiCompatibleProvider {
     private static readonly BASE_URL = 'https://openrouter.ai/api'
 
     public constructor(config: ConfigType) {
         super(config, {
             serviceLabel: 'OpenRouter',
-            baseUrl: OpenrouterProvider.BASE_URL,
+            baseUrl: OpenRouterProvider.BASE_URL,
             model: config.openrouter.model,
             apiKey: config.openrouter.apiKey
         })
@@ -23,7 +23,7 @@ export class OpenrouterProvider extends OpenAiApiCompatibleProvider {
      * Returns an array of model IDs available on OpenRouter.
      */
     public static async getModels(apiKey: string): Promise<string[]> {
-        return OpenAiApiCompatibleProvider.fetchModels(OpenrouterProvider.BASE_URL, 'OpenRouter', apiKey)
+        return OpenAiApiCompatibleProvider.fetchModels(OpenRouterProvider.BASE_URL, 'OpenRouter', apiKey)
     }
 
     /**

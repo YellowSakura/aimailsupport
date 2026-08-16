@@ -13,7 +13,7 @@ import { LmsProvider } from './impl/lmsProvider'
 import { MistralProvider } from './impl/mistralProvider'
 import { OllamaProvider } from './impl/ollamaProvider'
 import { OpenAiGptProvider } from './impl/openAiGptProvider'
-import { OpenrouterProvider } from './impl/openrouterProvider'
+import { OpenRouterProvider } from './impl/openRouterProvider'
 import { VllmProvider } from './impl/vllmProvider'
 import { XaiGrokProvider } from './impl/xaiGrokProvider'
 
@@ -27,7 +27,7 @@ const providerMap: Record<string, new (config: ConfigType) => GenericProvider> =
     mistral: MistralProvider,
     ollama: OllamaProvider,
     openai: OpenAiGptProvider,
-    openrouter: OpenrouterProvider,
+    openrouter: OpenRouterProvider,
     vllm: VllmProvider,
     xai: XaiGrokProvider
 }
