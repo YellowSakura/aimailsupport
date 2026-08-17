@@ -49,7 +49,7 @@ const configs: ConfigType = {
 
     groq: {
         apiKey: '',
-        model: 'llama-3.1-8b-instant'
+        model: 'allam-2-7b'
     },
 
     mistral: {
