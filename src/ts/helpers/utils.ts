@@ -233,23 +233,36 @@ export async function logMessage(message: string, method: LogMethod = 'log'): Pr
 /**
  * Sends a message to the specified tab.
  *
+ * A delivery failure is logged and swallowed: the target tab may well be gone
+ * by the time an answer is ready, and while streaming the same request sends
+ * many messages, so a rejection left unhandled would be a recurring one.
+ *
  * @param {number} tabId - The ID of the target tab
  * @param message - The message payload, which must be one of:
  *        - { type: string; content: Blob | string | { [key: string]: number } }
  *          for structured messages with content
+ *        - { type: string }
+ *          for the messages that only mark a state change, like the beginning
+ *          and the end of a streamed answer
  *        - { type: 'setComposeMode'; isCompose: boolean }
  *          to notify about compose mode state changes
  *        - { showPromptDisplay: boolean }
  *          to toggle prompt display visibility
  *
- * @returns A Promise that resolves when the message has been sent successfully
+ * @returns A Promise that resolves once the message has been sent, or once the
+ *          failure has been logged
  */
 export async function sendMessageToTab(
     tabId: number,
     message:
         | { type: string; content: Blob | string | { [key: string]: number } }
+        | { type: string }
         | { type: 'setComposeMode'; isCompose: boolean }
         | { showPromptDisplay: boolean }
 ): Promise<void> {
-    await browser.tabs.sendMessage(tabId, message)
+    try {
+        await browser.tabs.sendMessage(tabId, message)
+    } catch (error) {
+        logMessage(`Unable to deliver a message to the tab ${tabId}: ${error}`, 'debug')
+    }
 }

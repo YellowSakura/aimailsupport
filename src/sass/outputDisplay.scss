@@ -155,6 +155,29 @@
             display: inline-flex;
         }
         // <-- copy-top icon
+
+        // Stop icon -->
+        .stop-icon {
+            display: none;
+        }
+
+        // While the answer is being generated the only action offered is the
+        // one to stop it: the icons acting on the response would work on a text
+        // that is still incomplete.
+        // The block has to stay after the compose-mode one, which has the same
+        // specificity on .copy-top-icon and would otherwise win.
+        &.streaming {
+            .copy-clipboard-icon,
+            .copy-top-icon,
+            .refine-icon {
+                display: none;
+            }
+
+            .stop-icon {
+                display: inline-flex;
+            }
+        }
+        // <-- stop icon
     }
 
     #refineContainer {

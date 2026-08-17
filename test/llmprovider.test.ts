@@ -8,7 +8,7 @@ import { LmsProvider } from '../src/ts/llmProviders/impl/lmsProvider'
 import { MistralProvider } from '../src/ts/llmProviders/impl/mistralProvider'
 import { OllamaProvider } from '../src/ts/llmProviders/impl/ollamaProvider'
 import { OpenAiGptProvider } from '../src/ts/llmProviders/impl/openAiGptProvider'
-import { OpenRouterProvider } from '../src/ts/llmProviders/impl/openRouterProvider'
+import { OpenRouterProvider } from '../src/ts/llmProviders/impl/openrouterProvider'
 import { VllmProvider } from '../src/ts/llmProviders/impl/vllmProvider'
 import { XaiGrokProvider } from '../src/ts/llmProviders/impl/xaiGrokProvider'
 
@@ -22,6 +22,7 @@ const configs: ConfigType = {
     llmProvider: '',
     temperature: 1,
     servicesTimeout: 45,
+    streamResponses: true,
     debugMode: true,
     maskPii: false,
 
@@ -158,6 +159,19 @@ describe('AnthropicClaudeProvider', () => {
         const output = await provider.checkTextForErrors('This text contains some ERORS to find')
         expect(typeof output).toBe('string')
     })
+
+    test('should be able to stream the generated text', async () => {
+        const chunks: string[] = []
+        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+
+        // Receiving more than one fragment is what tells the streaming apart
+        // from a response delivered all at once at the end.
+        expect(chunks.length).toBeGreaterThan(1)
+
+        // The pieces handed over while generating have to add up to exactly the
+        // text returned at the end, so that the two paths stay interchangeable.
+        expect(chunks.join('')).toBe(output)
+    })
 })
 
 // DeepseekProvider tests
@@ -215,6 +229,19 @@ describe('DeepseekProvider', () => {
     test('should be able to check text for errors', async () => {
         const output = await provider.checkTextForErrors('This text contains some ERORS to find')
         expect(typeof output).toBe('string')
+    })
+
+    test('should be able to stream the generated text', async () => {
+        const chunks: string[] = []
+        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+
+        // Receiving more than one fragment is what tells the streaming apart
+        // from a response delivered all at once at the end.
+        expect(chunks.length).toBeGreaterThan(1)
+
+        // The pieces handed over while generating have to add up to exactly the
+        // text returned at the end, so that the two paths stay interchangeable.
+        expect(chunks.join('')).toBe(output)
     })
 })
 
@@ -274,6 +301,19 @@ describe('GoogleGeminiProvider', () => {
         const output = await provider.checkTextForErrors('This text contains some ERORS to find')
         expect(typeof output).toBe('string')
     })
+
+    test('should be able to stream the generated text', async () => {
+        const chunks: string[] = []
+        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+
+        // Receiving more than one fragment is what tells the streaming apart
+        // from a response delivered all at once at the end.
+        expect(chunks.length).toBeGreaterThan(1)
+
+        // The pieces handed over while generating have to add up to exactly the
+        // text returned at the end, so that the two paths stay interchangeable.
+        expect(chunks.join('')).toBe(output)
+    })
 })
 
 // GroqProvider tests
@@ -332,6 +372,19 @@ describe('GroqProvider', () => {
         const output = await provider.checkTextForErrors('This text contains some ERORS to find')
         expect(typeof output).toBe('string')
     })
+
+    test('should be able to stream the generated text', async () => {
+        const chunks: string[] = []
+        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+
+        // Receiving more than one fragment is what tells the streaming apart
+        // from a response delivered all at once at the end.
+        expect(chunks.length).toBeGreaterThan(1)
+
+        // The pieces handed over while generating have to add up to exactly the
+        // text returned at the end, so that the two paths stay interchangeable.
+        expect(chunks.join('')).toBe(output)
+    })
 })
 
 // LM Studio tests
@@ -388,6 +441,19 @@ describe('LmStudioProvider', () => {
     test('should be able to check text for errors', async () => {
         const output = await provider.checkTextForErrors('This text contains some ERORS to find')
         expect(typeof output).toBe('string')
+    })
+
+    test('should be able to stream the generated text', async () => {
+        const chunks: string[] = []
+        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+
+        // Receiving more than one fragment is what tells the streaming apart
+        // from a response delivered all at once at the end.
+        expect(chunks.length).toBeGreaterThan(1)
+
+        // The pieces handed over while generating have to add up to exactly the
+        // text returned at the end, so that the two paths stay interchangeable.
+        expect(chunks.join('')).toBe(output)
     })
 })
 
@@ -461,6 +527,19 @@ describe('MistralProvider', () => {
         const output = await provider.checkTextForErrors('This text contains some ERORS to find')
         expect(typeof output).toBe('string')
     })
+
+    test('should be able to stream the generated text', async () => {
+        const chunks: string[] = []
+        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+
+        // Receiving more than one fragment is what tells the streaming apart
+        // from a response delivered all at once at the end.
+        expect(chunks.length).toBeGreaterThan(1)
+
+        // The pieces handed over while generating have to add up to exactly the
+        // text returned at the end, so that the two paths stay interchangeable.
+        expect(chunks.join('')).toBe(output)
+    })
 })
 
 // OllamaProvider tests
@@ -517,6 +596,19 @@ describe('OllamaProvider', () => {
     test('should be able to check text for errors', async () => {
         const output = await provider.checkTextForErrors('This text contains some ERORS to find')
         expect(typeof output).toBe('string')
+    })
+
+    test('should be able to stream the generated text', async () => {
+        const chunks: string[] = []
+        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+
+        // Receiving more than one fragment is what tells the streaming apart
+        // from a response delivered all at once at the end.
+        expect(chunks.length).toBeGreaterThan(1)
+
+        // The pieces handed over while generating have to add up to exactly the
+        // text returned at the end, so that the two paths stay interchangeable.
+        expect(chunks.join('')).toBe(output)
     })
 })
 
@@ -596,6 +688,19 @@ describe('OpenAiGptProvider', () => {
         const output = await provider.checkTextForErrors('This text contains some ERORS to find')
         expect(typeof output).toBe('string')
     })
+
+    test('should be able to stream the generated text', async () => {
+        const chunks: string[] = []
+        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+
+        // Receiving more than one fragment is what tells the streaming apart
+        // from a response delivered all at once at the end.
+        expect(chunks.length).toBeGreaterThan(1)
+
+        // The pieces handed over while generating have to add up to exactly the
+        // text returned at the end, so that the two paths stay interchangeable.
+        expect(chunks.join('')).toBe(output)
+    })
 })
 
 // OpenRouterProvider tests
@@ -654,6 +759,19 @@ describe('OpenRouterProvider', () => {
         const output = await provider.checkTextForErrors('This text contains some ERORS to find')
         expect(typeof output).toBe('string')
     })
+
+    test('should be able to stream the generated text', async () => {
+        const chunks: string[] = []
+        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+
+        // Receiving more than one fragment is what tells the streaming apart
+        // from a response delivered all at once at the end.
+        expect(chunks.length).toBeGreaterThan(1)
+
+        // The pieces handed over while generating have to add up to exactly the
+        // text returned at the end, so that the two paths stay interchangeable.
+        expect(chunks.join('')).toBe(output)
+    })
 })
 
 // vLLM tests
@@ -710,6 +828,19 @@ describe('VllmProvider', () => {
     test('should be able to check text for errors', async () => {
         const output = await provider.checkTextForErrors('This text contains some ERORS to find')
         expect(typeof output).toBe('string')
+    })
+
+    test('should be able to stream the generated text', async () => {
+        const chunks: string[] = []
+        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+
+        // Receiving more than one fragment is what tells the streaming apart
+        // from a response delivered all at once at the end.
+        expect(chunks.length).toBeGreaterThan(1)
+
+        // The pieces handed over while generating have to add up to exactly the
+        // text returned at the end, so that the two paths stay interchangeable.
+        expect(chunks.join('')).toBe(output)
     })
 })
 
@@ -768,5 +899,18 @@ describe('XaiGrokProvider', () => {
     test('should be able to check text for errors', async () => {
         const output = await provider.checkTextForErrors('This text contains some ERORS to find')
         expect(typeof output).toBe('string')
+    })
+
+    test('should be able to stream the generated text', async () => {
+        const chunks: string[] = []
+        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+
+        // Receiving more than one fragment is what tells the streaming apart
+        // from a response delivered all at once at the end.
+        expect(chunks.length).toBeGreaterThan(1)
+
+        // The pieces handed over while generating have to add up to exactly the
+        // text returned at the end, so that the two paths stay interchangeable.
+        expect(chunks.join('')).toBe(output)
     })
 })

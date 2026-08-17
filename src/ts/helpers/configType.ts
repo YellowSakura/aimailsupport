@@ -11,6 +11,10 @@ export interface ConfigType {
     // in which case it must not be sent with the request.
     temperature: number | null
     servicesTimeout: number
+
+    // Whether the answers are shown progressively, as the model generates
+    // them, instead of appearing all at once when the generation is over.
+    streamResponses: boolean
     maskPii: boolean
     debugMode: boolean
 

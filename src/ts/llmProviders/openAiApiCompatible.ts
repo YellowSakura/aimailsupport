@@ -12,7 +12,7 @@
  * because the capability detection of GenericProvider works by comparing the
  * methods with the ones defined on GenericProvider.prototype.
  */
-import { GenericProvider } from './genericProvider'
+import { GenericProvider, StreamCallback } from './genericProvider'
 import { ConfigType } from '../helpers/configType'
 import { getLanguageNameFromCode, logMessage } from '../helpers/utils'
 
@@ -47,65 +47,65 @@ export abstract class OpenAiApiCompatibleProvider extends GenericProvider {
         this.apiKey = options.apiKey ?? ''
     }
 
-    public async analyzeTextIntent(input: string): Promise<string> {
+    public async analyzeTextIntent(input: string, onChunk?: StreamCallback): Promise<string> {
         logMessage(`Request to analyze text intent of ${input} in ${getLanguageNameFromCode(this.mainUserLanguageCode)}`, 'debug')
 
-        return this.manageMessageContent(this.PROMPTS.ANALYZE_INTENT.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode)), input)
+        return this.manageMessageContent(this.PROMPTS.ANALYZE_INTENT.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode)), input, onChunk)
     }
 
-    public async applyCustomPrompt(userPrompt: string, input: string): Promise<string> {
+    public async applyCustomPrompt(userPrompt: string, input: string, onChunk?: StreamCallback): Promise<string> {
         logMessage(`Applying custom user prompt "${userPrompt}" to input text: "${input}"`, 'debug')
 
-        return this.manageMessageContent(userPrompt, input)
+        return this.manageMessageContent(userPrompt, input, onChunk)
     }
 
-    public async checkTextForErrors(input: string): Promise<string> {
+    public async checkTextForErrors(input: string, onChunk?: StreamCallback): Promise<string> {
         logMessage(`Request to check for errors in ${getLanguageNameFromCode(this.mainUserLanguageCode)} the text: ${input}`, 'debug')
 
-        return this.manageMessageContent(this.PROMPTS.CHECK_ERRORS.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode)), input)
+        return this.manageMessageContent(this.PROMPTS.CHECK_ERRORS.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode)), input, onChunk)
     }
 
-    public async explainText(input: string): Promise<string> {
+    public async explainText(input: string, onChunk?: StreamCallback): Promise<string> {
         logMessage(`Request to explain in ${getLanguageNameFromCode(this.mainUserLanguageCode)} the text: ${input}`, 'debug')
 
-        return this.manageMessageContent(this.PROMPTS.EXPLAIN.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode)), input)
+        return this.manageMessageContent(this.PROMPTS.EXPLAIN.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode)), input, onChunk)
     }
 
-    public async rephraseText(input: string, toneOfVoice: string): Promise<string> {
+    public async rephraseText(input: string, toneOfVoice: string, onChunk?: StreamCallback): Promise<string> {
         logMessage(`Request to use the tone of voice "${toneOfVoice}" to rephrase in ${getLanguageNameFromCode(this.mainUserLanguageCode)} the text: ${input}`, 'debug')
 
         return this.manageMessageContent(this.PROMPTS.REPHRASE.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode))
-            .replace('%toneOfVoice%', toneOfVoice), input)
+            .replace('%toneOfVoice%', toneOfVoice), input, onChunk)
     }
 
-    public async suggestImprovementsForText(input: string): Promise<string> {
+    public async suggestImprovementsForText(input: string, onChunk?: StreamCallback): Promise<string> {
         logMessage(`Request suggest improvements in ${getLanguageNameFromCode(this.mainUserLanguageCode)} for the text: ${input}`, 'debug')
 
-        return this.manageMessageContent(this.PROMPTS.SUGGEST_IMPROVEMENTS.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode)), input)
+        return this.manageMessageContent(this.PROMPTS.SUGGEST_IMPROVEMENTS.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode)), input, onChunk)
     }
 
-    public async suggestReplyFromText(input: string, toneOfVoice: string): Promise<string> {
+    public async suggestReplyFromText(input: string, toneOfVoice: string, onChunk?: StreamCallback): Promise<string> {
         logMessage(`Request to use the tone of voice "${toneOfVoice}" to suggest a reply in ${getLanguageNameFromCode(this.mainUserLanguageCode)} to the text: ${input}`, 'debug')
 
         return this.manageMessageContent(this.PROMPTS.SUGGEST_REPLY.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode))
-            .replace('%toneOfVoice%', toneOfVoice), input)
+            .replace('%toneOfVoice%', toneOfVoice), input, onChunk)
     }
 
-    public async summarizeText(input: string): Promise<string> {
+    public async summarizeText(input: string, onChunk?: StreamCallback): Promise<string> {
         logMessage(`Request to summarize in ${getLanguageNameFromCode(this.mainUserLanguageCode)} the text: ${input}`, 'debug')
 
-        return this.manageMessageContent(this.PROMPTS.SUMMARIZE.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode)), input)
+        return this.manageMessageContent(this.PROMPTS.SUMMARIZE.replace('%language%', getLanguageNameFromCode(this.mainUserLanguageCode)), input, onChunk)
     }
 
     public async testIntegration(): Promise<void> {
         await this.translateText('Hi!')
     }
 
-    public async translateText(input: string, languageCode: string | null = null): Promise<string> {
+    public async translateText(input: string, languageCode: string | null = null, onChunk?: StreamCallback): Promise<string> {
         languageCode = languageCode ?? this.mainUserLanguageCode
         logMessage(`Request to translate in ${getLanguageNameFromCode(languageCode)} the text: ${input}`, 'debug')
 
-        return this.manageMessageContent(this.PROMPTS.TRANSLATE.replace('%language%', getLanguageNameFromCode(languageCode)), input)
+        return this.manageMessageContent(this.PROMPTS.TRANSLATE.replace('%language%', getLanguageNameFromCode(languageCode)), input, onChunk)
     }
 
     /**
@@ -114,11 +114,14 @@ export abstract class OpenAiApiCompatibleProvider extends GenericProvider {
      * The authorization header is added only when an API key is available:
      * local services like LM Studio or Ollama usually don't require it.
      *
+     * @param isStreaming - Whether the request expects a Server-Sent Events
+     *        response instead of a plain JSON one.
+     *
      * @returns The headers object with necessary headers appended.
      */
-    protected getHeaders(): Headers {
+    protected getHeaders(isStreaming: boolean = false): Headers {
         const headers: Headers = new Headers()
-        headers.append('Accept', 'application/json')
+        headers.append('Accept', isStreaming ? 'text/event-stream' : 'application/json')
         headers.append('Content-Type', 'application/json')
 
         if (this.apiKey) {
@@ -139,15 +142,23 @@ export abstract class OpenAiApiCompatibleProvider extends GenericProvider {
      * In case of failure, it throws an error with the specific message from
      * the API.
      *
+     * When a callback is provided and streaming is enabled in the settings,
+     * the answer is requested as a Server-Sent Events stream and every piece
+     * of text is handed over as soon as it arrives. The whole text is returned
+     * at the end either way.
+     *
      * @param systemInput - The input for the 'system' role in the conversation.
      * @param userInput - The input for the 'user' role in the conversation.
+     * @param onChunk - Optional callback receiving the text as it is generated.
      *
      * @returns A promise that resolves to the content of the response message
      *          from the API.
      *
      * @throws An error if the API response is not successful.
      */
-    protected async manageMessageContent(systemInput: string, userInput: string): Promise<string> {
+    protected async manageMessageContent(systemInput: string, userInput: string,
+            onChunk?: StreamCallback): Promise<string> {
+        const useStream = onChunk !== undefined && this.streamResponses
         const { signal, clearAbortSignalWithTimeout } = this.createAbortSignalWithTimeout(this.servicesTimeout)
 
         const requestData = JSON.stringify({
@@ -158,26 +169,66 @@ export abstract class OpenAiApiCompatibleProvider extends GenericProvider {
             ],
             // The temperature is omitted when the selected model does not
             // accept it, since those models reject the parameter.
-            ...(this.temperature !== null && { 'temperature': this.temperature })
+            ...(this.temperature !== null && { 'temperature': this.temperature }),
+            ...(useStream && { 'stream': true })
         })
 
         const requestOptions: RequestInit = {
             method: 'POST',
-            headers: this.getHeaders(),
+            headers: this.getHeaders(useStream),
             body: requestData,
             redirect: 'follow',
             signal: signal
         }
 
         const response = await fetch(`${this.baseUrl}/v1/chat/completions`, requestOptions)
-        clearAbortSignalWithTimeout()
+
+        // While streaming the timeout has to survive the headers, since the
+        // body is consumed afterwards: it is disarmed on the first chunk, as
+        // soon as the service actually starts answering.
+        if (!useStream || !response.ok) {
+            clearAbortSignalWithTimeout()
+        }
 
         if (!response.ok) {
             throw new Error(`${this.serviceLabel} error: ${await OpenAiApiCompatibleProvider.extractErrorMessage(response)}`)
         }
 
-        const responseData = await response.json()
-        return responseData.choices[0].message.content
+        if (!useStream) {
+            const responseData = await response.json()
+            return responseData.choices[0].message.content
+        }
+
+        let fullText = ''
+
+        await this.readSseStream(response, data => {
+            let event: any
+
+            try {
+                event = JSON.parse(data)
+            } catch {
+                // A malformed event is skipped rather than failing the whole
+                // generation: the text received so far stays usable.
+                logMessage(`${this.serviceLabel}: skipped a malformed stream event`, 'warn')
+                return
+            }
+
+            if (event.error) {
+                throw new Error(`${this.serviceLabel} error: ${event.error?.message ?? event.error}`)
+            }
+
+            // Only `content` is taken: the reasoning models expose their
+            // thinking through `reasoning_content`, which must not end up in
+            // the answer shown to the user.
+            const delta: string = event.choices?.[0]?.delta?.content ?? ''
+
+            if (delta) {
+                fullText += delta
+                onChunk(delta)
+            }
+        }, clearAbortSignalWithTimeout)
+
+        return fullText
     }
 
     /**

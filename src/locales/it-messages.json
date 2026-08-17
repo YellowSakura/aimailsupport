@@ -407,6 +407,12 @@
     "options.servicesTimeout": {
         "message": "Timeout servizi (secondi)"
     },
+    "options.streamResponses": {
+        "message": "Mostra le risposte mentre vengono scritte"
+    },
+    "options.streamResponses.description": {
+        "message": "La risposta compare progressivamente, mentre il modello la scrive, invece di apparire tutta insieme alla fine. Disattivalo se il servizio selezionato non lo supporta."
+    },
     "options.testButton": {
         "message": "Testa"
     },
@@ -455,6 +461,9 @@
     "options.xai.model": {
         "message": "Modello*"
     },
+    "outputDisplay.refine.placeholder": {
+        "message": "Come va modificata questa risposta?"
+    },
     "outputDisplay.title.copyClipboard": {
         "message": "Copia negli appunti"
     },
@@ -463,6 +472,9 @@
     },
     "outputDisplay.title.refine": {
         "message": "Affina questa risposta (es. rendila più breve, più formale…)"
+    },
+    "outputDisplay.title.stop": {
+        "message": "Interrompi la generazione"
     },
     "promptDisplay.placeholder": {
         "message": "Come posso aiutarti?"

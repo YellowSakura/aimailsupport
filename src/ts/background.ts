@@ -1,9 +1,24 @@
 import { ProviderFactory } from './llmProviders/providerFactory'
+import { GenericProvider, StreamCallback } from './llmProviders/genericProvider'
 import { getConfig, getConfigs, getCurrentMessageContent, getLanguageNameFromCode, isComposeDisplayed, logMessage, sendMessageToTab } from './helpers/utils'
 
 // The array contains references to the menus of any custom languages selected
 // by the user for which a translation is requested.
 let translationMenuItemIds: (number | string)[] = []
+
+/**
+ * Requests currently in flight, keyed by the tab that originated them, so that
+ * the stop button of the response panel can interrupt the right one.
+ */
+const pendingRequests = new Map<number, { provider: GenericProvider, isStoppedByUser: boolean }>()
+
+/**
+ * How long the generated text is accumulated before being sent to the tab.
+ *
+ * Forwarding every single fragment would mean one message per token, which is
+ * far more than the panel needs to look responsive.
+ */
+const STREAM_FLUSH_INTERVAL = 100
 
 // Create the menu entries -->
 const menuIdAnalyzeIntent = messenger.menus.create({
@@ -401,29 +416,19 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, 
     sendMessageToTab(tabId, { type: 'setComposeMode', isCompose: isCompose })
 
     if(info.menuItemId == menuIdAnalyzeIntent) {
-        llmProvider.analyzeTextIntent(textToBeProcessed).then(intentAnalysisResult => {
-            sendMessageToTab(tabId, { type: 'addText', content: intentAnalysisResult })
-        })
-        .catch(error => {
-            sendMessageToTab(tabId, { type: 'showError', content: getLocalizedErrorMessage(error) })
-            logMessage(`Error during intent analysis: ${error.message}`, 'error')
-        })
+        await runTextOperation(tabId, llmProvider,
+            onChunk => llmProvider.analyzeTextIntent(textToBeProcessed, onChunk),
+            'Error during intent analysis')
     }
     else if(info.menuItemId == menuIdExplain) {
-        llmProvider.explainText(textToBeProcessed).then(textExplained => {
-            sendMessageToTab(tabId, {type: 'addText', content: textExplained})
-        }).catch(error => {
-            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
-            logMessage(`Error during explanation: ${error.message}`, 'error')
-        })
+        await runTextOperation(tabId, llmProvider,
+            onChunk => llmProvider.explainText(textToBeProcessed, onChunk),
+            'Error during explanation')
     }
     else if(info.menuItemId == menuIdSummarize) {
-        llmProvider.summarizeText(textToBeProcessed).then(textSummarized => {
-            sendMessageToTab(tabId, {type: 'addText', content: textSummarized})
-        }).catch(error => {
-            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
-            logMessage(`Error during summarization: ${error.message}`, 'error')
-        })
+        await runTextOperation(tabId, llmProvider,
+            onChunk => llmProvider.summarizeText(textToBeProcessed, onChunk),
+            'Error during summarization')
     }
     else if([menuIdRephraseStandard, menuIdRephraseFluid, menuIdRephraseCreative, menuIdRephraseSimple,
             menuIdRephraseFormal, menuIdRephraseAcademic, menuIdRephraseExpanded, menuIdRephraseShortened,
@@ -435,12 +440,9 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, 
         // follows 'aiRephrase'.
         const toneOfVoice = (info.menuItemId as string).substring(10).toLowerCase()
 
-        llmProvider.rephraseText(textToBeProcessed, toneOfVoice).then(textRephrased => {
-            sendMessageToTab(tabId, {type: 'addText', content: textRephrased})
-        }).catch(error => {
-            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
-            logMessage(`Error during rephrasing: ${error.message}`, 'error')
-        })
+        await runTextOperation(tabId, llmProvider,
+            onChunk => llmProvider.rephraseText(textToBeProcessed, toneOfVoice, onChunk),
+            'Error during rephrasing')
     }
     else if([menuIdSuggestReplyStandard, menuIdSuggestReplyFluid, menuIdSuggestReplyCreative, menuIdSuggestReplySimple,
             menuIdSuggestReplyFormal, menuIdSuggestReplyAcademic, menuIdSuggestReplyExpanded, menuIdSuggestReplyShortened,
@@ -452,12 +454,9 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, 
         // follows 'aiRephrase'.
         const toneOfVoice = (info.menuItemId as string).substring(14).toLowerCase()
 
-        llmProvider.suggestReplyFromText(textToBeProcessed, toneOfVoice).then(textSuggested => {
-            sendMessageToTab(tabId, {type: 'addText', content: textSuggested})
-        }).catch(error => {
-            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
-            logMessage(`Error during reply generation: ${error.message}`, 'error')
-        })
+        await runTextOperation(tabId, llmProvider,
+            onChunk => llmProvider.suggestReplyFromText(textToBeProcessed, toneOfVoice, onChunk),
+            'Error during reply generation')
     }
     else if(info.menuItemId == menuIdSummarizeAndText2Speech) {
         try {
@@ -488,23 +487,16 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, 
             languageCode = (info.menuItemId as string).slice(prefix.length)
         }
 
-        llmProvider.translateText(textToBeProcessed, languageCode).then(textTranslated => {
-            sendMessageToTab(tabId, {type: 'addText', content: textTranslated})
-        }).catch(error => {
-            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
-            logMessage(`Error during translation: ${error.message}`, 'error')
-        })
+        await runTextOperation(tabId, llmProvider,
+            onChunk => llmProvider.translateText(textToBeProcessed, languageCode, onChunk),
+            'Error during translation')
     }
     else if(info.menuItemId == menuIdTranslateAndSummarize) {
-        try {
-            const textTranslated = await llmProvider.translateText(textToBeProcessed)
-            const textTranslateAndSummarized = await llmProvider.summarizeText(textTranslated)
-
-            sendMessageToTab(tabId, {type: 'addText', content: textTranslateAndSummarized})
-        } catch (error) {
-            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
-            logMessage(`Error during translation and summarization: ${error.message}`, 'error')
-        }
+        // Only the summary is streamed: the translation is an intermediate
+        // step, whose whole text is the input of the operation that follows.
+        await runTextOperation(tabId, llmProvider,
+            async onChunk => llmProvider.summarizeText(await llmProvider.translateText(textToBeProcessed), onChunk),
+            'Error during translation and summarization')
     }
     else if(info.menuItemId == menuIdTranslateAndText2Speech) {
         try {
@@ -526,20 +518,14 @@ messenger.menus.onClicked.addListener(async (info: messenger.menus.OnClickData, 
         })
     }
     else if(info.menuItemId == menuIdCheckErrors) {
-        llmProvider.checkTextForErrors(textToBeProcessed).then(errorAnalysis => {
-            sendMessageToTab(tabId, {type: 'addText', content: errorAnalysis})
-        }).catch(error => {
-            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
-            logMessage(`Error during error checking error: ${error.message}`, 'error')
-        })
+        await runTextOperation(tabId, llmProvider,
+            onChunk => llmProvider.checkTextForErrors(textToBeProcessed, onChunk),
+            'Error during error checking')
     }
     else if(info.menuItemId == menuIdSuggestImprovements) {
-        llmProvider.suggestImprovementsForText(textToBeProcessed).then(improvedText => {
-            sendMessageToTab(tabId, {type: 'addText', content: improvedText})
-        }).catch(error => {
-            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
-            logMessage(`Error while improving the text: ${error.message}`, 'error')
-        })
+        await runTextOperation(tabId, llmProvider,
+            onChunk => llmProvider.suggestImprovementsForText(textToBeProcessed, onChunk),
+            'Error while improving the text')
     }
     // Fallback for unrecognized menu items. The 'aiOptions' entry is excluded
     // because it is already handled in the actions that only open UI panels.
@@ -579,12 +565,9 @@ browser.runtime.onMessage.addListener(async (message, sender) => {
             sendMessageToTab(tabId, {type: 'showError', content: messenger.i18n.getMessage('errorTextNotFound')})
         }
         else {
-            llmProvider.applyCustomPrompt(message.data.userPrompt, currentMessageContent).then(textProcessed => {
-                sendMessageToTab(tabId, {type: 'addText', content: textProcessed})
-            }).catch(error => {
-                sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
-                logMessage(`Error during the custom prompt: ${error.message}`, 'error')
-            })
+            await runTextOperation(tabId, llmProvider,
+                onChunk => llmProvider.applyCustomPrompt(message.data.userPrompt, currentMessageContent, onChunk),
+                'Error during the custom prompt')
         }
     }
 
@@ -598,12 +581,24 @@ browser.runtime.onMessage.addListener(async (message, sender) => {
 
         sendMessageToTab(tabId, { type: 'thinking', content: messenger.i18n.getMessage('thinking') })
 
-        llmProvider.applyCustomPrompt(message.refinementPrompt, message.lastResponse).then(textProcessed => {
-            sendMessageToTab(tabId, {type: 'addText', content: textProcessed})
-        }).catch(error => {
-            sendMessageToTab(tabId, {type: 'showError', content: getLocalizedErrorMessage(error)})
-            logMessage(`Error during refinement: ${error.message}`, 'error')
-        })
+        await runTextOperation(tabId, llmProvider,
+            onChunk => llmProvider.applyCustomPrompt(message.refinementPrompt, message.lastResponse, onChunk),
+            'Error during refinement')
+    }
+
+    // Stop button pressed in the outputDisplay panel while an answer was being
+    // generated: the request of that tab is interrupted, keeping the text
+    // received so far.
+    if (message.type === 'stopGeneration') {
+        const pendingRequest = pendingRequests.get(sender.tab.id)
+
+        if (pendingRequest) {
+            // The flag is raised before aborting, so that the rejection caused
+            // by the abort is recognized as a user request and not reported as
+            // a failure.
+            pendingRequest.isStoppedByUser = true
+            pendingRequest.provider.abort()
+        }
     }
 })
 
@@ -782,6 +777,100 @@ async function updateMenuWithUserTranslationPreferences(): Promise<void> {
                 translationMenuItemIds.push(menuItemId)
             }
         })
+    }
+}
+
+/**
+ * Runs an LLM operation producing text, forwarding the answer to the tab as it
+ * is generated and keeping the handle used to interrupt it.
+ *
+ * The fragments are accumulated and sent every STREAM_FLUSH_INTERVAL, so that
+ * the panel is updated often enough to look responsive without one message per
+ * token. When the provider does not stream, either because the setting is off
+ * or because the operation does not support it, the whole text simply arrives
+ * as a single chunk.
+ *
+ * An interruption requested by the user is not an error: the generation is
+ * closed as if it were complete and the text received so far stays on screen.
+ *
+ * @param tabId - The tab where the request was initiated.
+ * @param provider - The provider running the operation, whose `abort()` backs
+ *        the stop button.
+ * @param operation - The operation to run, receiving the callback to which the
+ *        generated text has to be handed over.
+ * @param errorContext - Prefix of the message written to the log on failure.
+ */
+async function runTextOperation(tabId: number, provider: GenericProvider,
+        operation: (onChunk: StreamCallback) => Promise<string>, errorContext: string): Promise<void> {
+    const pendingRequest = { provider: provider, isStoppedByUser: false }
+    pendingRequests.set(tabId, pendingRequest)
+
+    let buffer = ''
+    let hasStarted = false
+    let flushTimeoutId: ReturnType<typeof setTimeout> | null = null
+
+    const flush = () => {
+        flushTimeoutId = null
+
+        if (!buffer) {
+            return
+        }
+
+        // The panel is told the generation has begun only when there is
+        // something to show, which is also when the stop button appears.
+        if (!hasStarted) {
+            hasStarted = true
+            sendMessageToTab(tabId, { type: 'streamStart' })
+        }
+
+        sendMessageToTab(tabId, { type: 'addTextChunk', content: buffer })
+        buffer = ''
+    }
+
+    try {
+        const fullText = await operation(chunk => {
+            buffer += chunk
+
+            if (flushTimeoutId === null) {
+                flushTimeoutId = setTimeout(flush, STREAM_FLUSH_INTERVAL)
+            }
+        })
+
+        if (flushTimeoutId !== null) {
+            clearTimeout(flushTimeoutId)
+            flushTimeoutId = null
+        }
+
+        // Without streaming nothing has been shown yet, so the whole text is
+        // sent at once: it also covers the answers arriving as a single chunk.
+        if (!hasStarted && !buffer) {
+            sendMessageToTab(tabId, { type: 'addText', content: fullText })
+            return
+        }
+
+        flush()
+        sendMessageToTab(tabId, { type: 'endText' })
+    } catch (error) {
+        if (flushTimeoutId !== null) {
+            clearTimeout(flushTimeoutId)
+        }
+
+        if (pendingRequest.isStoppedByUser) {
+            // Everything received before the stop is kept, so the partial
+            // answer can still be copied or refined.
+            flush()
+            sendMessageToTab(tabId, { type: 'endText' })
+            return
+        }
+
+        sendMessageToTab(tabId, { type: 'showError', content: getLocalizedErrorMessage(error) })
+        logMessage(`${errorContext}: ${error.message}`, 'error')
+    } finally {
+        // A newer request may have taken the slot in the meantime, and it must
+        // not be dropped by the one that is ending now.
+        if (pendingRequests.get(tabId) === pendingRequest) {
+            pendingRequests.delete(tabId)
+        }
     }
 }
 

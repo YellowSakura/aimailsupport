@@ -90,6 +90,7 @@ document.querySelector('#optionsForm')?.addEventListener('submit', async (event)
         // temperature, so that the providers know they must not send it.
         temperature: isTemperatureUnsupported() ? null : Number.parseFloat(document.querySelector<HTMLInputElement>('#llmTemperature').value),
         servicesTimeout: Number.parseInt(document.querySelector<HTMLInputElement>('#servicesTimeout').value),
+        streamResponses: document.querySelector<HTMLInputElement>('#streamResponses').checked,
         maskPii: document.querySelector<HTMLInputElement>('#maskPii').checked,
         debugMode: document.querySelector<HTMLInputElement>('#debugMode').checked,
         anthropic: {
@@ -189,6 +190,11 @@ document.addEventListener('DOMContentLoaded', async _ => {
     document.querySelector<MultipleLanguageSelector>('#translationLanguageCodes').setValues(configs.translationLanguageCodes || [])
     document.querySelector<HTMLInputElement>('#llmProvider').value = selectedLlmProvider
     document.querySelector<HTMLInputElement>('#servicesTimeout').value = (configs.servicesTimeout || 12).toString()
+
+    // Streaming is the default: the comparison with false, instead of a plain
+    // truthy check, keeps it enabled on the installations upgrading from a
+    // version where the setting did not exist yet.
+    document.querySelector<HTMLInputElement>('#streamResponses').checked = configs.streamResponses !== false
     document.querySelector<HTMLInputElement>('#maskPii').checked = configs.maskPii
     document.querySelector<HTMLInputElement>('#debugMode').checked = configs.debugMode
 

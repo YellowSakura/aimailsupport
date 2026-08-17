@@ -1,4 +1,5 @@
 import { OpenAiApiCompatibleProvider } from '../openAiApiCompatible'
+import { StreamCallback } from '../genericProvider'
 import { ConfigType } from '../../helpers/configType'
 import { logMessage } from '../../helpers/utils'
 
@@ -102,10 +103,13 @@ export class OpenAiGptProvider extends OpenAiApiCompatibleProvider {
      * Function to generate headers for API requests, adding the organization
      * header to the standard ones when an organization ID is available.
      *
+     * @param isStreaming - Whether the request expects a Server-Sent Events
+     *        response instead of a plain JSON one.
+     *
      * @returns {Headers} The headers object with necessary headers appended.
      */
-    protected getHeaders(): Headers {
-        const headers: Headers = super.getHeaders()
+    protected getHeaders(isStreaming: boolean = false): Headers {
+        const headers: Headers = super.getHeaders(isStreaming)
 
         if(this.organizationId) {
             headers.append('OpenAI-Organization', this.organizationId)
@@ -125,15 +129,23 @@ export class OpenAiGptProvider extends OpenAiApiCompatibleProvider {
      * In case of failure, it throws an error with the specific message from
      * the OpenAI API.
      *
+     * When a callback is provided and streaming is enabled in the settings,
+     * the answer is requested as a Server-Sent Events stream and every piece
+     * of text is handed over as soon as it arrives. The whole text is returned
+     * at the end either way.
+     *
      * @param systemInput - The input for the 'system' role in the conversation.
      * @param userInput - The input for the 'user' role in the conversation.
+     * @param onChunk - Optional callback receiving the text as it is generated.
      *
      * @returns A promise that resolves to the content of the response message
      *          from the API.
      *
      * @throws An error if the API response is not successful.
      */
-    protected async manageMessageContent(systemInput: string, userInput: string): Promise<string> {
+    protected async manageMessageContent(systemInput: string, userInput: string,
+            onChunk?: StreamCallback): Promise<string> {
+        const useStream = onChunk !== undefined && this.streamResponses
         const { signal, clearAbortSignalWithTimeout } = this.createAbortSignalWithTimeout(this.servicesTimeout)
 
         const requestData = JSON.stringify({
@@ -144,22 +156,33 @@ export class OpenAiGptProvider extends OpenAiApiCompatibleProvider {
             ],
             // The temperature is omitted when the selected model does not
             // accept it, since those models reject the parameter.
-            ...(this.temperature !== null && { 'temperature': this.temperature })
+            ...(this.temperature !== null && { 'temperature': this.temperature }),
+            ...(useStream && { 'stream': true })
         })
 
         const requestOptions: RequestInit = {
             method: 'POST',
-            headers: this.getHeaders(),
+            headers: this.getHeaders(useStream),
             body: requestData,
             redirect: 'follow',
             signal: signal
         }
 
         const response = await fetch(`${this.baseUrl}/v1/responses`, requestOptions)
-        clearAbortSignalWithTimeout()
+
+        // While streaming the timeout has to survive the headers, since the
+        // body is consumed afterwards: it is disarmed on the first chunk, as
+        // soon as the service actually starts answering.
+        if (!useStream || !response.ok) {
+            clearAbortSignalWithTimeout()
+        }
 
         if (!response.ok) {
             throw new Error(`${this.serviceLabel} error: ${await OpenAiGptProvider.extractErrorMessage(response)}`)
+        }
+
+        if (useStream) {
+            return this.readResponsesStream(response, onChunk, clearAbortSignalWithTimeout)
         }
 
         const responseData = await response.json()
@@ -175,6 +198,57 @@ export class OpenAiGptProvider extends OpenAiApiCompatibleProvider {
         }
 
         return completedOutput.content[0].text
+    }
+
+    /**
+     * Consumes the event stream of the "responses" endpoint, collecting the
+     * text of the answer.
+     *
+     * The endpoint emits typed events, of which only the text deltas of the
+     * assistant message are taken: the reasoning models also emit the deltas
+     * of their reasoning summary, which must not end up in the answer shown to
+     * the user.
+     *
+     * @param response - The streaming response returned by the service.
+     * @param onChunk - Callback receiving the text as it is generated.
+     * @param onFirstChunk - Called as soon as the service starts answering.
+     *
+     * @returns A promise that resolves to the whole generated text.
+     *
+     * @throws An error if the stream carries a failure event.
+     */
+    private async readResponsesStream(response: Response, onChunk: StreamCallback,
+            onFirstChunk: () => void): Promise<string> {
+        let fullText = ''
+
+        await this.readSseStream(response, data => {
+            let event: any
+
+            try {
+                event = JSON.parse(data)
+            } catch {
+                // A malformed event is skipped rather than failing the whole
+                // generation: the text received so far stays usable.
+                logMessage(`${this.serviceLabel}: skipped a malformed stream event`, 'warn')
+                return
+            }
+
+            switch (event.type) {
+                case 'response.output_text.delta':
+                    if (event.delta) {
+                        fullText += event.delta
+                        onChunk(event.delta)
+                    }
+                    break
+
+                case 'response.failed':
+                case 'response.incomplete':
+                case 'error':
+                    throw new Error(`${this.serviceLabel} error: ${event.response?.error?.message ?? event.message ?? 'unknown streaming error'}`)
+            }
+        }, onFirstChunk)
+
+        return fullText
     }
 
     /**

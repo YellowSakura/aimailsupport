@@ -10,6 +10,14 @@ import { marked } from 'marked'
  */
 let lastAiResponseText = ''
 
+/**
+ * Markdown received so far for the answer currently being streamed.
+ *
+ * It is rendered again at every chunk, and becomes the last AI response once
+ * the generation is over.
+ */
+let streamedResponseText = ''
+
 // Manage async messages -->
 browser.runtime.onMessage.addListener(async (message: any) => {
     if (message?.type) {
@@ -26,6 +34,18 @@ browser.runtime.onMessage.addListener(async (message: any) => {
 
             case 'addText':
                 addText(message.content)
+                break
+
+            case 'addTextChunk':
+                addTextChunk(message.content)
+                break
+
+            case 'endText':
+                endText()
+                break
+
+            case 'streamStart':
+                streamStart()
                 break
 
             case 'setComposeMode':
@@ -90,6 +110,84 @@ async function addText(newContent: string) {
 
     const htmlContent = await marked.parse(newContent)
     getInnerResponse().querySelector('#amsContent').innerHTML = htmlContent
+}
+
+/**
+ * Prepares the panel to receive an answer piece by piece.
+ *
+ * The generation is not over, so the only action offered is the one to stop
+ * it: the icons acting on the response appear again once it is complete.
+ */
+function streamStart(): void {
+    streamedResponseText = ''
+    showStreamingPanel()
+}
+
+/**
+ * Brings the panel into the state in which a streamed answer is displayed,
+ * without touching the text received so far.
+ *
+ * It is applied again at every chunk when needed, so that closing the panel
+ * while the answer is still coming does not hide the rest of it: the response
+ * simply shows up again, as it does when it is not streamed.
+ */
+function showStreamingPanel(): void {
+    clearOutputDisplay()
+
+    getInnerResponse().classList.add('text-content', 'streaming')
+    getInnerResponse().querySelector('#actionsContainer').classList.add('streaming')
+}
+
+/**
+ * Appends a piece of the answer being generated and renders it right away.
+ *
+ * The whole markdown is parsed again at every chunk: an unterminated construct,
+ * such as an open code fence, is closed by the parser, so the intermediate
+ * result stays readable.
+ *
+ * @param newContent - The piece of markdown to append.
+ */
+async function addTextChunk(newContent: string) {
+    streamedResponseText += newContent
+
+    // The panel may have been closed, and therefore rebuilt from scratch, while
+    // the answer was still coming.
+    if (!getInnerResponse().classList.contains('streaming')) {
+        showStreamingPanel()
+    }
+
+    const content = getInnerResponse().querySelector('#amsContent') as HTMLElement
+    content.innerHTML = await marked.parse(streamedResponseText)
+}
+
+/**
+ * Closes a streamed answer, whether it ended on its own or was interrupted by
+ * the user.
+ *
+ * The text received so far becomes the last AI response, so that it can be
+ * refined exactly like a complete one.
+ */
+function endText(): void {
+    lastAiResponseText = streamedResponseText
+
+    // The generation can be interrupted before producing anything, in which
+    // case the panel is still showing the waiting message and has to be moved
+    // out of it anyway.
+    getInnerResponse().classList.remove('streaming', 'thinking')
+    getInnerResponse().classList.add('text-content')
+    getInnerResponse().querySelector('#actionsContainer').classList.remove('streaming')
+}
+
+/**
+ * Asks the background script to interrupt the answer being generated.
+ *
+ * The panel is not updated here: it is the background script, once the request
+ * is actually closed, that ends the streaming through an `endText` message.
+ */
+function stopGeneration(): void {
+    browser.runtime.sendMessage({ type: 'stopGeneration' }).catch((error: Error) => {
+        logMessage(`Error sending the stop request: ${error.message}`, 'error')
+    })
 }
 
 function showError(newContent: string) {
@@ -197,6 +295,18 @@ function createOutputDisplay(): void {
     actionsContainer.appendChild(refineIcon)
     // <-- refine icon
 
+    // Stop icon, only visible while an answer is being generated
+    const stopIcon: HTMLSpanElement = document.createElement('span')
+    stopIcon.className = 'stop-icon'
+    stopIcon.title = messenger.i18n.getMessage('outputDisplay.title.stop')
+    stopIcon.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="6" y="6" width="12" height="12" rx="2"/>
+        </svg>
+    `
+    stopIcon.addEventListener('click', stopGeneration)
+    actionsContainer.appendChild(stopIcon)
+
     // Footer: groups action icons and refine input -->
     const amsFooter: HTMLDivElement = document.createElement('div')
     amsFooter.id = 'amsFooter'
@@ -210,7 +320,7 @@ function createOutputDisplay(): void {
     const refineTextarea: HTMLTextAreaElement = document.createElement('textarea')
     refineTextarea.id = 'refineTextarea'
     refineTextarea.rows = 1
-    refineTextarea.placeholder = messenger.i18n.getMessage('outputDisplay.refine.placeholder')
+    refineTextarea.placeholder = messenger.i18n.getMessage('outputDisplay.title.refine')
     refineTextarea.addEventListener('input', () => {
         refineTextarea.style.height = 'auto'
         refineTextarea.style.height = `${refineTextarea.scrollHeight}px`
@@ -256,7 +366,8 @@ function clearOutputDisplay(destroy: boolean = false): void {
         document.querySelector('#amsOuterResponse').classList.add('show')
     }
 
-    getInnerResponse().classList.remove('error', 'text-content', 'thinking')
+    getInnerResponse().classList.remove('error', 'streaming', 'text-content', 'thinking')
+    getInnerResponse().querySelector('#actionsContainer').classList.remove('streaming')
     getInnerResponse().querySelector('#amsContent').innerHTML = ''
 }
 

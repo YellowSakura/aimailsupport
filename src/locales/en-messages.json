@@ -541,6 +541,14 @@
         "message": "Services Timeout (seconds)",
         "description": "Timeout for services response in seconds."
     },
+    "options.streamResponses": {
+        "message": "Show responses while they are written",
+        "description": "Label of the option enabling the progressive display of the AI responses."
+    },
+    "options.streamResponses.description": {
+        "message": "The response appears progressively, as the model writes it, instead of showing up all at once at the end. Turn it off if the selected service does not support it.",
+        "description": "Description of the option enabling the progressive display of the AI responses."
+    },
     "options.testButton": {
         "message": "Test",
         "description": "Button used for testing purposes."
@@ -605,6 +613,10 @@
         "message": "Model*",
         "description": "Model to be used for all text processing: https://docs.x.ai/docs/models"
     },
+    "outputDisplay.refine.placeholder": {
+        "message": "How should this response be changed?",
+        "description": "Placeholder of the field where the user types how the AI response has to be reworked."
+    },
     "outputDisplay.title.copyClipboard": {
         "message": "Copy to clipboard",
         "description": "Tooltip of the icon that copies the AI response to the system clipboard."
@@ -616,6 +628,10 @@
     "outputDisplay.title.refine": {
         "message": "Refine this response (e.g. make it shorter, more formal…)",
         "description": "Tooltip of the icon that opens the input field used to ask for a refinement of the AI response."
+    },
+    "outputDisplay.title.stop": {
+        "message": "Stop the generation",
+        "description": "Tooltip of the icon that interrupts the response while it is being generated."
     },
     "promptDisplay.placeholder": {
         "message": "How can I help you?",
