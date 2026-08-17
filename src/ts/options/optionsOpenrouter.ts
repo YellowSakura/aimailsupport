@@ -1,7 +1,7 @@
 // Specific code to manage options for OpenRouter
 
 import { getConfig } from '../helpers/utils'
-import { OpenRouterProvider } from '../llmProviders/impl/openrouterProvider'
+import { OpenRouterProvider } from '../llmProviders/impl/openRouterProvider'
 
 // Check if the currently used LLM provider is OpenRouter, and if so, load the
 // available models.

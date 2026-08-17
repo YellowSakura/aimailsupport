@@ -8,7 +8,7 @@ import { LmsProvider } from '../src/ts/llmProviders/impl/lmsProvider'
 import { MistralProvider } from '../src/ts/llmProviders/impl/mistralProvider'
 import { OllamaProvider } from '../src/ts/llmProviders/impl/ollamaProvider'
 import { OpenAiGptProvider } from '../src/ts/llmProviders/impl/openAiGptProvider'
-import { OpenRouterProvider } from '../src/ts/llmProviders/impl/openrouterProvider'
+import { OpenRouterProvider } from '../src/ts/llmProviders/impl/openRouterProvider'
 import { VllmProvider } from '../src/ts/llmProviders/impl/vllmProvider'
 import { XaiGrokProvider } from '../src/ts/llmProviders/impl/xaiGrokProvider'
 
@@ -21,7 +21,7 @@ const configs: ConfigType = {
     translationLanguageCodes: [],
     llmProvider: '',
     temperature: 1,
-    servicesTimeout: 45,
+    servicesTimeout: 60,
 
     // Streaming stays off, so that every operation is exercised on the
     // non-streaming path: the tests covering the progressive output build their

@@ -13,7 +13,7 @@ import { LmsProvider } from './impl/lmsProvider'
 import { MistralProvider } from './impl/mistralProvider'
 import { OllamaProvider } from './impl/ollamaProvider'
 import { OpenAiGptProvider } from './impl/openAiGptProvider'
-import { OpenRouterProvider } from './impl/openrouterProvider'
+import { OpenRouterProvider } from './impl/openRouterProvider'
 import { VllmProvider } from './impl/vllmProvider'
 import { XaiGrokProvider } from './impl/xaiGrokProvider'
 
