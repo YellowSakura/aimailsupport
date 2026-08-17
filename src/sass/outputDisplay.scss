@@ -195,6 +195,11 @@
         }
 
         #refineTextarea {
+            // The shadow DOM isolates the panel from the styles of the email,
+            // but not from the system colors of the form controls: without an
+            // explicit background the field would be painted dark by a dark
+            // theme, making the black text unreadable.
+            background-color: transparent;
             border: none;
             color: black;
             flex: 1;
@@ -202,6 +207,10 @@
             outline: none;
             resize: none;
             overflow: hidden;
+
+            &::placeholder {
+                color: #5f6368;
+            }
         }
 
         button.refine-send {
