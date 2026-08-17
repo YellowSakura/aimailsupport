@@ -408,10 +408,10 @@
         "message": "Timeout servizi (secondi)"
     },
     "options.streamResponses": {
-        "message": "Mostra le risposte mentre vengono scritte"
+        "message": "Abilita stream"
     },
     "options.streamResponses.description": {
-        "message": "La risposta compare progressivamente, mentre il modello la scrive, invece di apparire tutta insieme alla fine. Disattivalo se il servizio selezionato non lo supporta."
+        "message": "La risposta compare progressivamente, mentre il modello la genera, invece di apparire tutta insieme alla fine."
     },
     "options.testButton": {
         "message": "Testa"

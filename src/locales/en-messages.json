@@ -542,11 +542,11 @@
         "description": "Timeout for services response in seconds."
     },
     "options.streamResponses": {
-        "message": "Show responses while they are written",
+        "message": "Enable stream",
         "description": "Label of the option enabling the progressive display of the AI responses."
     },
     "options.streamResponses.description": {
-        "message": "The response appears progressively, as the model writes it, instead of showing up all at once at the end. Turn it off if the selected service does not support it.",
+        "message": "The response appears progressively, as the model generates it, instead of showing up all at once at the end.",
         "description": "Description of the option enabling the progressive display of the AI responses."
     },
     "options.testButton": {

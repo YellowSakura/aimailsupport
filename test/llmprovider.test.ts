@@ -22,7 +22,12 @@ const configs: ConfigType = {
     llmProvider: '',
     temperature: 1,
     servicesTimeout: 45,
-    streamResponses: true,
+
+    // Streaming stays off, so that every operation is exercised on the
+    // non-streaming path: the tests covering the progressive output build their
+    // own instance with the setting turned on, since the flag is read by the
+    // constructor and cannot be flipped afterwards.
+    streamResponses: false,
     debugMode: true,
     maskPii: false,
 
@@ -109,6 +114,7 @@ describe('AnthropicClaudeProvider', () => {
     configs.anthropic.apiKey = process.env.anthropic_api_key as string
 
     const provider = ProviderFactory.getInstance(configs)
+    const streamingProvider = ProviderFactory.getInstance({ ...configs, streamResponses: true })
 
     test('should be an instance of AnthropicClaudeProvider', () => {
         expect(provider).toBeInstanceOf(AnthropicClaudeProvider)
@@ -162,7 +168,7 @@ describe('AnthropicClaudeProvider', () => {
 
     test('should be able to stream the generated text', async () => {
         const chunks: string[] = []
-        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+        const output = await streamingProvider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
 
         // Receiving more than one fragment is what tells the streaming apart
         // from a response delivered all at once at the end.
@@ -180,6 +186,7 @@ describe('DeepseekProvider', () => {
     configs.deepseek.apiKey = process.env.deepseek_api_key as string
 
     const provider = ProviderFactory.getInstance(configs)
+    const streamingProvider = ProviderFactory.getInstance({ ...configs, streamResponses: true })
 
     test('should be an instance of DeepseekProvider', () => {
         expect(provider).toBeInstanceOf(DeepseekProvider)
@@ -233,7 +240,7 @@ describe('DeepseekProvider', () => {
 
     test('should be able to stream the generated text', async () => {
         const chunks: string[] = []
-        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+        const output = await streamingProvider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
 
         // Receiving more than one fragment is what tells the streaming apart
         // from a response delivered all at once at the end.
@@ -251,6 +258,7 @@ describe('GoogleGeminiProvider', () => {
     configs.google.apiKey = process.env.google_api_key as string
 
     const provider = ProviderFactory.getInstance(configs)
+    const streamingProvider = ProviderFactory.getInstance({ ...configs, streamResponses: true })
 
     test('should be an instance of GoogleGeminiProvider', () => {
         expect(provider).toBeInstanceOf(GoogleGeminiProvider)
@@ -304,7 +312,7 @@ describe('GoogleGeminiProvider', () => {
 
     test('should be able to stream the generated text', async () => {
         const chunks: string[] = []
-        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+        const output = await streamingProvider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
 
         // Receiving more than one fragment is what tells the streaming apart
         // from a response delivered all at once at the end.
@@ -322,6 +330,7 @@ describe('GroqProvider', () => {
     configs.groq.apiKey = process.env.groq_api_key as string
 
     const provider = ProviderFactory.getInstance(configs)
+    const streamingProvider = ProviderFactory.getInstance({ ...configs, streamResponses: true })
 
     test('should be an instance of GroqProvider', () => {
         expect(provider).toBeInstanceOf(GroqProvider)
@@ -375,7 +384,7 @@ describe('GroqProvider', () => {
 
     test('should be able to stream the generated text', async () => {
         const chunks: string[] = []
-        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+        const output = await streamingProvider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
 
         // Receiving more than one fragment is what tells the streaming apart
         // from a response delivered all at once at the end.
@@ -392,6 +401,7 @@ describe('LmStudioProvider', () => {
     configs.llmProvider = 'lms'
 
     const provider = ProviderFactory.getInstance(configs)
+    const streamingProvider = ProviderFactory.getInstance({ ...configs, streamResponses: true })
 
     test('should be an instance of LmsProvider', () => {
         expect(provider).toBeInstanceOf(LmsProvider)
@@ -445,7 +455,7 @@ describe('LmStudioProvider', () => {
 
     test('should be able to stream the generated text', async () => {
         const chunks: string[] = []
-        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+        const output = await streamingProvider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
 
         // Receiving more than one fragment is what tells the streaming apart
         // from a response delivered all at once at the end.
@@ -463,6 +473,7 @@ describe('MistralProvider', () => {
     configs.mistral.apiKey = process.env.mistral_api_key as string
 
     const provider = ProviderFactory.getInstance(configs)
+    const streamingProvider = ProviderFactory.getInstance({ ...configs, streamResponses: true })
 
     test('should be an instance of MistralProvider', () => {
         expect(provider).toBeInstanceOf(MistralProvider)
@@ -530,7 +541,7 @@ describe('MistralProvider', () => {
 
     test('should be able to stream the generated text', async () => {
         const chunks: string[] = []
-        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+        const output = await streamingProvider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
 
         // Receiving more than one fragment is what tells the streaming apart
         // from a response delivered all at once at the end.
@@ -547,6 +558,7 @@ describe('OllamaProvider', () => {
     configs.llmProvider = 'ollama'
 
     const provider = ProviderFactory.getInstance(configs)
+    const streamingProvider = ProviderFactory.getInstance({ ...configs, streamResponses: true })
 
     test('should be an instance of OllamaProvider', () => {
         expect(provider).toBeInstanceOf(OllamaProvider)
@@ -600,7 +612,7 @@ describe('OllamaProvider', () => {
 
     test('should be able to stream the generated text', async () => {
         const chunks: string[] = []
-        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+        const output = await streamingProvider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
 
         // Receiving more than one fragment is what tells the streaming apart
         // from a response delivered all at once at the end.
@@ -618,6 +630,7 @@ describe('OpenAiGptProvider', () => {
     configs.openai.apiKey = process.env.openai_api_key as string
 
     const provider = ProviderFactory.getInstance(configs)
+    const streamingProvider = ProviderFactory.getInstance({ ...configs, streamResponses: true })
 
     test('should be an instance of OpenAiGptProvider', () => {
         expect(provider).toBeInstanceOf(OpenAiGptProvider)
@@ -691,7 +704,7 @@ describe('OpenAiGptProvider', () => {
 
     test('should be able to stream the generated text', async () => {
         const chunks: string[] = []
-        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+        const output = await streamingProvider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
 
         // Receiving more than one fragment is what tells the streaming apart
         // from a response delivered all at once at the end.
@@ -709,6 +722,7 @@ describe('OpenRouterProvider', () => {
     configs.openrouter.apiKey = process.env.openrouter_api_key as string
 
     const provider = ProviderFactory.getInstance(configs)
+    const streamingProvider = ProviderFactory.getInstance({ ...configs, streamResponses: true })
 
     test('should be an instance of OpenRouterProvider', () => {
         expect(provider).toBeInstanceOf(OpenRouterProvider)
@@ -762,7 +776,7 @@ describe('OpenRouterProvider', () => {
 
     test('should be able to stream the generated text', async () => {
         const chunks: string[] = []
-        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+        const output = await streamingProvider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
 
         // Receiving more than one fragment is what tells the streaming apart
         // from a response delivered all at once at the end.
@@ -779,6 +793,7 @@ describe('VllmProvider', () => {
     configs.llmProvider = 'vllm'
 
     const provider = ProviderFactory.getInstance(configs)
+    const streamingProvider = ProviderFactory.getInstance({ ...configs, streamResponses: true })
 
     test('should be an instance of VllmProvider', () => {
         expect(provider).toBeInstanceOf(VllmProvider)
@@ -832,7 +847,7 @@ describe('VllmProvider', () => {
 
     test('should be able to stream the generated text', async () => {
         const chunks: string[] = []
-        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+        const output = await streamingProvider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
 
         // Receiving more than one fragment is what tells the streaming apart
         // from a response delivered all at once at the end.
@@ -850,6 +865,7 @@ describe('XaiGrokProvider', () => {
     configs.xai.apiKey = process.env.xai_api_key as string
 
     const provider = ProviderFactory.getInstance(configs)
+    const streamingProvider = ProviderFactory.getInstance({ ...configs, streamResponses: true })
 
     test('should be an instance of XaiGrokProvider', () => {
         expect(provider).toBeInstanceOf(XaiGrokProvider)
@@ -903,7 +919,7 @@ describe('XaiGrokProvider', () => {
 
     test('should be able to stream the generated text', async () => {
         const chunks: string[] = []
-        const output = await provider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+        const output = await streamingProvider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
 
         // Receiving more than one fragment is what tells the streaming apart
         // from a response delivered all at once at the end.

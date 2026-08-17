@@ -50,7 +50,15 @@ It is possible to access a wider set of models (e.g., Llama, Phi, Mistral, Gemma
 
 **ATTENTION 1**: The services offered by Groq Cloud and Mistral AI include the option to use a free plan, albeit with low rate limits on requests.  
 **ATTENTION 2**: Unlike other LLM models, LM Studio, Ollama and vLLM allow you to run open-source models directly on your own PC, with no additional costs and maximum privacy, as everything is executed locally.  
-The downside is that this requires *SIGNIFICANT* hardware resources.
+The downside is that this requires *SIGNIFICANT* hardware resources.  
+**ATTENTION 3**: When using Ollama, make sure it is running and that it is configured to accept requests coming from Thunderbird, by enabling the `moz-extension://*` origin, as described in the [Ollama FAQ](https://docs.ollama.com/faq#how-can-i-allow-additional-web-origins-to-access-ollama).  
+For example, on macOS:
+
+```console
+$ launchctl setenv OLLAMA_ORIGINS "moz-extension://*"
+```
+
+Then restart Ollama so that the new value is picked up.
 
 ### Settings and usage
 

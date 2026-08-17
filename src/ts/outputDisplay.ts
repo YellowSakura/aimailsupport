@@ -320,7 +320,7 @@ function createOutputDisplay(): void {
     const refineTextarea: HTMLTextAreaElement = document.createElement('textarea')
     refineTextarea.id = 'refineTextarea'
     refineTextarea.rows = 1
-    refineTextarea.placeholder = messenger.i18n.getMessage('outputDisplay.title.refine')
+    refineTextarea.placeholder = messenger.i18n.getMessage('outputDisplay.refine.placeholder')
     refineTextarea.addEventListener('input', () => {
         refineTextarea.style.height = 'auto'
         refineTextarea.style.height = `${refineTextarea.scrollHeight}px`
