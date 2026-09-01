@@ -8,12 +8,28 @@ import { ConfigType } from '../../helpers/configType'
  * https://github.com/ollama/ollama/blob/main/docs/openai.md
  */
 export class OllamaProvider extends OpenAiApiCompatibleProvider {
+    private readonly reasoningEffort: ConfigType['ollama']['reasoningEffort']
+
     public constructor(config: ConfigType) {
         super(config, {
             serviceLabel: 'Ollama',
             baseUrl: config.ollama.serviceUrl,
             model: config.ollama.model
         })
+
+        this.reasoningEffort = config.ollama.reasoningEffort || 'default'
+    }
+
+    /**
+     * Ollama maps the OpenAI-compatible reasoning_effort field to its native
+     * thinking control. Omitting it preserves the model's default behavior.
+     */
+    protected getAdditionalRequestData(): Record<string, unknown> {
+        if(this.reasoningEffort === 'default') {
+            return {}
+        }
+
+        return { reasoning_effort: this.reasoningEffort }
     }
 
     /**

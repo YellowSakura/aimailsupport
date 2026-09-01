@@ -52,6 +52,7 @@ export interface ConfigType {
     ollama: {
         serviceUrl: string
         model: string
+        reasoningEffort?: 'default' | 'none' | 'low' | 'medium' | 'high' | 'max'
     }
 
     openai: {

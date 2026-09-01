@@ -120,7 +120,8 @@ document.querySelector('#optionsForm')?.addEventListener('submit', async (event)
         },
         ollama: {
             serviceUrl: document.querySelector<HTMLInputElement>('#ollamaServiceUrl').value,
-            model: document.querySelector<HTMLInputElement>('#ollamaModel').value
+            model: document.querySelector<HTMLInputElement>('#ollamaModel').value,
+            reasoningEffort: document.querySelector<HTMLInputElement>('#ollamaReasoningEffort').value as ConfigType['ollama']['reasoningEffort']
         },
         openai: {
             apiKey: document.querySelector<HTMLInputElement>('#openaiApiKey').value,
@@ -247,6 +248,7 @@ document.addEventListener('DOMContentLoaded', async _ => {
     // Ollama section -->
     document.querySelector<HTMLInputElement>('#ollamaServiceUrl').value = configs.ollama?.serviceUrl || 'http://localhost:11434'
     document.querySelector<HTMLInputElement>('#ollamaModel').value = configs.ollama?.model || ''
+    document.querySelector<HTMLInputElement>('#ollamaReasoningEffort').value = configs.ollama?.reasoningEffort || 'default'
     // <-- Ollama section
 
     // OpenAI GPT section -->

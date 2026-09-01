@@ -64,7 +64,8 @@ const configs: ConfigType = {
 
     ollama: {
         serviceUrl: 'http://localhost:11434',
-        model: 'gemma4:e2b'
+        model: 'gemma4:e2b',
+        reasoningEffort: 'default'
     },
 
     openai: {
