@@ -338,6 +338,30 @@
     "options.ollama.model": {
         "message": "Modello*"
     },
+    "options.ollama.reasoningEffort": {
+        "message": "Sforzo di ragionamento*"
+    },
+    "options.ollama.reasoningEffort.description": {
+        "message": "Controlla il ragionamento dei modelli Ollama compatibili."
+    },
+    "options.ollama.reasoningEffort.default": {
+        "message": "Predefinito del modello"
+    },
+    "options.ollama.reasoningEffort.none": {
+        "message": "Disattivato (Più veloce)"
+    },
+    "options.ollama.reasoningEffort.low": {
+        "message": "Basso"
+    },
+    "options.ollama.reasoningEffort.medium": {
+        "message": "Medio"
+    },
+    "options.ollama.reasoningEffort.high": {
+        "message": "Alto"
+    },
+    "options.ollama.reasoningEffort.max": {
+        "message": "Massimo"
+    },
     "options.ollama.serviceUrl": {
         "message": "URL servizi Ollama"
     },

@@ -449,6 +449,38 @@
         "message": "Model*",
         "description": "Model to be used for all text processing: https://ollama.com/library."
     },
+    "options.ollama.reasoningEffort": {
+        "message": "Reasoning effort*",
+        "description": "Label for the Ollama reasoning effort selector."
+    },
+    "options.ollama.reasoningEffort.description": {
+        "message": "Controls reasoning for compatible Ollama models.",
+        "description": "Description of the reasoning effort setting for Ollama models."
+    },
+    "options.ollama.reasoningEffort.default": {
+        "message": "Model default",
+        "description": "Leave the model's reasoning behavior unchanged."
+    },
+    "options.ollama.reasoningEffort.none": {
+        "message": "Off (Fastest)",
+        "description": "Disable model reasoning."
+    },
+    "options.ollama.reasoningEffort.low": {
+        "message": "Low",
+        "description": "Use low reasoning effort."
+    },
+    "options.ollama.reasoningEffort.medium": {
+        "message": "Medium",
+        "description": "Use medium reasoning effort."
+    },
+    "options.ollama.reasoningEffort.high": {
+        "message": "High",
+        "description": "Use high reasoning effort."
+    },
+    "options.ollama.reasoningEffort.max": {
+        "message": "Maximum",
+        "description": "Use maximum reasoning effort."
+    },
     "options.ollama.serviceUrl": {
         "message": "Ollama services URL",
         "description": "This option allows configuring the URL of the REST services used by Ollama: https://github.com/ollama/ollama/blob/main/docs/api.md."
