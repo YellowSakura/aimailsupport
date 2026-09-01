@@ -9,8 +9,11 @@ let translationMenuItemIds: (number | string)[] = []
 /**
  * Requests currently in flight, keyed by the tab that originated them, so that
  * the stop button of the response panel can interrupt the right one.
+ *
+ * `isDiscarded` marks a request whose output must no longer reach the tab,
+ * because the panel displaying it has been closed.
  */
-const pendingRequests = new Map<number, { provider: GenericProvider, isStoppedByUser: boolean }>()
+const pendingRequests = new Map<number, { provider: GenericProvider, isStoppedByUser: boolean, isDiscarded: boolean }>()
 
 /**
  * How long the generated text is accumulated before being sent to the tab.
@@ -588,7 +591,9 @@ browser.runtime.onMessage.addListener(async (message, sender) => {
 
     // Stop button pressed in the outputDisplay panel while an answer was being
     // generated: the request of that tab is interrupted, keeping the text
-    // received so far.
+    // received so far. Closing the panel interrupts it in the same way, but
+    // asks for the output to be discarded, so that nothing brings the panel
+    // back on screen.
     if (message.type === 'stopGeneration') {
         const pendingRequest = pendingRequests.get(sender.tab.id)
 
@@ -597,6 +602,7 @@ browser.runtime.onMessage.addListener(async (message, sender) => {
             // by the abort is recognized as a user request and not reported as
             // a failure.
             pendingRequest.isStoppedByUser = true
+            pendingRequest.isDiscarded = message.discardOutput === true
             pendingRequest.provider.abort()
         }
     }
@@ -791,7 +797,9 @@ async function updateMenuWithUserTranslationPreferences(): Promise<void> {
  * as a single chunk.
  *
  * An interruption requested by the user is not an error: the generation is
- * closed as if it were complete and the text received so far stays on screen.
+ * closed as if it were complete and the text received so far stays on screen,
+ * unless the panel has been closed, in which case nothing else is sent to the
+ * tab.
  *
  * @param tabId - The tab where the request was initiated.
  * @param provider - The provider running the operation, whose `abort()` backs
@@ -802,12 +810,21 @@ async function updateMenuWithUserTranslationPreferences(): Promise<void> {
  */
 async function runTextOperation(tabId: number, provider: GenericProvider,
         operation: (onChunk: StreamCallback) => Promise<string>, errorContext: string): Promise<void> {
-    const pendingRequest = { provider: provider, isStoppedByUser: false }
+    const pendingRequest = { provider: provider, isStoppedByUser: false, isDiscarded: false }
     pendingRequests.set(tabId, pendingRequest)
 
     let buffer = ''
     let hasStarted = false
     let flushTimeoutId: ReturnType<typeof setTimeout> | null = null
+
+    // Single gate for everything this request sends to the panel: once the user
+    // has closed it, no message must reach the tab, because the panel would be
+    // rebuilt just to display an answer that is no longer wanted.
+    const send = (message: object) => {
+        if (!pendingRequest.isDiscarded) {
+            sendMessageToTab(tabId, message)
+        }
+    }
 
     const flush = () => {
         flushTimeoutId = null
@@ -820,10 +837,10 @@ async function runTextOperation(tabId: number, provider: GenericProvider,
         // something to show, which is also when the stop button appears.
         if (!hasStarted) {
             hasStarted = true
-            sendMessageToTab(tabId, { type: 'streamStart' })
+            send({ type: 'streamStart' })
         }
 
-        sendMessageToTab(tabId, { type: 'addTextChunk', content: buffer })
+        send({ type: 'addTextChunk', content: buffer })
         buffer = ''
     }
 
@@ -844,12 +861,12 @@ async function runTextOperation(tabId: number, provider: GenericProvider,
         // Without streaming nothing has been shown yet, so the whole text is
         // sent at once: it also covers the answers arriving as a single chunk.
         if (!hasStarted && !buffer) {
-            sendMessageToTab(tabId, { type: 'addText', content: fullText })
+            send({ type: 'addText', content: fullText })
             return
         }
 
         flush()
-        sendMessageToTab(tabId, { type: 'endText' })
+        send({ type: 'endText' })
     } catch (error) {
         if (flushTimeoutId !== null) {
             clearTimeout(flushTimeoutId)
@@ -859,11 +876,11 @@ async function runTextOperation(tabId: number, provider: GenericProvider,
             // Everything received before the stop is kept, so the partial
             // answer can still be copied or refined.
             flush()
-            sendMessageToTab(tabId, { type: 'endText' })
+            send({ type: 'endText' })
             return
         }
 
-        sendMessageToTab(tabId, { type: 'showError', content: getLocalizedErrorMessage(error) })
+        send({ type: 'showError', content: getLocalizedErrorMessage(error) })
         logMessage(`${errorContext}: ${error.message}`, 'error')
     } finally {
         // A newer request may have taken the slot in the meantime, and it must

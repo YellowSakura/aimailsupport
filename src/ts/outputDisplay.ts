@@ -183,9 +183,14 @@ function endText(): void {
  *
  * The panel is not updated here: it is the background script, once the request
  * is actually closed, that ends the streaming through an `endText` message.
+ *
+ * @param discardOutput - When true the answer is thrown away instead of being
+ *        kept on screen, because the panel is being closed: without it the text
+ *        received before the abort, which the background script sends anyway,
+ *        would rebuild the panel just after the user got rid of it.
  */
-function stopGeneration(): void {
-    browser.runtime.sendMessage({ type: 'stopGeneration' }).catch((error: Error) => {
+function stopGeneration(discardOutput: boolean = false): void {
+    browser.runtime.sendMessage({ type: 'stopGeneration', discardOutput }).catch((error: Error) => {
         logMessage(`Error sending the stop request: ${error.message}`, 'error')
     })
 }
@@ -246,7 +251,13 @@ function createOutputDisplay(): void {
     const closeIcon: HTMLSpanElement = document.createElement('span')
     closeIcon.className = 'close-icon'
     closeIcon.innerHTML = '&times;'
-    closeIcon.addEventListener('click', () => clearOutputDisplay(true))
+    closeIcon.addEventListener('click', () => {
+        // Closing the panel also interrupts any request still running, be it
+        // waiting for the answer or already streaming it: with no request in
+        // flight the background script simply ignores it.
+        stopGeneration(true)
+        clearOutputDisplay(true)
+    })
     amsInnerResponse.appendChild(closeIcon)
 
     // Actions container -->
@@ -304,7 +315,7 @@ function createOutputDisplay(): void {
             <rect x="6" y="6" width="12" height="12" rx="2"/>
         </svg>
     `
-    stopIcon.addEventListener('click', stopGeneration)
+    stopIcon.addEventListener('click', () => stopGeneration())
     actionsContainer.appendChild(stopIcon)
 
     // Footer: groups action icons and refine input -->
