@@ -91,6 +91,7 @@
     <div class=form-group>
         <label for=anthropicModel data-l10n-ref=options.anthropic.model>&nbsp;</label>
         <select id=anthropicModel data-required>
+            <option value=claude-fable-5-1 data-no-temperature=true>Fable 5.1</option>
             <option value=claude-fable-5 data-no-temperature=true>Fable 5</option>
             <option value=claude-opus-5 data-no-temperature=true>Opus 5</option>
             <option value=claude-opus-4-8 data-no-temperature=true>Opus 4.8</option>
@@ -134,6 +135,7 @@
     <div class=form-group>
         <label for=googleModel data-l10n-ref=options.google.model>&nbsp;</label>
         <select id=googleModel data-required>
+            <option value=gemini-3.8-flash>Gemini 3.8 Flash</option>
             <option value=gemini-3.7-flash>Gemini 3.7 Flash</option>
             <option value=gemini-3.6-flash>Gemini 3.6 Flash</option>
             <option value=gemini-3.5-flash>Gemini 3.5 Flash</option>
@@ -154,6 +156,7 @@
         <div class=description data-l10n-ref=options.google.reasoningEffort.description></div>
     </div>
 </fieldset>
+
 
             
             <fieldset id=groq>
@@ -266,6 +269,7 @@
     <div class=form-group>
         <label for=openaiModel data-l10n-ref=options.openai.model>&nbsp;</label>
         <select id=openaiModel data-required>
+            <option value=gpt-6-astra data-no-temperature=true>GPT-6 Astra</option>
             <option value=gpt-5.6-sol data-no-temperature=true>GPT-5.6 Sol</option>
             <option value=gpt-5.6-terra data-no-temperature=true>GPT-5.6 Terra</option>
             <option value=gpt-5.6-luna data-no-temperature=true>GPT-5.6 Luna</option>
