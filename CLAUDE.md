@@ -52,15 +52,16 @@ Never move a shared implementation of those operations onto GenericProvider: eve
 2. Register it in `providerFactory.ts`.
 3. Add its block to `ConfigType`, the `<option>` in `options.html` and the partial in `src/html/partials/` (the fieldset `id` must equal the factory key).
 4. Add the read/restore of its fields in `options.ts`.
-5. Add the host permission in `src/manifest.json`.
-6. Add a `describe` block in `test/llmprovider.test.ts`.
+5. If it exposes `getModels()`, add a `setupModelList()` call in `optionsModelList.ts`: everything else (button, error and "no model" messages) is derived from the provider key, as long as the partial follows the id/class conventions documented there.
+6. Add the host permission in `src/manifest.json`.
+7. Add a `describe` block in `test/llmprovider.test.ts`.
 
 ### Entry points (defined in `src/manifest.json`)
 - **`src/ts/background.ts`** — Background script (MV2 background page, loaded as an ES module): creates context menus, handles message routing, delegates to LLM providers. This is the main orchestration hub.
 - **`src/ts/outputDisplay.ts`** — Popup that displays AI-generated responses and handles text-to-speech.
 - **`src/ts/promptDisplay.ts`** — Popup for custom prompt input.
 - **`src/html/options.html`** — Settings page, uses `posthtml-include` to compose provider-specific partials from `src/html/partials/`.
-- **`src/ts/options/`** — Settings page logic: `options.ts` is the main module, alongside per-provider modules (`optionsGroq.ts`, `optionsLms.ts`, `optionsOllama.ts`, `optionsOpenai.ts`, `optionsOpenrouter.ts`, `optionsVllm.ts`). All are loaded as `<script type="module">` from `options.html`.
+- **`src/ts/options/`** — Settings page logic: `options.ts` is the main module, `optionsModelList.ts` populates the model `<select>` of every provider exposing a `static getModels()` (Groq, LM Studio, Ollama, OpenRouter, vLLM) and `optionsOpenai.ts` handles the OpenAI text-to-speech controls. All are loaded as `<script type="module">` from `options.html`.
 
 ### Helpers
 - **`src/ts/helpers/configType.ts`** — TypeScript interface for all configuration (provider keys, models, general settings).

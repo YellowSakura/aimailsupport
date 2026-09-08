@@ -17,5 +17,5 @@ document.querySelector('#openaiText2SpeechVoice')?.addEventListener('change', (e
 document.querySelector('#openaiText2SpeechSpeed')?.addEventListener('input', (event) => {
     const destination = document.querySelector<HTMLInputElement>('label[for=openaiText2SpeechSpeed] span')
     const currentSpeedValue = (event.currentTarget as HTMLInputElement).value
-    destination.innerText = parseFloat(currentSpeedValue).toFixed(2)
+    destination.innerText = Number.parseFloat(currentSpeedValue).toFixed(2)
 })
