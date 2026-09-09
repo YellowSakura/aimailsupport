@@ -66,6 +66,14 @@ export interface ConfigType {
         }
     }
 
+    // Generic provider for any service exposing an OpenAI-compatible API
+    // (llama.cpp, vLLM, ...), fully described by its own configuration.
+    openaicompatible: {
+        serviceUrl: string
+        model: string
+        apiKey: string
+    }
+
     openrouter: {
         apiKey: string
         model: string

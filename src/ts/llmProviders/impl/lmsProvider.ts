@@ -1,4 +1,4 @@
-import { OpenAiApiCompatibleProvider } from '../openAiApiCompatible'
+import { OpenAiApiCompatibleProvider } from '../abstractOpenAiApiCompatibleProvider'
 import { ConfigType } from '../../helpers/configType'
 
 /**

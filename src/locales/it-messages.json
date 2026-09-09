@@ -386,6 +386,33 @@
     "options.openai.text2speech.voice.description": {
         "message": "L'anteprima delle voci è quella inglese proposta da OpenAI e non è influenzata dalle opzioni di configurazione presenti in questo pannello."
     },
+    "options.openaicompatible.apiKey": {
+        "message": "API Key (opzionale)"
+    },
+    "options.openaicompatible.apiKey.description": {
+        "message": "Lasciare vuoto se il servizio non richiede autenticazione, come avviene di norma con un server in esecuzione in locale."
+    },
+    "options.openaicompatible.description": {
+        "message": "Provider generico per qualsiasi servizio che espone un'API compatibile con OpenAI.<br />Al momento sono supportate solo le connessioni <code>localhost</code> oppure <code>127.0.0.1</code>."
+    },
+    "options.openaicompatible.errorApi": {
+        "message": "<strong>Attenzione</strong>: Impossibile comunicare con il servizio. Assicurarsi che sia in esecuzione a un indirizzo locale, che esponga l'API <code>/v1/models</code> e che accetti le richieste provenienti da Thunderbird."
+    },
+    "options.openaicompatible.listModelsButton": {
+        "message": "Elenca modelli"
+    },
+    "options.openaicompatible.model": {
+        "message": "Modello*"
+    },
+    "options.openaicompatible.serviceUrl": {
+        "message": "URL del servizio*"
+    },
+    "options.openaicompatible.serviceUrl.description": {
+        "message": "URL del server che espone l'API compatibile con OpenAI senza il suffisso <code>/v1/...</code> (es. <code>http://localhost:9931</code> per llama.cpp)."
+    },
+    "options.openaicompatible.warningNoModel": {
+        "message": "<strong>Attenzione</strong>: Nessun modello trovato sul servizio. Assicurarsi che almeno un modello sia caricato."
+    },
     "options.openrouter.apiKey": {
         "message": "Chiave API*"
     },

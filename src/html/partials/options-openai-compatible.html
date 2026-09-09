@@ -1,0 +1,29 @@
+<fieldset id="openaicompatible">
+    <legend>OpenAI API compatible:</legend>
+
+    <div class="form-group">
+        <div class="full-description" data-l10n-ref="options.openaicompatible.description"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="openaicompatibleServiceUrl" data-l10n-ref="options.openaicompatible.serviceUrl">&nbsp;</label>
+        <input id="openaicompatibleServiceUrl" type="input" placeholder="http://localhost:9931" data-required>
+        <div class="description" data-l10n-ref="options.openaicompatible.serviceUrl.description"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="openaicompatibleApiKey" data-l10n-ref="options.openaicompatible.apiKey">&nbsp;</label>
+        <input id="openaicompatibleApiKey" type="password" placeholder="">
+        <password-toggle target="openaicompatibleApiKey"></password-toggle>
+        <div class="description" data-l10n-ref="options.openaicompatible.apiKey.description"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="openaicompatibleModel" data-l10n-ref="options.openaicompatible.model">&nbsp;</label>
+        <select id="openaicompatibleModel" data-required></select>
+        <button id="openaicompatibleListModel" type="button" data-l10n-ref="options.openaicompatible.listModelsButton">&nbsp;</button>
+
+        <div class="description openaicompatible-error-api" data-l10n-ref="options.openaicompatible.errorApi"></div>
+        <div class="description openaicompatible-warning-no-model" data-l10n-ref="options.openaicompatible.warningNoModel"></div>
+    </div>
+</fieldset>

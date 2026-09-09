@@ -513,6 +513,42 @@
         "message": "The preview of the voices is the English one proposed by OpenAI and is not influenced by the configuration options present in this panel.",
         "description": "Explanation that the preview voices are the official English voices provided by OpenAI and that they are not influenced by the options available in the add-on panel."
     },
+    "options.openaicompatible.apiKey": {
+        "message": "API Key (optional)",
+        "description": "Optional API key field for the generic OpenAI-compatible service."
+    },
+    "options.openaicompatible.apiKey.description": {
+        "message": "Leave empty if the service does not require authentication, as usually happens with a locally running server.",
+        "description": "Description for the optional API key field."
+    },
+    "options.openaicompatible.description": {
+        "message": "Generic provider for any service exposing an OpenAI-compatible API.<br />At the moment only <code>localhost</code> or <code>127.0.0.1</code> connections are supported.",
+        "description": "Description of the generic OpenAI API compatible provider."
+    },
+    "options.openaicompatible.errorApi": {
+        "message": "<strong>Attention</strong>: Unable to communicate with the service. Please ensure it is running at a local address, that it exposes the <code>/v1/models</code> API and that it accepts the requests coming from Thunderbird.",
+        "description": "Error message displayed when unable to communicate with the configured service."
+    },
+    "options.openaicompatible.listModelsButton": {
+        "message": "List models",
+        "description": "Button to load the available models from the configured service."
+    },
+    "options.openaicompatible.model": {
+        "message": "Model*",
+        "description": "Model to be used for all text processing."
+    },
+    "options.openaicompatible.serviceUrl": {
+        "message": "Service URL*",
+        "description": "URL of the server exposing the OpenAI-compatible API."
+    },
+    "options.openaicompatible.serviceUrl.description": {
+        "message": "URL of the server exposing the OpenAI-compatible API, without the <code>/v1/...</code> suffix (e.g. <code>http://localhost:9931</code> for llama.cpp).",
+        "description": "Description of the service URL field."
+    },
+    "options.openaicompatible.warningNoModel": {
+        "message": "<strong>Attention</strong>: No model found on the service. Please ensure at least one model is loaded.",
+        "description": "Warning message when the configured service exposes no model."
+    },
     "options.openrouter.apiKey": {
         "message": "API Key*",
         "description": "API key field for OpenRouter."

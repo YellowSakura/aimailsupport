@@ -7,6 +7,7 @@ import { GroqProvider } from '../src/ts/llmProviders/impl/groqProvider'
 import { LmsProvider } from '../src/ts/llmProviders/impl/lmsProvider'
 import { MistralProvider } from '../src/ts/llmProviders/impl/mistralProvider'
 import { OllamaProvider } from '../src/ts/llmProviders/impl/ollamaProvider'
+import { OpenAiCompatibleProvider } from '../src/ts/llmProviders/impl/openAiCompatibleProvider'
 import { OpenAiGptProvider } from '../src/ts/llmProviders/impl/openAiGptProvider'
 import { OpenRouterProvider } from '../src/ts/llmProviders/impl/openRouterProvider'
 import { VllmProvider } from '../src/ts/llmProviders/impl/vllmProvider'
@@ -77,6 +78,14 @@ const configs: ConfigType = {
             voice: 'onyx',
             speed: 1
         }
+    },
+
+    // Generic OpenAI-compatible provider, tested against a local llama.cpp
+    // server, see README.md
+    openaicompatible: {
+        serviceUrl: 'http://localhost:9931',
+        model: 'gemma-4-E2B-it',
+        apiKey: ''
     },
 
     openrouter: {
@@ -669,6 +678,77 @@ describe('OpenAiGptProvider', () => {
         const output = await provider.getSpeechFromText('Example of text to speach')
         expect(output).toBeInstanceOf(Blob)
         expect(output.type).toBe('audio/mpeg')
+    })
+
+    test('should be able to rephrase a text', async () => {
+        const output = await provider.rephraseText('Example of text to rephrase', 'shortened')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to suggest how to improve a text', async () => {
+        const output = await provider.suggestImprovementsForText('Example of text to improve')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to suggest a reply from text', async () => {
+        const output = await provider.suggestReplyFromText('Example of text for which to request a suggestion for a reply', 'shortened')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to summarize text', async () => {
+        const output = await provider.summarizeText('Example of text to summarize')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to translate text', async () => {
+        // 'Esempio di testo da tradurre' is Italian for 'Example of text to translate'
+        const output = await provider.translateText('Esempio di testo da tradurre')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to check text for errors', async () => {
+        const output = await provider.checkTextForErrors('This text contains some ERORS to find')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to stream the generated text', async () => {
+        const chunks: string[] = []
+        const output = await streamingProvider.summarizeText('Example of a text long enough to be summarized in more than a single fragment, so that the answer is actually delivered in several pieces', chunk => chunks.push(chunk))
+
+        // Receiving more than one fragment is what tells the streaming apart
+        // from a response delivered all at once at the end.
+        expect(chunks.length).toBeGreaterThan(1)
+
+        // The pieces handed over while generating have to add up to exactly the
+        // text returned at the end, so that the two paths stay interchangeable.
+        expect(chunks.join('')).toBe(output)
+    })
+})
+
+// OpenAiCompatibleProvider tests
+describe('OpenAiCompatibleProvider', () => {
+    configs.llmProvider = 'openaicompatible'
+
+    const provider = ProviderFactory.getInstance(configs)
+    const streamingProvider = ProviderFactory.getInstance({ ...configs, streamResponses: true })
+
+    test('should be an instance of OpenAiCompatibleProvider', () => {
+        expect(provider).toBeInstanceOf(OpenAiCompatibleProvider)
+    })
+
+    test('should be able to analyze the intent of a text', async () => {
+        const output = await provider.analyzeTextIntent('Example of text to analyze')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to apply a custom promt to the text', async () => {
+        const output = await provider.applyCustomPrompt('Reverse the order of the words in the text', 'text of example')
+        expect(typeof output).toBe('string')
+    })
+
+    test('should be able to explain a text', async () => {
+        const output = await provider.explainText('Example of text to explain')
+        expect(typeof output).toBe('string')
     })
 
     test('should be able to rephrase a text', async () => {

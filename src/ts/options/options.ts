@@ -132,6 +132,11 @@ document.querySelector('#optionsForm')?.addEventListener('submit', async (event)
                 speed: Number.parseFloat(document.querySelector<HTMLInputElement>('#openaiText2SpeechSpeed').value)
             }
         },
+        openaicompatible: {
+            serviceUrl: document.querySelector<HTMLInputElement>('#openaicompatibleServiceUrl').value,
+            model: document.querySelector<HTMLInputElement>('#openaicompatibleModel').value,
+            apiKey: document.querySelector<HTMLInputElement>('#openaicompatibleApiKey').value
+        },
         openrouter: {
             apiKey: document.querySelector<HTMLInputElement>('#openrouterApiKey').value,
             model: document.querySelector<HTMLInputElement>('#openrouterModel').value
@@ -263,6 +268,12 @@ document.addEventListener('DOMContentLoaded', async _ => {
     document.querySelector<HTMLInputElement>('#openaiText2SpeechSpeed').value = (configs.openai?.text2speech?.speed || 1).toString()
     document.querySelector<HTMLInputElement>('label[for=openaiText2SpeechSpeed] span').innerText = Number.parseFloat(document.querySelector<HTMLInputElement>('#openaiText2SpeechSpeed').value).toFixed(2)
     // <-- OpenAI GPT section
+
+    // OpenAI API compatible section -->
+    document.querySelector<HTMLInputElement>('#openaicompatibleServiceUrl').value = configs.openaicompatible?.serviceUrl || 'http://localhost:9931'
+    document.querySelector<HTMLInputElement>('#openaicompatibleModel').value = configs.openaicompatible?.model || ''
+    document.querySelector<HTMLInputElement>('#openaicompatibleApiKey').value = configs.openaicompatible?.apiKey || ''
+    // <-- OpenAI API compatible section
 
     // OpenRouter section -->
     document.querySelector<HTMLInputElement>('#openrouterApiKey').value = configs.openrouter?.apiKey || ''

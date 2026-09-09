@@ -44,7 +44,8 @@ It is possible to access a wider set of models (e.g., Llama, Phi, Mistral, Gemma
 * [OpenRouter*](https://openrouter.ai);
 * [LM Studio](https://lmstudio.ai);
 * [Ollama](https://ollama.com);
-* [vLLM](https://docs.vllm.ai).
+* [vLLM](https://docs.vllm.ai);
+* any other locally running service exposing an **OpenAI-compatible API** (e.g. [llama.cpp](https://github.com/ggml-org/llama.cpp)), through the generic *OpenAI API compatible* provider, which only requires the service URL, the model and, when needed, an API key.
 
 \* To use them, it is necessary to create an account on the respective platforms and enable an API access key. <u>Usage fees apply</u>; for more details, please refer to the respective websites.
 
@@ -174,6 +175,14 @@ $ vllm serve google/gemma-4-E2B-it --gpu-memory-utilization 0.3
 
 The `--gpu-memory-utilization` value is the fraction of GPU memory vLLM is allowed to reserve, and must be adjusted to the memory actually available on your machine: raise it if the GPU is dedicated to vLLM, lower it if other processes are competing for the same memory.
 
+To test the generic *OpenAI API compatible* provider, a [llama.cpp](https://github.com/ggml-org/llama.cpp) server is used, serving the model ```gemma-4-E2B-it``` on the default port:
+
+```console
+$ llama-server -hf ggml-org/gemma-4-E2B-it-GGUF --port 9931 --alias gemma-4-E2B-it
+```
+
+Any other service speaking the OpenAI protocol can be used instead, by changing the `openaicompatible` section of the dummy configuration declared inside `test/llmprovider.test.ts`.
+
 ## Permissions details
 
 AI Mail Support for Thunderbird aims to make use of a minimal set of permissions for its operation, specifically:
@@ -195,7 +204,7 @@ AI Mail Support for Thunderbird aims to make use of a minimal set of permissions
 In addition, the following host permissions are declared, which allow the add-on to contact the LLM services directly, without any intermediate server:
 
 - `https://api.anthropic.com/`, `https://api.openai.com/` and `https://api.x.ai/`: used to reach the Anthropic, OpenAI and xAI endpoints.
-- `http://localhost/*` and `http://127.0.0.1/*`: used to reach LM Studio, Ollama and vLLM when they run locally on your own machine.
+- `http://localhost/*` and `http://127.0.0.1/*`: used to reach LM Studio, Ollama, vLLM and any other OpenAI-compatible service, which for this reason have to run locally on your own machine.
 
 ## Localization
 

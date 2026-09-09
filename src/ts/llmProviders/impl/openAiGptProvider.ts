@@ -1,4 +1,4 @@
-import { OpenAiApiCompatibleProvider } from '../openAiApiCompatible'
+import { OpenAiApiCompatibleProvider } from '../abstractOpenAiApiCompatibleProvider'
 import { StreamCallback } from '../genericProvider'
 import { ConfigType } from '../../helpers/configType'
 import { logMessage } from '../../helpers/utils'

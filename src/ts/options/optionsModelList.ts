@@ -25,6 +25,7 @@ import { getConfig } from '../helpers/utils'
 import { GroqProvider } from '../llmProviders/impl/groqProvider'
 import { LmsProvider } from '../llmProviders/impl/lmsProvider'
 import { OllamaProvider } from '../llmProviders/impl/ollamaProvider'
+import { OpenAiCompatibleProvider } from '../llmProviders/impl/openAiCompatibleProvider'
 import { OpenRouterProvider } from '../llmProviders/impl/openRouterProvider'
 import { VllmProvider } from '../llmProviders/impl/vllmProvider'
 
@@ -54,6 +55,12 @@ setupModelList({
 setupModelList({
     provider: 'ollama',
     fetchModels: () => OllamaProvider.getModels(inputValue('#ollamaServiceUrl'))
+})
+
+// Any service exposing an OpenAI-compatible API
+setupModelList({
+    provider: 'openaicompatible',
+    fetchModels: () => OpenAiCompatibleProvider.getModels(inputValue('#openaicompatibleServiceUrl'), inputValue('#openaicompatibleApiKey'))
 })
 
 // OpenRouter

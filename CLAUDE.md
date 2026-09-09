@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-AI Mail Support is a Thunderbird WebExtension add-on (manifest v2) that integrates LLM capabilities into email workflows. It supports multiple LLM providers (Anthropic Claude, Google Gemini, OpenAI GPT, SpaceXAI Grok, Mistral, DeepSeek, Groq, OpenRouter, Ollama, LM Studio and vLLM) through a provider abstraction layer.
+AI Mail Support is a Thunderbird WebExtension add-on (manifest v2) that integrates LLM capabilities into email workflows. It supports multiple LLM providers (Anthropic Claude, Google Gemini, OpenAI GPT, SpaceXAI Grok, Mistral, DeepSeek, Groq, OpenRouter, Ollama, LM Studio and vLLM), plus a generic "OpenAI API compatible" provider for any other service speaking the OpenAI protocol (llama.cpp, ...), through a provider abstraction layer.
 
 ## Build & development commands
 
@@ -35,7 +35,7 @@ npm run build                        # Must compile successfully
 ### Provider pattern (core abstraction)
 - **`src/ts/llmProviders/genericProvider.ts`** — Base class declaring all LLM operations (analyzeTextIntent, explainText, summarizeText, rephraseText, suggestReplyFromText, translateText, moderateText, etc.) with the standardized prompt templates and `createAbortSignalWithTimeout()`. Every operation throws by default: a provider "supports" a feature simply by overriding it.
 - **`src/ts/llmProviders/openAiApiCompatible.ts`** — Abstract class extending GenericProvider for every service speaking the OpenAI protocol (`{baseUrl}/v1/chat/completions`). It implements the prompt wrappers, `getHeaders()`, `manageMessageContent()`, plus the `fetchModels()` and `extractErrorMessage()` static helpers. Subclasses usually consist of the constructor alone.
-- **`src/ts/llmProviders/impl/`** — Concrete providers. Groq, DeepSeek, SpaceXAI, Mistral, OpenRouter, LM Studio, Ollama, vLLM and OpenAI extend OpenAiApiCompatibleProvider; Anthropic and Google extend GenericProvider directly, since they use their own protocol. OpenAI is a special case: it inherits everything but overrides `manageMessageContent()` for the Responses API (`/v1/responses`); OpenRouter only overrides `getHeaders()` to add its optional attribution headers.
+- **`src/ts/llmProviders/impl/`** — Concrete providers. Groq, DeepSeek, SpaceXAI, Mistral, OpenRouter, LM Studio, Ollama, vLLM, the generic OpenAI-compatible one (`openAiCompatibleProvider.ts`, key `openaicompatible`, whose endpoint is entirely configured by the user) and OpenAI extend OpenAiApiCompatibleProvider; Anthropic and Google extend GenericProvider directly, since they use their own protocol. OpenAI is a special case: it inherits everything but overrides `manageMessageContent()` for the Responses API (`/v1/responses`); OpenRouter only overrides `getHeaders()` to add its optional attribution headers.
 - **`src/ts/llmProviders/providerFactory.ts`** — Factory that maps provider name strings to implementation classes.
 
 ### Capability detection (careful when refactoring)
@@ -61,7 +61,7 @@ Never move a shared implementation of those operations onto GenericProvider: eve
 - **`src/ts/outputDisplay.ts`** — Popup that displays AI-generated responses and handles text-to-speech.
 - **`src/ts/promptDisplay.ts`** — Popup for custom prompt input.
 - **`src/html/options.html`** — Settings page, uses `posthtml-include` to compose provider-specific partials from `src/html/partials/`.
-- **`src/ts/options/`** — Settings page logic: `options.ts` is the main module, `optionsModelList.ts` populates the model `<select>` of every provider exposing a `static getModels()` (Groq, LM Studio, Ollama, OpenRouter, vLLM) and `optionsOpenai.ts` handles the OpenAI text-to-speech controls. All are loaded as `<script type="module">` from `options.html`.
+- **`src/ts/options/`** — Settings page logic: `options.ts` is the main module, `optionsModelList.ts` populates the model `<select>` of every provider exposing a `static getModels()` (Groq, LM Studio, Ollama, OpenAI API compatible, OpenRouter, vLLM) and `optionsOpenai.ts` handles the OpenAI text-to-speech controls. All are loaded as `<script type="module">` from `options.html`.
 
 ### Helpers
 - **`src/ts/helpers/configType.ts`** — TypeScript interface for all configuration (provider keys, models, general settings).

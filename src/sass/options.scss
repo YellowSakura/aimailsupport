@@ -176,6 +176,8 @@ $options-labels-width: 150px;
             &.lms-warning-no-model,
             &.ollama-error-api,
             &.ollama-warning-no-model,
+            &.openaicompatible-error-api,
+            &.openaicompatible-warning-no-model,
             &.openrouter-error-api,
             &.vllm-error-api,
             &.vllm-warning-no-model {
@@ -198,6 +200,7 @@ $options-labels-width: 150px;
 
                 body[data-provider='lms'] &,
                 body[data-provider='ollama'] &,
+                body[data-provider='openaicompatible'] &,
                 body[data-provider='vllm'] & {
                     display: block;
                 }
@@ -266,6 +269,7 @@ $options-labels-width: 150px;
         body[data-provider='mistral'] &#mistral,
         body[data-provider='ollama'] &#ollama,
         body[data-provider='openai'] &#openai,
+        body[data-provider='openaicompatible'] &#openaicompatible,
         body[data-provider='openrouter'] &#openrouter,
         body[data-provider='vllm'] &#vllm,
         body[data-provider='xai'] &#xai {
