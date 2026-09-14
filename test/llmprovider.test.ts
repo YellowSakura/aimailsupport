@@ -66,7 +66,8 @@ const configs: ConfigType = {
 
     ollama: {
         serviceUrl: 'http://localhost:11434',
-        model: 'gemma4:e2b'
+        model: 'gemma4:e2b',
+        reasoningEffort: 'default'
     },
 
     openai: {
@@ -570,6 +571,29 @@ describe('OllamaProvider', () => {
     const provider = ProviderFactory.getInstance(configs)
     const streamingProvider = ProviderFactory.getInstance({ ...configs, streamResponses: true })
 
+    // Runs a translation with the given reasoning effort against a mocked
+    // fetch and returns the JSON body of the issued REQUEST; the real fetch
+    // is restored right away, since the other tests talk to the local instance.
+    async function captureRequestBody(reasoningEffort: ConfigType['ollama']['reasoningEffort']): Promise<Record<string, unknown>> {
+        const originalFetch = globalThis.fetch
+        const fetchMock = jest.fn().mockResolvedValue(new Response(JSON.stringify({
+            choices: [{ message: { content: 'translated text' } }]
+        }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+        })) as jest.MockedFunction<typeof fetch>
+        globalThis.fetch = fetchMock
+
+        try {
+            const mockedProvider = new OllamaProvider({ ...configs, ollama: { ...configs.ollama, reasoningEffort } })
+            await mockedProvider.translateText('Esempio di testo da tradurre')
+
+            return JSON.parse((fetchMock.mock.calls[0][1] as RequestInit).body as string)
+        } finally {
+            globalThis.fetch = originalFetch
+        }
+    }
+
     test('should be an instance of OllamaProvider', () => {
         expect(provider).toBeInstanceOf(OllamaProvider)
     })
@@ -631,6 +655,16 @@ describe('OllamaProvider', () => {
         // The pieces handed over while generating have to add up to exactly the
         // text returned at the end, so that the two paths stay interchangeable.
         expect(chunks.join('')).toBe(output)
+    })
+
+    test('should send the selected reasoning effort', async () => {
+        const requestBody = await captureRequestBody('none')
+        expect(requestBody.reasoning_effort).toBe('none')
+    })
+
+    test('should omit the reasoning effort when the model default is selected', async () => {
+        const requestBody = await captureRequestBody('default')
+        expect(requestBody).not.toHaveProperty('reasoning_effort')
     })
 })
 

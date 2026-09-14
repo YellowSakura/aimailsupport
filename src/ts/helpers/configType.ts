@@ -33,7 +33,7 @@ export interface ConfigType {
     google: {
         apiKey: string
         model: string
-        reasoningEffort?: string
+        reasoningEffort?: 'off' | 'low' | 'medium' | 'high'
     }
 
     groq: {
@@ -54,6 +54,7 @@ export interface ConfigType {
     ollama: {
         serviceUrl: string
         model: string
+        reasoningEffort?: 'default' | 'none' | 'low' | 'medium' | 'high' | 'max'
     }
 
     openai: {

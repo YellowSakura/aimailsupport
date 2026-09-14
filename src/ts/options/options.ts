@@ -109,7 +109,7 @@ document.querySelector('#optionsForm')?.addEventListener('submit', async (event)
         google: {
             apiKey: document.querySelector<HTMLInputElement>('#googleApiKey').value,
             model: document.querySelector<HTMLInputElement>('#googleModel').value,
-            reasoningEffort: document.querySelector<HTMLInputElement>('#googleReasoningEffort').value
+            reasoningEffort: document.querySelector<HTMLSelectElement>('#googleReasoningEffort').value as ConfigType['google']['reasoningEffort']
         },
         groq: {
             apiKey: document.querySelector<HTMLInputElement>('#groqApiKey').value,
@@ -125,7 +125,8 @@ document.querySelector('#optionsForm')?.addEventListener('submit', async (event)
         },
         ollama: {
             serviceUrl: document.querySelector<HTMLInputElement>('#ollamaServiceUrl').value,
-            model: document.querySelector<HTMLInputElement>('#ollamaModel').value
+            model: document.querySelector<HTMLInputElement>('#ollamaModel').value,
+            reasoningEffort: document.querySelector<HTMLSelectElement>('#ollamaReasoningEffort').value as ConfigType['ollama']['reasoningEffort']
         },
         openai: {
             apiKey: document.querySelector<HTMLInputElement>('#openaiApiKey').value,
@@ -259,6 +260,10 @@ document.addEventListener('DOMContentLoaded', async _ => {
     // Ollama section -->
     document.querySelector<HTMLInputElement>('#ollamaServiceUrl').value = configs.ollama?.serviceUrl || 'http://localhost:11434'
     document.querySelector<HTMLInputElement>('#ollamaModel').value = configs.ollama?.model || ''
+
+    if(configs.ollama?.reasoningEffort) {
+        document.querySelector<HTMLInputElement>('#ollamaReasoningEffort').value = configs.ollama.reasoningEffort
+    }
     // <-- Ollama section
 
     // OpenAI GPT section -->

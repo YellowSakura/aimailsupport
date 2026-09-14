@@ -10,7 +10,7 @@ import { getLanguageNameFromCode, logMessage } from '../../helpers/utils'
 export class GoogleGeminiProvider extends GenericProvider {
     private readonly apiKey: string
     private readonly model: string
-    private readonly reasoningEffort: string
+    private readonly reasoningEffort: ConfigType['google']['reasoningEffort']
 
     public constructor(config: ConfigType) {
         super(config)

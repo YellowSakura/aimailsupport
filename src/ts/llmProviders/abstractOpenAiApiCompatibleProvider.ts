@@ -109,6 +109,15 @@ export abstract class OpenAiApiCompatibleProvider extends GenericProvider {
     }
 
     /**
+     * Additional provider-specific fields for the chat completion request.
+     * The default is empty so OpenAI-compatible services receive exactly the
+     * same payload as before.
+     */
+    protected getAdditionalRequestData(): Record<string, unknown> {
+        return {}
+    }
+
+    /**
      * Function to generate headers for API requests.
      *
      * The authorization header is added only when an API key is available:
@@ -170,6 +179,7 @@ export abstract class OpenAiApiCompatibleProvider extends GenericProvider {
             // The temperature is omitted when the selected model does not
             // accept it, since those models reject the parameter.
             ...(this.temperature !== null && { 'temperature': this.temperature }),
+            ...this.getAdditionalRequestData(),
             ...(useStream && { 'stream': true })
         })
 
