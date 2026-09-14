@@ -86,7 +86,7 @@ const configs: ConfigType = {
     // server, see README.md
     openaicompatible: {
         serviceUrl: 'http://localhost:9931',
-        model: 'gemma-4-E2B-it',
+        model: 'ggml-org/gemma-4-E2B-it-GGUF:Q8_0',
         apiKey: ''
     },
 
