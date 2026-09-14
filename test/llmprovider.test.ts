@@ -31,6 +31,7 @@ const configs: ConfigType = {
     streamResponses: false,
     debugMode: true,
     maskPii: false,
+    maskPiiNlp: false,
 
     anthropic: {
         apiKey: '',
