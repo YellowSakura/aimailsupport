@@ -393,6 +393,14 @@
         "message": "When the option is enabled, some strategies are applied to mask PII (Personally Identifiable Information) before sending data to LLM models, even though exhaustive masking CANNOT be guaranteed.<br>The option increases privacy, but may cause a degradation in response quality due to false positives.",
         "description": "The description is intended to state that exhaustive masking of personal data cannot be guaranteed and that enabling this option may degrade the quality of the responses."
     },
+    "options.maskPiiNlp": {
+        "message": "Use NLP analysis",
+        "description": "Sub-option of the PII masking: enables the detection of names, places and organizations through natural language processing."
+    },
+    "options.maskPiiNlp.description": {
+        "message": "When the option is enabled, an NLP (Natural Language Processing) analysis is added to the PII masking to detect names, places and organizations.<br>The analysis is optimized for English and may increase false positives.",
+        "description": "The description is intended to state that the NLP analysis works best on English text and may increase false positives."
+    },
     "options.lms.description": {
         "message": "LM Studio is an open-source project that allows you to use various advanced LLMs locally, without needing to connect to an external server.<br />You can download everything from the <a href=\"https://lmstudio.ai\">official website</a>.",
         "description": "Message displayed when the LLM service provider LM Studio is selected."

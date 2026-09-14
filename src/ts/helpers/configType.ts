@@ -16,6 +16,8 @@ export interface ConfigType {
     // them, instead of appearing all at once when the generation is over.
     streamResponses: boolean
     maskPii: boolean
+    // PII NLP-based detection (Only meaningful while maskPii is enabled)
+    maskPiiNlp: boolean
     debugMode: boolean
 
     anthropic: {

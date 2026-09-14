@@ -106,6 +106,7 @@ export async function getCurrentMessageContent(tabId?: number): Promise<string> 
 
     // PII Mask
     const isMaskPiiEnabled: boolean = await getConfig('maskPii')
+    const isMaskPiiNlpEnabled: boolean = await getConfig('maskPiiNlp')
 
     // Remove link (https and https), newlines and extra spaces before returning
     // the plain text
@@ -118,13 +119,13 @@ export async function getCurrentMessageContent(tabId?: number): Promise<string> 
 
         if(isMaskPiiEnabled) {
             logMessage('Masking PII for body...', 'debug')
-            fullPlain = mask(fullPlain)
+            fullPlain = mask(fullPlain, { nlp: isMaskPiiNlpEnabled })
         }
     }
 
     if(subject && isMaskPiiEnabled) {
         logMessage('Masking PII for subject...', 'debug')
-        subject = mask(subject)
+        subject = mask(subject, { nlp: isMaskPiiNlpEnabled })
     }
 
     return `Subject: ${subject} - Body: ${fullPlain}`
