@@ -40,7 +40,7 @@ const configs: ConfigType = {
 
     deepseek: {
         apiKey: '',
-        model: 'deepseek-v4-flash'
+        model: 'deepseek-flash'
     },
 
     google: {
