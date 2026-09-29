@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI coding agents (Claude Code, Codex, Cursor, ...) when working with code in this repository.
 
 ## Project overview
 
@@ -28,7 +28,7 @@ npm run lint                         # Must pass with no errors — enforced aut
 npm run build                        # Must compile successfully
 ```
 
-`npm run lint` is enforced by a `Stop` hook in `.claude/settings.json`: Claude cannot end a turn while ESLint reports errors — the hook blocks completion and feeds the errors back for fixing. Inspect or disable it with `/hooks`. `npm run build` remains a manual check.
+For Claude Code only, `npm run lint` is enforced by a `Stop` hook in `.claude/settings.json`: the agent cannot end a turn while ESLint reports errors — the hook blocks completion and feeds the errors back for fixing. Inspect or disable it with `/hooks`. Other agents don't read that file, so for them (and for `npm run build` in every case) these remain manual checks.
 
 ## Architecture
 
